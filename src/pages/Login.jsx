@@ -114,7 +114,7 @@ export const Login = () => {
                 </button>
 
                 <p className="text-center text-sm text-gray-800 uppercase mt-6">
-                    New To UniPlug? {" "}
+                    New To CampusFlow? {" "}
                     <Link to="/register" className="text-blue-500 font-semibold hover:underline">Sign Up</Link>
                 </p>
 
