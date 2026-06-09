@@ -1,4 +1,5 @@
-import { Link } from "react-scroll";
+import { Link as ScrollLink} from "react-scroll";
+import {Link } from "react-router-dom"
 
 const Navbar = () => {
   return (
@@ -13,38 +14,36 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden md:flex items-center gap-10 cursor-pointer">
-          <Link
+          <ScrollLink
             to="features"
             smooth={true}
             duration={500}
             className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium"
           >
             Features
-          </Link>
-          <Link
+          </ScrollLink>
+          <ScrollLink
             to="works"
             smooth={true}
             duration={500}
             className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium"
           >
             How it Works
-          </Link>
+          </ScrollLink>
           <Link
-            to="#"
-            smooth={true}
-            duration={500}
+            to="/verify"
             className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium"
           >
-            Security
+            Verify
           </Link>
-          <Link
+          <ScrollLink
             to="contact"
             smooth={true}
             duration={500}
             className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium"
           >
             Contact
-          </Link>
+          </ScrollLink>
         </div>
 
         <select className="hidden md:flex border border-gray-400 rounded-md px-2 py-2 text-sm text-gray-600 outline-none focus:ring-2 focus:ring-blue-500">
