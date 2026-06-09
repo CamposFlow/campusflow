@@ -17,39 +17,6 @@ const Portal = ()=>{
         }, 1500)
     }
     return(
-//         <div className="min-h-screen bg-white">
-// <div style={{background:"linear-gradient(135deg, #0F1F3D 0%, #1a3a6b 50%, #0F1F3D 100%)"}}>
-//
-// <nav className="bg-gray-200 py-3 px-8">
-//     <div className="max-w-7xl mx-auto flex items-center justify-between">
-//         <div className="flex items-center gap-2">
-//             <img src="./logo.png" alt="logo" className="w-8 h-8"/>
-//             <div>
-//                 <p className="text-black font-bold text-base leading-none">Campus<span className="text-blue-600">Flow</span></p>
-//                 <p className="text-gray-600 text-xs">Document Verification Portal</p>
-//             </div>
-//         </div>
-//
-//         <div className="hidden md:flex items-center gap-8">
-//             {
-//                 tags.map((tag,index)=>(
-//                     <Link key={index} to={tag.to} className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium">{tag.name}</Link>
-//                 ))
-//             }
-//         </div>
-//     </div>
-// </nav>
-//
-//             <div className="bg-white py-16 px-8 text-center">
-// <div className="max-w-2xl mx-auto">
-// <h1 className="text-4xl font-bold text-gray-700 mb-4">
-// Document Verification Portal
-// </h1>
-//     <p className="text-gray-600 text-sm leading-relaxed">Verify authenticity of academic documents and
-//     certificate using <span className="font-semibold"> blockchain technology</span></p>
-// </div>
-//             </div>
-// </div>        </div>'
 
         <div className="min-h-screen" style={{ backgroundColor: "#f8fafc" }}>
 
