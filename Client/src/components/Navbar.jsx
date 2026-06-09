@@ -17,7 +17,7 @@ const Navbar = () => {
             to="features"
             smooth={true}
             duration={500}
-            className="text-gray-800 hover:text-blue-600 text-sm font-medium"
+            className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium"
           >
             Features
           </Link>
@@ -25,7 +25,7 @@ const Navbar = () => {
             to="works"
             smooth={true}
             duration={500}
-            className="text-gray-800 hover:text-blue-600 text-sm font-medium"
+            className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium"
           >
             How it Works
           </Link>
@@ -33,7 +33,7 @@ const Navbar = () => {
             to="#"
             smooth={true}
             duration={500}
-            className="text-gray-800 hover:text-blue-600 text-sm font-medium"
+            className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium"
           >
             Security
           </Link>
@@ -41,7 +41,7 @@ const Navbar = () => {
             to="contact"
             smooth={true}
             duration={500}
-            className="text-gray-800 hover:text-blue-600 text-sm font-medium"
+            className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium"
           >
             Contact
           </Link>

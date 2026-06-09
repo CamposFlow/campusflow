@@ -8,7 +8,7 @@
 @theme{
     --color-backgroundcolor: #F5F5F5;
     --color-primary: #F5A623;
-    --color-buttontext: #FFFF;
+    --color-navy: #0A1628;
 
 }
 .nav-link{
@@ -22,7 +22,7 @@
     left: 0;
     width: 0;
     height: 2px;
-    background-color: #D4AF37;
+    background-color: dodgerblue;
     transition: width 0.3s ease;
 }
 .nav-link:hover::after{
