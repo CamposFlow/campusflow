@@ -6,10 +6,10 @@
     "Server"
   ],
   "scripts": {
-    "dev": "concurrently --kill-others \"npm run dev -w Server\" \"npm run dev -w Client\"",
+    "dev": "concurrently --kill-others \"npm run dev -w server\" \"npm run dev -w client\"",
     "build": "npm run build -w Client",
-    "server": "npm run dev -w Server",
-    "client": "npm run dev -w Client"
+    "server": "npm run dev -w server",
+    "client": "npm run dev -w client"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

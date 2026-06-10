@@ -7,6 +7,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Simple request logger middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} - ${req.ip}`);
+  next();
+});
+
 // Routes
 app.use('/', apiRoutes);
 
@@ -16,11 +22,14 @@ app.use((req, res) => {
 });
 
 // Error handling middleware
+// IMPORTANT: This middleware must be defined last, after all other app.use() and route calls.
 app.use((err, req, res, next) => {
   console.error(err.stack);
   const status = err.status || 500;
   res.status(status).json({
-    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error',
+    // Optionally include stack in dev for debugging
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
   });
 });
 
