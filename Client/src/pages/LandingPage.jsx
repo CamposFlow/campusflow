@@ -222,7 +222,7 @@ justify-center mb-4">
         {step.number}
     </div>
 <div className="bg-gray-100 hover:bg-gray-200 rounded-2xl p-6 w-full hover:shadow-lg">
-        <div className="bg-blue-50 w-12 h-12 rounded-b-2xl 
+        <div className="bg-blue-50 w-12 h-12 rounded-b-2xl
     mx-auto mb-4 rounded-r-2xl flex items-center justify-center">
 {step.icon}
     </div>
@@ -237,6 +237,8 @@ justify-center mb-4">
 
                 </div>
             </div>
+
+
 
         </section>
 
@@ -257,7 +259,7 @@ justify-center mb-4">
         </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
 
 <div className="flex items-start gap-4">
     <div className="bg-blue-50 w-12 h-12 rounded-xl flex items-center justify-center shrink-0">

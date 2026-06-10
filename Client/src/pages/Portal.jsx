@@ -1,12 +1,64 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { ShieldCheck, ShieldX, Link2, ClipboardPaste } from "lucide-react"
-import { Link } from "react-scroll"
+import {
+    Menu,
+    X,
+    ShieldCheck,
+    ShieldX,
+    Link2,
+    ClipboardPaste,
+    Lock,
+    Network,
+    Globe,
+    Building2,
+    FileSearch
+} from "lucide-react"
+import { Link } from "react-router-dom"
 
 const Portal = ()=>{
     const [hash, setHash] = useState("")
     const [result, setResult] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [open, setOpen] = useState(false)
+const steps =[
+    {
+        number :1,
+        icon:<FileSearch className="w-6 h-6 text-blue-600"/>,
+        title: "Get the Document Hash",
+        description:"Every Official CampusFlow document has a unique 64-character hash printed at the footer." +
+            " Copy that hash from the document you wish to verify"},
+    {
+        number :2,
+        icon: <ClipboardPaste className="w-6 h-6 text-blue-600"/>,
+        title:"Paste and Verify",
+        description: "Paste the hash into the input field above and click Verify. The system instantly" +
+            "queries the blockchain and check the record"
+    },
+    {
+        number:3,
+        icon :<ShieldCheck className="w-6 h-6 text-blue-600"/>,
+        title: "Get Instant Result",
+        description:"Within seconds you'll see whether the document is authentic or not - including the certificate name" +
+            ", who issued it, who it was issued to and the blockchain timestamp proof"
+    }
+]
+    const works =[
+        {
+            icon:<Lock className="w-5 h-5 text-blue-600" />,
+            h4 : "Secure Hash Algorithm",
+            p: "Uses Industry-Standard SHA-256 encryption to ensure data integrity"
+        },
+        {
+        icon:<Network className="w-5 h-5 text-blue-600" />,
+            h4:"Distributed Ledger",
+            p:"Immutable records stored across multiple institutional nodes"
+        },
+        {
+            icon:<Globe className="w-5 h-5 text-blue-600" />,
+            h4:"Publicly Verifiable",
+            p:"No account required. Open access for employers and institutions"
+        }
+    ]
 
     const handleVerify = () => {
         if (!hash) return
@@ -26,16 +78,36 @@ const Portal = ()=>{
                         <img src="./logo.png" alt="CampusFlow" className="w-9 h-9" />
                         <span className="font-bold text-xl text-navy">Campus<span className="text-blue-600">Flow</span></span>
                     </Link>
-                    <div className="flex items-center gap-8">
+                    <div className="hidden md:flex items-center gap-8">
                         <Link to="/" className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">Verify Document</Link>
                         <Link to="/" className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">How it Works</Link>
                     </div>
-                    <Link to="/login">
+                    <button className="md:hidden"
+                    onClick={() => setOpen(!open)}
+                    >{
+                        open ? <X className="w-5 h-5"/> : <Menu className="w-5 h-5"/>
+                    }</button>
+                    <Link to="/login" className="hidden md:flex">
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm">
                             Staff Login
                         </Button>
                     </Link>
                 </div>
+                {
+                    open && (
+                        <div className="md:hidden flex justify-end">
+                           <div className="flex flex-col gap-3 text-sm mt-4" >
+                               <Link to="/" className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">Verify Document</Link>
+                               <Link to="/" className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">How it Works</Link>
+                               <Link to="/login">
+                                   <Button className="bg-blue-500 hover:bg-blue-700 text-white text-sm">
+                                       Staff Login
+                                   </Button>
+                               </Link>
+                           </div>
+                        </div>
+                    )
+                }
             </nav>
 
 
@@ -63,7 +135,7 @@ const Portal = ()=>{
                 </div>
             </div>
 
-            {/* Verify Card */}
+
             <div className="max-w-2xl mx-auto px-8 -mt-8 relative z-10">
                 <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
 
@@ -74,15 +146,15 @@ const Portal = ()=>{
                         The hash is a unique 64-character identifier found at the footer of official CampusFlow documents.
                     </p>
 
-                    <div className="flex gap-3">
-                        <div className="flex-1 flex items-center border border-gray-200 rounded-lg px-4 gap-2">
+                    <div className="flex gap-3 min-w-0">
+                        <div className="flex-1 flex items-center border border-gray-200 rounded-lg px-4 gap-2 min-w-0">
                             <Link2 className="w-4 h-4 text-gray-400 shrink-0" />
                             <input
                                 type="text"
                                 value={hash}
                                 onChange={(e) => setHash(e.target.value)}
                                 placeholder="e.g. 0x71C7656EC7ab88b098defB..."
-                                className="flex-1 py-3 text-sm outline-none text-gray-700 placeholder:text-gray-300"/>
+                                className="flex-1 min-w-0 py-3 text-sm outline-none text-gray-700 placeholder:text-gray-300"/>
                             <ClipboardPaste
                                 className="w-4 h-4 text-gray-400 cursor-pointer hover:text-blue-600 shrink-0"
                                 onClick={() => navigator.clipboard.readText().then(setHash)}
@@ -91,7 +163,7 @@ const Portal = ()=>{
                         <Button
                             onClick={handleVerify}
                             disabled={loading || !hash}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-5"
                         >
                             {loading ? "Verifying..." : "Verify"}
                         </Button>
@@ -176,7 +248,93 @@ const Portal = ()=>{
 
                 </div>
             )}
-            <div className="pb-20" />
+            <div className="pb-15" />
+
+<section className="bg-gray-100 py-20 px-8">
+    <div className="text-center mb-14">
+        <span className="text-blue-600 text-xl tracking-widest font-semibold uppercase">Simple Process</span>
+        <h2 className="text-3xl font-bold mt-2">
+            How it Works
+        </h2>
+        <p className="text-gray-500 mt-3 max-w-xl mx-auto text-sm leading-relaxed">
+           Verify Academic Certificate or Document in three simple steps - no account Required
+        </p>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-3 relative gap-8">
+        {
+            steps.map((step,index)=>(
+                <div key={index} className="flex flex-col items-center text-center">
+                    <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-2xl mb-6 relative z-10">
+                        {step.number}
+                    </div>
+                    <div className="bg-gray-100 hover:bg-gray-200 rounded-2xl p-6 w-full hover:shadow-lg">
+                        <div className="bg-blue-50 w-12 h-12 rounded-b-2xl
+    mx-auto mb-4 rounded-r-2xl flex items-center justify-center">
+                            {step.icon}
+                        </div>
+                        <h3 className="font-bold text-lg mb-2">
+                            {step.title}
+                        </h3>
+                        <p className="text-gray-500 text-sm leading-relaxed">{step.description}</p>
+                    </div>
+                </div>
+            ))
+        }
+
+    </div>
+
+
+
+</section>
+            <section className="bg-white py-20 px-8">
+                <div className="text-center mb-14">
+                    <span className="text-blue-600 text-xl tracking-widest font-semibold uppercase">Simple Process</span>
+                    <h2 className="text-3xl font-bold mt-2">
+                        Features
+                    </h2>
+                    <p className="text-gray-500 mt-3 max-w-xl mx-auto text-sm leading-relaxed">
+                        A simple step process powered by blockchain that makes document verification instant, tamper-proof
+                        and globally accessible
+                    </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 relative gap-8">
+                    {
+                        works.map((work, index) => (
+                            <div key={index}
+                                 className="bg-white rounded-xl p-5 border border-gray-100 shadow-lg hover:bg-gray-100">
+                                <div className="bg-blue-100 w-10 h-10 rounded-b-lg rounded-r-lg flex items-center justify-center mb-3">
+                                    {work.icon}
+                                </div>
+                                <h4 className="font-semibold text-sm text-black mb-1">
+                                    {work.h4}
+                                </h4>
+                                <p className="text-gray-400 text-xs leading-relaxed">{work.p}</p>
+                            </div>
+                        ))
+                    }
+                </div>
+            </section>
+            <footer className="mt-16 bg-navy" py-10 px-8>
+<div className="max-w-5xl mx-auto text-center">
+    <div className="flex items-center justify-center gap-2 mb-3 pt-4">
+        <img src="./logo.png" className="w-7 h-7" alt="CampusFlow"/>
+        <span className="text-white font-bold">Campus<span className="text-blue-600">Flow</span></span>
+    </div>
+<p className="text-white/40 text-sm mb-4">
+    Building a secure, transparent, and efficient Campus Experience with Blockchain Technology
+</p>
+    <div className="flex items-center justify-center gap-6 text-white/50 text-xs">
+        <span className="hover:text-white cursor-pointer">Privacy Policy</span>
+        <span className="hover:text-white cursor-pointer">Terms of Service</span>
+        <span className="hover:text-white cursor-pointer">Contact Support</span>
+    </div>
+    <p className="text-white/30 text-sm pb-4 pt-4">
+        &copy; 2024 CampusFlow Nigerian University Assistance System, All rights reserved
+    </p>
+</div>
+
+            </footer>
 
         </div>
 
