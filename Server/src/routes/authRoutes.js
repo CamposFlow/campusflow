@@ -14,6 +14,6 @@ const ensureAuthenticated = (req, res, next) => {
 router.post('/register', register);
 router.post('/login', login);
 router.get('/logout', logout);
-router.get('/me', ensureAuthenticated, getMe); // Protected route example
+router.get('/me', ensureAuthenticated, getMe);
 
 export default router;
