@@ -10,8 +10,10 @@
     "deploy": "npm run build && gh-pages -d dist"
   },
   "dependencies": {
+    "@animateicons/react": "^0.3.3",
     "@fontsource-variable/geist": "^5.2.9",
     "@gsap/react": "^2.1.2",
+    "@headlessui/react": "^2.2.10",
     "@hookform/resolvers": "^5.4.0",
     "axios": "^1.17.0",
     "class-variance-authority": "^0.7.1",
@@ -26,6 +28,7 @@
     "react-dropzone": "^15.0.0",
     "react-hook-form": "^7.77.0",
     "react-hot-toast": "^2.6.0",
+    "react-mui-sidebar": "^1.6.10",
     "react-router-dom": "^7.17.0",
     "react-scroll": "^1.9.3",
     "react-spinners": "^0.17.0",

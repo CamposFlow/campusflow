@@ -1,25 +1,29 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import toast, {Toaster} from "react-hot-toast";
+import {Disclosure, Transition} from "@headlessui/react";
+import {ClipboardIcon, ShieldCheckIcon, ShieldXIcon} from "@animateicons/react/lucide"
 import {
     Menu,
     X,
     ShieldCheck,
-    ShieldX,
     Link2,
     ClipboardPaste,
     Lock,
     Network,
     Globe,
-    Building2,
     FileSearch
 } from "lucide-react"
 import { Link } from "react-router-dom"
-
+import { Link as ScrollLink} from "react-scroll";
 const Portal = ()=>{
     const [hash, setHash] = useState("")
     const [result, setResult] = useState(null)
     const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false)
+    const notify = () => toast.success('Document Verified')
+    const notifyError = () => toast.error('Document Not Verified')
+    const pasted = ()=>toast.success("Hash Pasted")
 const steps =[
     {
         number :1,
@@ -67,48 +71,60 @@ const steps =[
             setLoading(false)
             setResult("success")
         }, 1500)
+        notify();
     }
     return(
 
         <div className="min-h-screen" style={{ backgroundColor: "#f8fafc" }}>
 
-            <nav className="w-full bg-white border-b border-gray-100 px-8 py-4">
+            <Disclosure as="nav" className="w-full bg-white border-b border-gray-100 px-8 py-4">
+
+                {({open})=>(
+                    <>
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2">
                         <img src="./logo.png" alt="CampusFlow" className="w-9 h-9" />
                         <span className="font-bold text-xl text-navy">Campus<span className="text-blue-600">Flow</span></span>
                     </Link>
                     <div className="hidden md:flex items-center gap-8">
-                        <Link to="/" className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">Verify Document</Link>
-                        <Link to="/" className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">How it Works</Link>
+                        <ScrollLink  to="works"
+                                     smooth={true}
+                                     duration={500} className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">How It Works</ScrollLink>
+                        <ScrollLink  to="features"
+                                     smooth={true}
+                                     duration={500} className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">Features</ScrollLink>
                     </div>
-                    <button className="md:hidden"
-                    onClick={() => setOpen(!open)}
-                    >{
-                        open ? <X className="w-5 h-5"/> : <Menu className="w-5 h-5"/>
-                    }</button>
-                    <Link to="/login" className="hidden md:flex">
+
+                    <Link to="/" className="hidden md:flex">
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm">
-                            Staff Login
+                            Back Home
                         </Button>
                     </Link>
+                    <Disclosure.Button className="md:hidden">
+                        {open ? <X className="w-5 h-5"/> : <Menu className="w-5 h-5"/> }
+                    </Disclosure.Button>
                 </div>
-                {
-                    open && (
-                        <div className="md:hidden flex justify-end">
-                           <div className="flex flex-col gap-3 text-sm mt-4" >
-                               <Link to="/" className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">Verify Document</Link>
-                               <Link to="/" className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">How it Works</Link>
-                               <Link to="/login">
-                                   <Button className="bg-blue-500 hover:bg-blue-700 text-white text-sm">
-                                       Staff Login
-                                   </Button>
-                               </Link>
-                           </div>
-                        </div>
-                    )
-                }
-            </nav>
+                <Transition
+                    enter="transition ease-out duration-500"
+                    enterFrom="transform opacity-0 translate-y-8"
+                    enterTo="transform opacity-100 translate-y-0"
+                    leave="transition ease-in duration-400"
+                    leaveFrom="transform opacity-100 translate-y-0"
+                    leaveTo="transform opacity-0 translate-y-2"
+                >
+                    <Disclosure.Panel className="md:hidden flex flex-col px-6 pb-4 gap-3 pt-4 w-35">
+                        <ScrollLink  to="works"
+                                     smooth={true}
+                                     duration={500} className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">How It Works</ScrollLink>
+                        <ScrollLink  to="features"
+                                     smooth={true}
+                                     duration={500} className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">Features</ScrollLink>
+
+                    </Disclosure.Panel>
+                    </Transition>
+                    </>
+                )}
+            </Disclosure>
 
 
             <div className="bg-navy py-20 px-8 text-center relative overflow-hidden">
@@ -155,9 +171,15 @@ const steps =[
                                 onChange={(e) => setHash(e.target.value)}
                                 placeholder="e.g. 0x71C7656EC7ab88b098defB..."
                                 className="flex-1 min-w-0 py-3 text-sm outline-none text-gray-700 placeholder:text-gray-300"/>
-                            <ClipboardPaste
+                            <ClipboardIcon
                                 className="w-4 h-4 text-gray-400 cursor-pointer hover:text-blue-600 shrink-0"
-                                onClick={() => navigator.clipboard.readText().then(setHash)}
+                                duration={1}
+                                onClick={async ()=>{
+                                    const text = await navigator.clipboard.readText()
+                                    setHash(text)
+                                    pasted()
+
+                                }}
                             />
                         </div>
                         <Button
@@ -167,6 +189,17 @@ const steps =[
                         >
                             {loading ? "Verifying..." : "Verify"}
                         </Button>
+                        <Toaster
+                            position="bottom-right"
+                            toastOptions={{
+                            className:'',
+                            style: {
+                                border:'1px solid blue',
+                                color:'white',
+                                padding:'8px',
+                                backgroundColor:'navy',
+                            },
+                        }}/>
                     </div>
 
                     <div className="flex items-center gap-2 mt-4">
@@ -188,7 +221,7 @@ const steps =[
                         <div className="bg-white rounded-2xl border border-green-100 shadow-sm p-6">
                             <div className="flex items-start gap-4 mb-6">
                                 <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center shrink-0">
-                                    <ShieldCheck className="w-6 h-6 text-green-600" />
+                                    <ShieldCheckIcon className="w-6 h-6 text-green-600" duration={1.5} />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-green-600 text-lg">Certificate Verified</h3>
@@ -234,7 +267,7 @@ const steps =[
                         <div className="bg-white rounded-2xl border border-red-100 shadow-sm p-6">
                             <div className="flex items-start gap-4">
                                 <div className="bg-red-100 w-12 h-12 rounded-full flex items-center justify-center shrink-0">
-                                    <ShieldX className="w-6 h-6 text-red-600" />
+                                    <ShieldXIcon className="w-6 h-6 text-red-600" />
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-red-600 text-lg">Verification Failed</h3>
@@ -250,7 +283,7 @@ const steps =[
             )}
             <div className="pb-15" />
 
-<section className="bg-gray-100 py-20 px-8">
+<section id="works" className="bg-gray-100 py-20 px-8">
     <div className="text-center mb-14">
         <span className="text-blue-600 text-xl tracking-widest font-semibold uppercase">Simple Process</span>
         <h2 className="text-3xl font-bold mt-2">
@@ -287,12 +320,10 @@ const steps =[
 
 
 </section>
-            <section className="bg-white py-20 px-8">
+            <section id="features" className="bg-white py-20 px-8">
                 <div className="text-center mb-14">
-                    <span className="text-blue-600 text-xl tracking-widest font-semibold uppercase">Simple Process</span>
-                    <h2 className="text-3xl font-bold mt-2">
-                        Features
-                    </h2>
+                    <span className="text-blue-600 text-2xl tracking-widest font-semibold uppercase">Features</span>
+
                     <p className="text-gray-500 mt-3 max-w-xl mx-auto text-sm leading-relaxed">
                         A simple step process powered by blockchain that makes document verification instant, tamper-proof
                         and globally accessible

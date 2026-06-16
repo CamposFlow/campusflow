@@ -1,4 +1,5 @@
 import {
+
     GraduationCap,
     UserPlus,
     LogIn,
@@ -10,8 +11,9 @@ import {
     Bell,
     Mail,
     MapPin,
-    Globe,
+    Globe, ChevronDown,
 } from "lucide-react";
+
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -19,7 +21,8 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
-
+import { ToastContainer, toast } from 'react-toast';
+import {Disclosure, Transition} from "@headlessui/react";
 gsap.registerPlugin(ScrollTrigger);
 
 const LandingPage = () => {
@@ -80,6 +83,20 @@ const LandingPage = () => {
                 gsap.from(card, {
                     scrollTrigger: {
                         trigger: card,
+                        start: "top 90%",
+                        once: true,
+                    },
+                    duration: 0.7,
+                    opacity: 0,
+                    y: 30,
+                    ease: "power2.out",
+                });
+            });
+
+            gsap.utils.toArray(".faq-section").forEach((item) => {
+                gsap.from(item, {
+                    scrollTrigger: {
+                        trigger: item,
                         start: "top 90%",
                         once: true,
                     },
@@ -173,6 +190,34 @@ const LandingPage = () => {
         },
     ];
 
+    const faqs=[
+        {
+            question: "What is CampusFlow?",
+            answer: "CampusFlow is a smart Campus Assistant platform that helps students navigate Clearance processes, verify academic documents, See academic results, " +
+                "and document viewing - all powered by BlockChain "
+        },
+        {
+            question: "Is CampusFlow free for Students?",
+            answer: "Yes. Students can access all core features - Clearance guidance, document viewing and SOS Features.",
+        },
+        {
+            question: "How Does Document Verification Works?",
+            answer: `When a university issues a certificate, they upload and hashes on the blockchain.` +
+                `Any Institution can verify that certificate instantly by pasting the document hash into the CampusFlow verification - no account required`
+        },
+        {
+            question: "Can a verified document be faked or tampered with?",
+            answer: "NO. Once a document hash is recorded on the blockchain it can not be altered, deleted or duplicated." +
+                "Any change to the document - even a single character - produces a completely different hash, making tampering immediately detectable"
+        },
+        {
+            question: "How Do I register on CampusFlow?",
+            answer: "Visit CampusFlow registration page and select your university and register with your matric number and password." +
+                "Your Dashboard is instantly configured for your specific institution."
+        },
+    ]
+
+
     return (
         <div className="min-h-screen bg-white" ref={container}>
             <Navbar />
@@ -234,9 +279,10 @@ const LandingPage = () => {
                                     Login
                                 </Button>
                             </Link>
+
                         </div>
                     </div>
-                </div>
+                      </div>
             </section>
 
             <section className="problems-section bg-white py-16 sm:py-20 px-4 sm:px-8">
@@ -337,6 +383,46 @@ const LandingPage = () => {
                                     </p>
                                 </div>
                             </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+            <section  className="faqs-section bg-gray-50 py-16 sm:py-20 px-4 sm:px-8">
+                <div className="max-w-4xl mx-auto px-6 space-y-2">
+                    <div className="text-center mb-12 sm:mb-14">
+                        <span className="text-blue-600 text-sm sm:text-lg tracking-widest font-semibold uppercase">
+                            Common Questions
+                        </span>
+                        <h2 className="text-3xl sm:text-4xl font-bold mt-3 text-gray-900 mb-3">
+                            FAQ
+                        </h2>
+
+                        {faqs.map((faq) => (
+                            <Disclosure key={faq.question}>
+                                {({open})=>(
+                                    <div className="faq-section">
+                                        <Disclosure.Button className="flex justify-between items-center w-full py-5 font-medium border px-6 text-left
+                                       text-gray-800 hover:text-blue-600 transition-all mb-4 rounded-3xl hover:border-blue-200 hover:shadow-lg duration-500"
+
+                                        >
+                                            <span>{faq.question}</span>
+                                            <ChevronDown className={`w-5 h-5 text-gray-800 transition-transform duration-400 hover:text-blue-600  ${open ? "rotate-180 text-blue-600":''}`}/>
+                                        </Disclosure.Button>
+                                  <Transition
+                                  enter="transition ease-out duration-500"
+                                  enterFrom="transform opacity-0 translate-y-8"
+                                  enterTo="transform opacity-100 translate-y-0"
+                                  leave="transition ease-in duration-400"
+                                  leaveFrom="transform opacity-100 translate-y-0"
+                                  leaveTo="transform opacity-0 translate-y-2"
+                                  >
+                                      <Disclosure.Panel className="py-2 pb-3 leading-relaxed text-gray-600">
+                                          {faq.answer}
+                                      </Disclosure.Panel>
+                                  </Transition>
+                                    </div>
+                                )}
+                            </Disclosure>
                         ))}
                     </div>
                 </div>
