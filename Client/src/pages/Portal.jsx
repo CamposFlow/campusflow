@@ -113,13 +113,18 @@ const steps =[
                     leaveTo="transform opacity-0 translate-y-2"
                 >
                     <Disclosure.Panel className="md:hidden flex flex-col px-6 pb-4 gap-3 pt-4 w-35">
+
                         <ScrollLink  to="works"
                                      smooth={true}
                                      duration={500} className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">How It Works</ScrollLink>
                         <ScrollLink  to="features"
                                      smooth={true}
                                      duration={500} className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium cursor-pointer">Features</ScrollLink>
-
+                        <Link to="/" className="">
+                            <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm">
+                                Back Home
+                            </Button>
+                        </Link>
                     </Disclosure.Panel>
                     </Transition>
                     </>
