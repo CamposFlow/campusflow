@@ -13,7 +13,7 @@ import {
     MapPin,
     Globe, ChevronDown,
 } from "lucide-react";
-
+import {Cookies} from "@/components/Cookies.jsx";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -221,6 +221,7 @@ const LandingPage = () => {
 
     return (
         <div className="min-h-screen bg-white" ref={container}>
+            <Cookies/>
             <Navbar />
 
             <section id="main"
