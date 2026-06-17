@@ -9,6 +9,7 @@ import {useAuth} from "./pages/AuthContext.jsx"
 import Home from "./pages/Home.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import Portal from "./pages/Portal.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 
 
 function ProtectedRoute({children}) {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/register" element={<Register/>} />
         <Route path="/" element={<LandingPage/>}/>
         <Route path="/verify" element={<Portal/>}/>
+        <Route path="/dashboard" element={<Dashboard/>}/>
 
         <Route path="/me" element={<ProtectedRoute>
           <Home/>
