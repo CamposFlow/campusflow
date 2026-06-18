@@ -24,6 +24,8 @@ import { useRef } from "react";
 import { ToastContainer, toast } from 'react-toast';
 import {Disclosure, Transition} from "@headlessui/react";
 import {Footer} from "@/components/Footer.jsx";
+
+
 gsap.registerPlugin(ScrollTrigger);
 
 const LandingPage = () => {

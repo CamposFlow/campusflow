@@ -1,15 +1,12 @@
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import axios from "axios";
-import { useEffect } from "react";
+
 import {Routes, Route, Navigate} from 'react-router-dom';
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import {useAuth} from "./pages/AuthContext.jsx"
-import Home from "./pages/Home.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import Portal from "./pages/Portal.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import Staff from "./components/Staff.jsx";
 
 
 function ProtectedRoute({children}) {
@@ -29,9 +26,7 @@ function App() {
         <Route path="/" element={<LandingPage/>}/>
         <Route path="/verify" element={<Portal/>}/>
         <Route path="/dashboard" element={<Dashboard/>}/>
-
         <Route path="/me" element={<ProtectedRoute>
-          <Home/>
         </ProtectedRoute>}/>
       </Routes>
   )

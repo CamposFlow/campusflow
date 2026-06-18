@@ -115,6 +115,7 @@ const Navbar = () => {
                 >
                   Dashboard
                 </Link>
+
               </Disclosure.Panel>
           </Transition>
             </>
