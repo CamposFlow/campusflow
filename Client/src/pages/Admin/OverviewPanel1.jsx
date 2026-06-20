@@ -1,6 +1,6 @@
 import React from "react";
 
-export const OverviewPanel = () => {
+export const OverviewPanel1 = () => {
 
 
     return (

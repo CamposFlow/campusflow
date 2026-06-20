@@ -1,14 +1,14 @@
 import {Sidebar} from "@/pages/Admin/Sidebar.jsx";
 import React, {useEffect, useState} from "react";
 import {Bell} from "lucide-react";
-import {OverviewPanel} from "@/Pages/Admin/OverviewPanel.jsx"
+import {OverviewPanel1} from "@/pages/Admin/OverviewPanel1.jsx"
 import Loaders from "@/components/Loaders.jsx";
 
 export const AdminDashboard = () => {
 const [activeTab, setActiveTab] = useState("overview");
 const [loading, setLoading] = useState(true);
     const panels ={
-        overview:<OverviewPanel/>
+        overview:<OverviewPanel1/>
     }
     useEffect(() => {
         setTimeout(() => {
