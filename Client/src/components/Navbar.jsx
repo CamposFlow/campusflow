@@ -48,6 +48,12 @@ const Navbar = () => {
                 >
                   Dashboard
                 </Link>
+            <Link
+                to="/admin"
+                className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium"
+            >
+                Admin
+            </Link>
           <ScrollLink
             to="contact"
             smooth={true}
@@ -101,6 +107,12 @@ const Navbar = () => {
                 >
                   Verify
                 </Link>
+                  <Link
+                      to="/admin"
+                      className="nav-link text-gray-800 hover:text-blue-600 text-sm font-medium"
+                  >
+                      Admin
+                  </Link>
                 <ScrollLink
                     to="contact"
                     smooth={true}

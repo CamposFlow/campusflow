@@ -1,6 +1,6 @@
-import { useState } from "react"
+import React, {useEffect, useState} from "react"
 import { Button } from "@/components/ui/button"
-import toast, {Toaster} from "react-hot-toast";
+import toast from "react-hot-toast";
 import {Disclosure, Transition} from "@headlessui/react";
 import {ClipboardIcon, ShieldCheckIcon, ShieldXIcon} from "@animateicons/react/lucide"
 import {
@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Link as ScrollLink} from "react-scroll";
+import Loaders from "@/components/Loaders.jsx";
 const Portal = ()=>{
     const [hash, setHash] = useState("")
     const [result, setResult] = useState(null)
@@ -63,7 +64,16 @@ const steps =[
             p:"No account required. Open access for employers and institutions"
         }
     ]
+    const [loading1, setLoading1]=useState(true);
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading1(false);
+        },6000)
+    },[]);
+    if (loading1){
 
+        return <Loaders />;
+    }
     const handleVerify = () => {
         if (!hash) return
         setLoading(true)
@@ -194,17 +204,7 @@ const steps =[
                         >
                             {loading ? "Verifying..." : "Verify"}
                         </Button>
-                        <Toaster
-                            position="bottom-right"
-                            toastOptions={{
-                            className:'',
-                            style: {
-                                border:'1px solid blue',
-                                color:'white',
-                                padding:'8px',
-                                backgroundColor:'navy',
-                            },
-                        }}/>
+
                     </div>
 
                     <div className="flex items-center gap-2 mt-4">
