@@ -9,7 +9,7 @@
     "dev": "concurrently --kill-others \"npm run dev -w server\" \"npm run dev -w client\"",
     "build": "npm run build -w Client",
     "server": "npm run dev -w server",
-    "client": "npm run dev -w client"
+    "client": "npm run dev -w Client"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"
