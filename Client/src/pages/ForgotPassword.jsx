@@ -127,6 +127,15 @@ export const ForgotPassword = () => {
                     </label>
                     <Mail className="absolute right-4 top-4 w-4 h-4 text-gray-400"/>
                 </div>
+
+
+                <div className="m-2 text-sm">
+                    <Link
+                        to="/login"
+                        className="text-blue-500 font-semibold hover:underline"
+                    >Back To Login</Link>
+                </div>
+
                 <Button
                     onClick={goNext}
                     disabled={!email}

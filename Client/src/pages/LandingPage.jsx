@@ -299,15 +299,15 @@ const LandingPage = () => {
                         {problems.map((problem, index) => (
                             <div
                                 key={index}
-                                className="problem-card border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all hover:border-blue-200 group"
+                                className="problem-card border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all hover:border-blue-200 group hover:bg-blue-600"
                             >
                                 <div className="bg-blue-50 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
                                     {problem.icon}
                                 </div>
-                                <h3 className="font-bold text-gray-900 text-lg mb-2">
+                                <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-white">
                                     {problem.title}
                                 </h3>
-                                <p className="text-gray-600 text-sm leading-relaxed">
+                                <p className="text-gray-600 group-hover:text-white text-sm leading-relaxed">
                                     {problem.description}
                                 </p>
                             </div>
@@ -336,16 +336,16 @@ const LandingPage = () => {
                         {features.map((feature, index) => (
                             <div
                                 key={index}
-                                className="feature-card bg-white rounded-xl p-6 sm:p-8 border border-gray-200 hover:shadow-lg hover:border-blue-200 transition-all group"
+                                className="feature-card bg-white rounded-xl p-6 sm:p-8 border border-gray-200 hover:shadow-lg hover:border-blue-200 transition-all group hover:bg-blue-600"
                             >
-                                <div className="bg-blue-50 w-14 h-14 flex items-center justify-center rounded-lg shrink-0 group-hover:bg-blue-100 transition-colors">
+                                <div className="bg-blue-50 w-14 h-14 flex items-center justify-center rounded-lg shrink-0  group-hover:bg-blue-100 transition-colors">
                                     {feature.icon}
                                 </div>
 
-                                <h3 className="font-bold text-gray-900 text-lg mt-4 mb-2">
+                                <h3 className="font-bold text-gray-900 text-lg mt-4 mb-2 group-hover:text-white">
                                     {feature.title}
                                 </h3>
-                                <p className="text-gray-600 text-sm leading-relaxed">
+                                <p className="text-gray-600 text-sm leading-relaxed group-hover:text-white">
                                     {feature.description}
                                 </p>
                             </div>
@@ -375,14 +375,14 @@ const LandingPage = () => {
                                 <div className="step-number w-14 h-14 sm:w-16 sm:h-16 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-2xl mb-6 shadow-lg">
                                     {step.number}
                                 </div>
-                                <div className="step-card-content bg-gray-50 rounded-xl p-6 w-full hover:shadow-lg border border-gray-200 transition-all group hover:border-blue-200">
+                                <div className="step-card-content bg-gray-50 rounded-xl p-6 w-full hover:shadow-lg border border-gray-200 transition-all group hover:border-blue-200 hover:bg-blue-600">
                                     <div className="bg-blue-50 w-12 h-12 rounded-lg mx-auto mb-4 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
                                         {step.icon}
                                     </div>
-                                    <h3 className="font-bold text-gray-900 text-lg mb-2">
+                                    <h3 className="group-hover:text-white font-bold text-gray-900 text-lg mb-2 ">
                                         {step.title}
                                     </h3>
-                                    <p className="text-gray-600 text-sm leading-relaxed">
+                                    <p className="text-gray-600 text-sm leading-relaxed group-hover:text-white">
                                         {step.description}
                                     </p>
                                 </div>

@@ -5,6 +5,7 @@ import {useGSAP} from "@gsap/react";
 import {gsap} from "gsap";
 import {useAuth} from "./AuthContext.jsx";
 import {registerUser} from "../services/api.js"
+import {CheckCircle, Eye, EyeOff, XCircle} from "lucide-react";
 
 function Register() {
     const [email, setEmail] = useState("");
@@ -14,8 +15,10 @@ function Register() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState("");
-
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const [confirmPassword, setConfirmPassword] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     useGSAP(() => {
         const tl = gsap.timeline();
@@ -28,14 +31,14 @@ function Register() {
             ease: "power2.out"
         })
 
-            // Stagger child elements
+
             .from(".login .flex:first-child, .login h2, .login p, .login > div, .login button, .login > p", {
                 duration: 0.4,
                 opacity: 0,
                 y: 20,
                 stagger: 0.08,
                 ease: "power2.out"
-            }, "-=0.3") // Overlap with container animation
+            }, "-=0.3")
     })
     const handleRegister = async () => {
         if (!email || !username || !password || !full_name){
@@ -82,43 +85,120 @@ function Register() {
                     )
                 }
 
-                <div className="mb-4">
-                    <label className="block text-xs uppercase font-semibold text-gray-600 mb-1">Full Name</label>
+                <div className="mb-4 relative m-2">
                     <input
                         type="text"
-                        value={full_name}
-                        onChange={(e) => setFullName(e.target.value)}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+                        placeholder=" "
+                        onChange={(e)=>setFullName(e.target.value)}
+                        className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm
+                outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                transition-all duration-200
+                "/>
+                    <label
+                        htmlFor="full_name"
+                        className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
+     peer-focus:top-0
+    peer-placeholder-shown:top-3.5
+    peer-focus:text-blue-600
+    peer-[&:not(:placeholder-shown)]:top-0
+    peer-[&:not(:placeholder-shown)]:text-blue-600"
+                    >
+                        Fullname
+                    </label>
                 </div>
 
-                <div className="flex gap-3 mb-4">
-                    <div className="flex-1">
-                        <label className="block text-xs uppercase font-semibold text-gray-600 mb-1">Username</label>
-                        <input
-                            value={username}
-                            type="text"
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
-                    </div>
 
-                </div>
+                <div className="mb-4 relative m-2">
 
-                <div className="mb-4">
-                    <label className="block text-xs uppercase font-semibold text-gray-600 mb-1">Email</label>
                     <input
                         type="email"
                         value={email}
+                    placeholder=" "
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+                        className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm
+                outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                transition-all duration-200
+                "/>
+                    <label
+                        htmlFor="email"
+                        className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
+     peer-focus:top-0
+    peer-placeholder-shown:top-3.5
+    peer-focus:text-blue-600
+    peer-[&:not(:placeholder-shown)]:top-0
+    peer-[&:not(:placeholder-shown)]:text-blue-600"
+                    >
+                       Email
+                    </label>
                 </div>
-                <div className="mb-4">
-                    <label className="block text-xs uppercase font-semibold text-gray-600 mb-1">Password</label>
+                <div className="relative mb-4 ml-2 mr-2">
                     <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"/>
+                        type={showPassword ? "text" : "password"}
+                        placeholder=""
+                        onChange={(e)=>setPassword(e.target.value)}
+                        className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm
+                outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                transition-all duration-200 pl-4
+                "/>
+                    <label
+                        htmlFor="password"
+                        className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
+    peer-focus:-top-0
+    peer-placeholder-shown:top-3.5
+    peer-focus:text-blue-600
+    peer-[&:not(:placeholder-shown)]:top-0
+    peer-[&:not(:placeholder-shown)]:text-blue-600"
+                    >
+                        Password
+                    </label>
+                    <button type="button"
+                            onClick={()=>setShowPassword(!showPassword)}
+                            className="absolute right-4 top-4 text-gray-400 hover:text-blue-600"
+                    >
+                        {showPassword?<EyeOff className="w-4 h-4"/>: <Eye className="w-4 h-4"/> }
+                    </button>
                 </div>
+                <div className="relative mb-4 ml-2 mr-2">
+                    <input
+                        id="password"
+                        type={confirmPassword ? "text" : "password"}
+                        placeholder=" "
+                        onChange={(e)=>setConfirmPassword(e.target.value)}
+                        className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm
+                outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                transition-all duration-200 pl-4
+                "/>
+                    <label
+                        htmlFor="confirm"
+                        className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
+    peer-focus:-top-0
+    peer-placeholder-shown:top-3.5
+    peer-focus:text-blue-600
+    peer-[&:not(:placeholder-shown)]:top-0
+    peer-[&:not(:placeholder-shown)]:text-blue-600"
+                    >
+                      Confirm Password
+                    </label>
+                    <button type="button"
+                            onClick={()=>setShowPassword(!showPassword)}
+                            className="absolute right-4 top-4 text-gray-400 hover:text-blue-600"
+                    >
+                        {showPassword?<EyeOff className="w-4 h-4"/>: <Eye className="w-4 h-4"/> }
+                    </button>
+                </div>
+                {confirmPassword && (
+                    <div
+                        className={`ml-2 mr-2 flex items-center gap-1.5 text-xs mb-4 font-medium ${
+                            password === confirmPassword ? "text-green-500" : "text-red-500"
+                        }`}>
+                        {
+                            password === confirmPassword ? <CheckCircle className="w-3.5 h-3.5"/> : <XCircle className="w-3.5 h-3.5"/>
+                        }
+                        <span>
+                    {password === confirmPassword ? "Password Matches" : "Passwords do not matches"}
+                </span>
+                    </div>
+                )}
 
                 <button
                     onClick={handleRegister}
@@ -132,7 +212,7 @@ function Register() {
 
                 </button>
 
-                <p className="text-center text-sm text-gray-800 uppercase mt-6">
+                <p className="text-center text-sm text-gray-800 font-medium mt-6">
                     Already Have an Account? {" "}
                     <Link to="/login" className="text-blue-500 font-semibold hover:underline">Sign In</Link>
                 </p>

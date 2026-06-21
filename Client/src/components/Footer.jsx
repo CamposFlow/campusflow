@@ -17,7 +17,7 @@ export const Footer = () => {
         }
     ]
     return (
-        <footer className="bg-gradient-to-b from-blue-400 to-blue-700 text-gray-300 pt-16 px-6">
+        <footer id="contact" className="bg-gradient-to-b from-blue-400 to-blue-700 text-gray-300 pt-16 px-6">
 <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10 md:px-6">
 <div>
     <h2 className="text-3xl font-bold text-white">Campus<span className="text-blue-600">Flow</span></h2>

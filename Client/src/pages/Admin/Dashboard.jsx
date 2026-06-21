@@ -1,14 +1,25 @@
 import {Sidebar} from "@/pages/Admin/Sidebar.jsx";
 import React, {useEffect, useState} from "react";
 import {Bell} from "lucide-react";
-import {OverviewPanel1} from "@/pages/Admin/OverviewPanel1.jsx"
+import {AdminOverview} from "@/pages/Admin/Panel/AdminOverview.jsx"
 import Loaders from "@/components/Loaders.jsx";
+import {AdminRecord} from "@/pages/Admin/Panel/AdminRecord.jsx";
+import {AdminProfile} from "@/pages/Admin/Panel/AdminProfile.jsx";
 
 export const AdminDashboard = () => {
 const [activeTab, setActiveTab] = useState("overview");
 const [loading, setLoading] = useState(true);
+
+const tabTitle={
+    overview:'Overview',
+    record:'Student Record',
+    profile:'Profile',
+}
     const panels ={
-        overview:<OverviewPanel1/>
+        overview:<AdminOverview/>,
+        record:<AdminRecord />,
+        profile:<AdminProfile/>,
+
     }
     useEffect(() => {
         setTimeout(() => {
@@ -31,7 +42,7 @@ const [loading, setLoading] = useState(true);
             <main className="flex-1 md:ml-64 min-h-screen bg-gray-200 flex flex-col">
                 <header className="sticky top-0 z-20 bg-white border-b border-gray-100 px-5 py-3.5 flex items-center justify-between">
                     <div className="ml-10">
-                        <h1 className="text-base font-bold text-gray-900 capitalize">activeTab</h1>
+                        <h1 className="text-base font-bold text-gray-900 capitalize">{tabTitle[activeTab]}</h1>
                         <p className="text-xs text-gray-400 hidden sm:block">Staff Portal — {new Date().toLocaleDateString('en-NG', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}</p>
                     </div>
                     <div className="flex items-center gap-2">

@@ -1,13 +1,14 @@
 import {useState} from 'react'
 import { useNavigate, Link} from 'react-router-dom'
 import gsap from "gsap";
+import {toast} from "react-hot-toast";
 import {useGSAP} from "@gsap/react";
 import {useAuth} from "./AuthContext.jsx";
 import {loginUser} from "../services/api.js";
 import {Eye, EyeOff, Mail} from "lucide-react";
 
 export const Login = () => {
-    const [username, setUsername] = useState("");
+    const [matricNo, setMatricNo] = useState("");
     const [password, setPassword] = useState("");
     const[error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -36,21 +37,15 @@ export const Login = () => {
             }, "-=0.3") // Overlap with container animation
     })
 
-    const handleLogin = async () => {
-        try {
-            const data = await loginUser(username, password)
-            login(data.access_token)
-            setSuccess("Login Successful! Redirecting.....")
+    const handleLogin = ()=>{
+        if (matricNo === "CampusFlow" && password === "CampusFlow") {
+            toast.success("Successfully logged in!")
+            setLoading(true);
+            setTimeout(()=>{
+             navigate("/dashboard")
+            },1500)
+        }
 
-            setTimeout(() => {
-                navigate("/")
-            }, 2000)
-        } catch (err) {
-            setError("Incorrect username or password");
-        }
-        finally {
-            setLoading(false);
-        }
     }
 
 
@@ -86,7 +81,7 @@ export const Login = () => {
                     <input
                         type="username"
                         placeholder=""
-                        onChange={(e)=>setUsername(e.target.value)}
+                        onChange={(e)=>setMatricNo(e.target.value)}
                         className="peer w-full bg-white border border-gray-200 rounded-lg px-4 pt-5 pb-2 text-sm
                 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                 transition-all duration-200
@@ -150,7 +145,7 @@ export const Login = () => {
 
                 </button>
 
-                <p className="text-center text-sm text-gray-800 uppercase mt-6">
+                <p className="text-center text-sm text-gray-800 font-medium mt-6">
                     New To CampusFlow? {" "}
                     <Link to="/register" className="text-blue-500 font-semibold hover:underline">Sign Up</Link>
                 </p>
