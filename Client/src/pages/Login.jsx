@@ -4,6 +4,7 @@ import gsap from "gsap";
 import {useGSAP} from "@gsap/react";
 import {useAuth} from "./AuthContext.jsx";
 import {loginUser} from "../services/api.js";
+import {Eye, EyeOff, Mail} from "lucide-react";
 
 export const Login = () => {
     const [username, setUsername] = useState("");
@@ -11,7 +12,8 @@ export const Login = () => {
     const[error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState("");
-    const navigate = useNavigate();
+    const navigate = useNavigate()
+    const [showPassword, setShowPassword] = useState(false);
     const {login} = useAuth();
     useGSAP(() => {
         const tl = gsap.timeline();
@@ -53,7 +55,7 @@ export const Login = () => {
 
 
     return (
-        <div className="login min-h-screen bg-red flex items-center justify-center p-4">
+        <div className="login min-h-screen bg-white flex items-center justify-center p-4">
             <div className="container bg-gray-100 rounded-2xl shadow-lg w-full max-w-md p-8">
 
                 {/* HEADER  */}
@@ -80,27 +82,62 @@ export const Login = () => {
                     )
                 }
 
-                <div className="mb-4">
-                    <label className="block text-xs font-semibold text-blue-400 uppercase tracking-wide mb-1">Username</label>
+                <div className="relative mb-4 ml-2 mr-2">
                     <input
-                        type="email"
-                        value={username}
-                        placeholder="johnyboy@gamil.com"
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none
-        focus:border-primary"/>
+                        type="username"
+                        placeholder=""
+                        onChange={(e)=>setUsername(e.target.value)}
+                        className="peer w-full bg-white border border-gray-200 rounded-lg px-4 pt-5 pb-2 text-sm
+                outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                transition-all duration-200
+                "/>
+                    <label
+                        htmlFor="username"
+                        className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
+     peer-focus:top-0
+    peer-placeholder-shown:top-3.5
+    peer-focus:text-blue-600
+    peer-[&:not(:placeholder-shown)]:top-0
+    peer-[&:not(:placeholder-shown)]:text-blue-600"
+                    >
+                        Matric Number
+                    </label>
+
                 </div>
 
-                <div className="mb-6">
-                    <label className="block text-xs uppercase font-semibold text-blue-400 mb-1 tracking-wide">Password</label>
+                <div className="relative mb-4 ml-2 mr-2">
                     <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder=".............."
-                        className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-primary"/>
+                        type={showPassword ? "text" : "password"}
+                        placeholder=""
+                        onChange={(e)=>setPassword(e.target.value)}
+                        className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm
+                outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                transition-all duration-200 pl-4
+                "/>
+                    <label
+                        htmlFor="password"
+                        className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
+    peer-focus:-top-0
+    peer-placeholder-shown:top-3.5
+    peer-focus:text-blue-600
+    peer-[&:not(:placeholder-shown)]:top-0
+    peer-[&:not(:placeholder-shown)]:text-blue-600"
+                    >
+                        Password
+                    </label>
+                    <button type="button"
+                            onClick={()=>setShowPassword(!showPassword)}
+                            className="absolute right-4 top-4 text-gray-400 hover:text-blue-600"
+                    >
+                        {showPassword?<EyeOff className="w-4 h-4"/>: <Eye className="w-4 h-4"/> }
+                    </button>
                 </div>
 
+    <div className="mb-3 ml-2 mr-2">
+        <Link to="/reset" className="text-blue-500 text-sm hover:underline">
+            Forgot Password?
+        </Link>
+    </div>
                 <button
                     onClick={handleLogin}
                         disabled={loading}

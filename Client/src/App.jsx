@@ -7,6 +7,7 @@ import LandingPage from "./pages/LandingPage.jsx";
 import Portal from "./pages/Portal.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Staff from "./components/Staff.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 import {Toaster} from "react-hot-toast";
 import {AdminDashboard} from "@/pages/Admin/Dashboard.jsx";
 
@@ -35,6 +36,7 @@ function App() {
           }}/>
       <Routes>
         <Route path="/login" element={<Login/>} />
+          <Route path="/reset" element={<ForgotPassword/>} />
         <Route path="/register" element={<Register/>} />
         <Route path="/" element={<LandingPage/>}/>
         <Route path="/verify" element={<Portal/>}/>
