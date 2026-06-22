@@ -21,14 +21,8 @@ import {
   GraduationCap,
   AlertCircle,
   Menu,
-<<<<<<< HEAD
   X, IdCard, Building, BarChart3, Phone, MailIcon,
 
-=======
-  X,
-  ChevronDown,
-  List,
->>>>>>> acc9323 (Update Dashboard.jsx with latest changes)
 } from 'lucide-react';
 import {BarChart} from "recharts";
 
@@ -106,7 +100,6 @@ const Profile = ({student, stats, activities})=>{
               </span>
             </div>
 
-<<<<<<< HEAD
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8">
               {info.map((infos,index) => (
               <div key={index} className="flex items-start gap-2">
@@ -115,204 +108,6 @@ const Profile = ({student, stats, activities})=>{
                   <p className="text-xs text-gray-500">{infos.text1}</p>
                   <p className="text-sm font-medium text-gray-900">{infos.text2}</p>
                 </div>
-=======
-const ClearancePanel = () => {
-  const [listOpen, setListOpen] = useState(false);
-
-  const clearanceCards = [
-    { label:'Department', status:'Pending',   icon: Clock,       color:'text-orange-600', bg:'bg-orange-50', border:'border-orange-200', pct:20  },
-    { label:'Library',    status:'Completed', icon: CheckCircle, color:'text-green-600',  bg:'bg-green-50',  border:'border-green-200',  pct:100 },
-    { label:'Finance',    status:'Completed', icon: ShieldCheck, color:'text-green-600',  bg:'bg-green-50',  border:'border-green-200',  pct:100 },
-  ];
-
-  const clearanceList = [
-    { name: 'Department Clearance',   status: 'Pending',   officer: 'Dr. A. Okafor',   date: '—',            note: 'Submit signed course form to HOD office' },
-    { name: 'Library Clearance',      status: 'Completed', officer: 'Mrs. B. Eze',     date: 'Jan 8, 2025',  note: 'All books returned, no outstanding fines' },
-    { name: 'Finance Clearance',      status: 'Completed', officer: 'Mr. C. Nwosu',    date: 'Jan 5, 2025',  note: 'School fees fully paid and verified' },
-    { name: 'Hostel Clearance',       status: 'Pending',   officer: 'Mr. D. Adeyemi',  date: '—',            note: 'Room inspection scheduled' },
-    { name: 'Lab / Workshop Clearance', status: 'Completed', officer: 'Engr. E. Bello', date: 'Jan 6, 2025',  note: 'All lab equipment returned' },
-    { name: 'Student Affairs',        status: 'Pending',   officer: 'Mrs. F. Umeh',    date: '—',            note: 'ID card surrender pending' },
-  ];
-
-  return (
-    <div>
-      <SectionHeader title="Clearance Status" sub="Track your departmental clearance in real time" />
-
-      {/* Summary cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-        {clearanceCards.map((c, i) => (
-          <div key={i} className={`bg-white rounded-2xl border ${c.border} p-6 shadow-sm hover:shadow-md transition-all`}>
-            <div className="flex items-center gap-3 mb-5">
-              <div className={`w-11 h-11 ${c.bg} rounded-xl flex items-center justify-center`}>
-                <c.icon className={`w-5 h-5 ${c.color}`} />
-              </div>
-              <div>
-                <p className="font-bold text-gray-900 text-sm">{c.label} Clearance</p>
-                <p className={`text-xs font-semibold ${c.color}`}>{c.status}</p>
-              </div>
-            </div>
-            <div className="bg-gray-100 rounded-full h-2 overflow-hidden">
-              <div
-                className={`${c.pct === 100 ? 'bg-green-500' : 'bg-orange-400'} h-full rounded-full`}
-                style={{ width: `${c.pct}%` }}
-              />
-            </div>
-            <p className="text-xs text-gray-400 mt-2 text-right">{c.pct}%</p>
-          </div>
-        ))}
-      </div>
-
-      {/* ── List of Clearance dropdown button ── */}
-      <div className="mb-8">
-        <button
-          onClick={() => setListOpen(!listOpen)}
-          className="flex items-center gap-2.5 px-5 py-3 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-200 transition-all duration-200 group w-full sm:w-auto"
-        >
-          <List className="w-4 h-4 text-blue-600" />
-          <span className="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">List of Clearance</span>
-          <ChevronDown className={`w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-transform duration-300 ml-auto sm:ml-1 ${listOpen ? 'rotate-180' : ''}`} />
-        </button>
-
-        {/* Dropdown list */}
-        <div
-          className="overflow-hidden transition-all duration-300 ease-in-out"
-          style={{
-            maxHeight: listOpen ? '600px' : '0px',
-            opacity: listOpen ? 1 : 0,
-            marginTop: listOpen ? '12px' : '0px',
-          }}
-        >
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-50">
-            {clearanceList.map((item, i) => {
-              const completed = item.status === 'Completed';
-              return (
-                <div key={i} className="flex items-start gap-4 p-4 hover:bg-gray-50 transition-colors first:rounded-t-2xl last:rounded-b-2xl">
-                  <div className={`mt-0.5 p-2 rounded-lg shrink-0 ${completed ? 'bg-green-50' : 'bg-orange-50'}`}>
-                    {completed
-                      ? <CheckCircle className="w-4 h-4 text-green-600" />
-                      : <Clock className="w-4 h-4 text-orange-500" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-3 mb-1">
-                      <p className="text-sm font-semibold text-gray-800 truncate">{item.name}</p>
-                      <span className={`shrink-0 text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${
-                        completed
-                          ? 'bg-green-50 text-green-600 border border-green-200'
-                          : 'bg-orange-50 text-orange-500 border border-orange-200'
-                      }`}>
-                        {item.status}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-400">{item.note}</p>
-                    <div className="flex gap-4 mt-1.5 text-[11px] text-gray-400">
-                      <span>Officer: <span className="text-gray-500 font-medium">{item.officer}</span></span>
-                      <span>Date: <span className="text-gray-500 font-medium">{item.date}</span></span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Info banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 flex gap-4 items-start">
-        <AlertCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-        <div>
-          <p className="text-sm font-semibold text-blue-800">Department clearance is pending</p>
-          <p className="text-xs text-blue-600 mt-1">Visit the Computer Science department office with your completed forms to continue your clearance process.</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const ResultsPanel = () => (
-  <div>
-    <SectionHeader title="Academic Results" sub="Your semester grades and GPA overview" />
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-      {[
-        { label:'Current GPA',   value:'4.21', sub:'Out of 5.0', color:'text-blue-600',  bg:'bg-blue-50',  icon: TrendingUp },
-        { label:'Credit Units',  value:'124',  sub:'Accumulated', color:'text-green-600', bg:'bg-green-50', icon: BookOpen },
-        { label:'Semester Rank', value:'#7',   sub:'In department',color:'text-amber-600', bg:'bg-amber-50', icon: GraduationCap },
-      ].map((s,i) => (
-        <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-          <div className={`w-10 h-10 ${s.bg} rounded-xl flex items-center justify-center mb-4`}>
-            <s.icon className={`w-5 h-5 ${s.color}`} />
-          </div>
-          <p className={`text-3xl font-bold ${s.color} mb-1`}>{s.value}</p>
-          <p className="text-xs text-gray-400 font-medium">{s.label}</p>
-          <p className="text-[11px] text-gray-300 mt-0.5">{s.sub}</p>
-        </div>
-      ))}
-    </div>
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-      <h3 className="font-bold text-gray-900 mb-5 text-sm uppercase tracking-wide">400 Level — 1st Semester</h3>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-xs text-gray-400 uppercase tracking-wide border-b border-gray-100">
-              <th className="pb-3 font-semibold">Course</th>
-              <th className="pb-3 font-semibold">Title</th>
-              <th className="pb-3 font-semibold text-center">Units</th>
-              <th className="pb-3 font-semibold text-center">Score</th>
-              <th className="pb-3 font-semibold text-center">Grade</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
-            {[
-              ['CSC 401','Software Engineering','3','88','A'],
-              ['CSC 403','Computer Networks','3','76','B'],
-              ['CSC 405','Database Systems','3','92','A'],
-              ['MTH 401','Numerical Methods','2','65','C'],
-              ['CSC 407','Compiler Design','3','80','A'],
-            ].map(([code,title,units,score,grade],i) => (
-              <tr key={i} className="hover:bg-gray-50 transition-colors">
-                <td className="py-3 font-mono text-xs text-blue-600 font-semibold">{code}</td>
-                <td className="py-3 text-gray-700">{title}</td>
-                <td className="py-3 text-center text-gray-500">{units}</td>
-                <td className="py-3 text-center font-semibold text-gray-800">{score}</td>
-                <td className="py-3 text-center">
-                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                    grade==='A' ? 'bg-green-50 text-green-600 border border-green-200'
-                    : grade==='B' ? 'bg-blue-50 text-blue-600 border border-blue-200'
-                    : 'bg-orange-50 text-orange-600 border border-orange-200'
-                  }`}>{grade}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-);
-
-const PaymentsPanel = () => (
-  <div>
-    <SectionHeader title="Payment Records" sub="Blockchain-verified payment transactions" />
-    <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 flex gap-4 items-start mb-8">
-      <ShieldCheck className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-      <p className="text-sm text-blue-700">
-        All transactions are <span className="font-semibold">hashed and stored on the blockchain</span>.
-        Payment records cannot be altered or deleted.
-      </p>
-    </div>
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-      <h3 className="font-bold text-gray-900 mb-5 text-sm uppercase tracking-wide">Transaction History</h3>
-      <div className="space-y-4">
-        {[
-          { desc:'School Fees — 400L 1st Semester', amount:'₦320,000', date:'Jan 10, 2025', hash:'0x3a9f...c821', status:'Verified' },
-          { desc:'Hostel Accommodation',            amount:'₦85,000',  date:'Jan 11, 2025', hash:'0xb2e1...f044', status:'Verified' },
-          { desc:'Late Registration Fee',           amount:'₦5,000',   date:'Jan 12, 2025', hash:'0x77d3...9a11', status:'Verified' },
-        ].map((t,i) => (
-          <div key={i} className="border border-gray-100 rounded-xl p-5 hover:border-blue-200 hover:shadow-sm transition-all group">
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <p className="font-semibold text-gray-800 text-sm">{t.desc}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{t.date}</p>
->>>>>>> acc9323 (Update Dashboard.jsx with latest changes)
               </div>
               ))}
 
