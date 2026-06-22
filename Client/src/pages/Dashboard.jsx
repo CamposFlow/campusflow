@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { SIDEBAR_LINKS } from "../constants/sidebarlLinks.js"
+import React, {useEffect, useState} from 'react';
+import Loaders from "@/components/Loaders.jsx";
+import { SIDEBAR_LINKS } from "../constants/sidebarLinks.js"
 import {OverviewPanel} from "@/Panels/OverviewPanel.jsx";
 import {ClearancePanel} from "@/Panels/ClearancePanel.jsx";
 import{CertificatePanel} from "@/Panels/CertificatePanel.jsx";
@@ -174,6 +175,16 @@ const result =[
     payments:    <PaymentsPanel payment={payment}/>,
     certificate: <CertificatePanel cert={cert}/>,
   };
+  const [loading1, setLoading1]=useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading1(false);
+    },6000)
+  },[]);
+  if (loading1){
+
+    return <Loaders />;
+  }
 
   /* ── Sidebar content (shared between desktop & mobile) ── */
   const SidebarContent = () => (

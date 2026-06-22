@@ -1,57 +1,72 @@
 import { ClipLoader } from "react-spinners";
 import gsap from "gsap";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
+import "../Loader.css"
+import {HashLoader} from "react-spinners";
+import Typed from "typed.js";
+import {useGSAP} from "@gsap/react";
 
 export const Loaders = () => {
-    const titleRef = useRef(null);
-    const subRef = useRef(null);
-    const loaderRef = useRef(null);
+const textRef = useRef(null);
+const headRef = useRef(null);
+useEffect(() => {
+    const typed = new Typed(textRef.current,{
+        strings:[
+            "Clearance","document verification","campus safety - Powered By Blockchain"
+        ],
+        typeSpeed:40,
+        backSpeed:20,
+        backDelay:300,
+        loop:true,
+    });
+    return () => {
+        typed.destroy();
+    }
 
-    useEffect(() => {
-        const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+},[])
 
-        tl.from(titleRef.current, {
-            y: 24,
-            opacity: 0,
-            duration: 0.8,
-        })
-            .from(
-                subRef.current,
-                {
-                    y: 16,
-                    opacity: 0,
-                    duration: 0.6,
-                },
-                "-=0.35"
-            )
-            .from(
-                loaderRef.current,
-                {
-                    scale: 0.85,
-                    opacity: 0,
-                    duration: 0.5,
-                },
-                "-=0.2"
-            );
-    }, []);
+    useGSAP(()=>{
+      const tl = gsap.timeline({
+          repeat: -1,
+          repeatDelay:1,
+
+      });
+      tl.from(".logo",{
+          y:-20,
+          opacity:0,
+          duration:0.7,
+          ease:"back.out(1.7)",
+          rotation:-90,
+      })
+          .from(".title",{
+              x:30,
+              opacity:0,
+              duration:1,
+              ease:"power3.out",
+          }, "-=0.2");
+    },{scope:headRef});
+
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-            <h1
-                ref={titleRef}
-                className="text-4xl font-bold text-black mb-2 tracking-tight"
-            >
-                Campus<span className="text-blue-600">Flow</span>
-            </h1>
+        <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-6 px-4">
+            <HashLoader
+                color="#2563eb"
+                size={40}
+            />
 
-            <p ref={subRef} className="text-gray-600 mb-6">
-                Simplifying campus experience
-            </p>
-
-            <div ref={loaderRef} className="flex items-center gap-2">
-                <ClipLoader size={25} color="blue" />
-                <span className="text-gray-600">Loading</span>
+            <div className="text-center">
+               <div className="flex items-center gap-3" ref={headRef}>
+                   <img src="/logo.png" alt="CampusFlow" className="logo w-12 h-12" />
+                   <h1 className="text-5xl font-bold text-navy title">
+                       Campus<span className="text-blue-600">Flow</span>
+                   </h1>
+               </div>
+                <p className="text-gray-500 text-sm mt-1 font-medium" >
+                    Taking Stress Out of <span className="text-blue-600" ref={textRef}></span>
+                </p>
             </div>
+
+
         </div>
     );
 };
