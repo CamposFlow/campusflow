@@ -1,21 +1,17 @@
 import { Strategy as LocalStrategy } from 'passport-local';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import bcrypt from 'bcrypt';
-import User from './userModel.js'; // Path updated to match src/config location
+import User from './userModel.js';
 
-const passportConfig = (passport) => {
+export const passportLocalConfig = (passport) => {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
         const user = await User.findByUsername(username);
-
-        if (!user) {
-          return done(null, false, { message: 'Incorrect username.' });
-        }
+        if (!user) return done(null, false, { message: 'Incorrect username.' });
 
         const isMatch = await bcrypt.compare(password, user.password_hash);
-        if (!isMatch) {
-          return done(null, false, { message: 'Incorrect password.' });
-        }
+        if (!isMatch) return done(null, false, { message: 'Incorrect password.' });
 
         return done(null, user);
       } catch (err) {
@@ -24,20 +20,21 @@ const passportConfig = (passport) => {
     })
   );
 
-  // Serialize user into the session
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
-
-  // Deserialize user from the session
-  passport.deserializeUser(async (id, done) => {
-    try {
-      const user = await User.findById(id);
-      done(null, user);
-    } catch (err) {
-      done(err, null);
-    }
-  });
+  const opts = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET
+  };
+  passport.use(
+    new JwtStrategy(opts, async (jwt_payload, done) => {
+      try {
+        const user = await User.findById(jwt_payload.id);
+        if (user) {
+          return done(null, user);
+        }
+        return done(null, false);
+      } catch (err) {
+        return done(err, null);
+      }
+    })
+  );
 };
-
-export default passportConfig;

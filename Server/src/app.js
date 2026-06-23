@@ -1,9 +1,13 @@
+import { configDotenv } from 'dotenv';
+configDotenv();
+
 import express from 'express';
 import cors from 'cors';
+import passport from 'passport';
+import { passportLocalConfig } from './configs/passport.js';
 import authRoutes from './routes/auth.routes.js';
 
 const app = express();
-
 const isDev = process.env.NODE_ENV === 'development';
 
 // Middleware
@@ -20,6 +24,10 @@ app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} - ${req.ip}`);
   next();
 });
+
+// Initialize Passport Strategies
+passportLocalConfig(passport);
+app.use(passport.initialize()); // Only initialization is needed for stateless JWT APIs
 
 // Routes
 app.use('/', authRoutes);
