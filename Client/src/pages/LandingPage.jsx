@@ -238,7 +238,7 @@ const LandingPage = () => {
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-24 w-full">
                     <div className="max-w-xl">
-                        <span className="inline-block bg-blue-600/20 border border-blue-500/30 text-blue-300 text-sm px-4 py-1.5 rounded-full mb-6 hover:bg-blue-600/30 transition-colors">
+                        <span className="inline-block bg-gradient-to-r from-blue-600/20 to-blue-400/10 border border-blue-500/40 text-blue-200 text-sm px-4 py-2 rounded-full mb-6 hover:bg-blue-600/30 hover:border-blue-400/60 transition-all duration-300 shadow-lg backdrop-blur-sm">
                             Smart Campus. Smart Students
                         </span>
 
@@ -271,16 +271,18 @@ const LandingPage = () => {
                         </div>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4">
-                            <Link to="/register" className="w-full sm:w-auto">
-                                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 flex items-center justify-center gap-2 rounded-lg font-semibold transition-all transform hover:scale-105">
-                                    <UserPlus className="w-5 h-5" />
-                                    Register Now
+                            <Link to="/register" className="w-full sm:w-auto group">
+                                <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3 flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg relative overflow-hidden">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/20 group-hover:from-white/10 group-hover:to-white/30 transition-all duration-300" />
+                                    <UserPlus className="w-5 h-5 relative z-10" />
+                                    <span className="relative z-10">Register Now</span>
                                 </Button>
                             </Link>
-                            <Link to="/login" className="w-full sm:w-auto">
-                                <Button className="w-full border-2 border-white text-white hover:bg-white/10 bg-transparent px-8 py-3 flex items-center justify-center gap-2 rounded-lg font-semibold transition-all">
-                                    <LogIn className="w-5 h-5" />
-                                    Login
+                            <Link to="/login" className="w-full sm:w-auto group">
+                                <Button className="w-full border-2 border-white text-white hover:bg-white/20 bg-white/10 px-8 py-3 flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 backdrop-blur-sm hover:shadow-xl shadow-lg relative overflow-hidden">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/10 group-hover:from-white/5 group-hover:to-white/20 transition-all duration-300" />
+                                    <LogIn className="w-5 h-5 relative z-10" />
+                                    <span className="relative z-10">Login</span>
                                 </Button>
                             </Link>
 
@@ -299,17 +301,20 @@ const LandingPage = () => {
                         {problems.map((problem, index) => (
                             <div
                                 key={index}
-                                className="problem-card border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all hover:border-blue-200 group hover:bg-blue-600"
+                                className="problem-card border border-gray-200 rounded-2xl p-7 hover:shadow-2xl transition-all duration-300 hover:border-blue-300 group bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-blue-100/50 relative overflow-hidden"
                             >
-                                <div className="bg-blue-50 w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
-                                    {problem.icon}
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 to-blue-600/0 group-hover:from-blue-600/5 group-hover:to-blue-600/10 transition-all duration-300 pointer-events-none" />
+                                <div className="relative z-10">
+                                    <div className="bg-blue-50 w-14 h-14 rounded-xl flex items-center justify-center mb-5 group-hover:bg-blue-100 group-hover:shadow-lg transition-all duration-300 group-hover:scale-110">
+                                        {problem.icon}
+                                    </div>
+                                    <h3 className="font-bold text-gray-900 text-lg mb-3 group-hover:text-blue-900 transition-colors duration-300">
+                                        {problem.title}
+                                    </h3>
+                                    <p className="text-gray-600 group-hover:text-gray-800 text-sm leading-relaxed transition-colors duration-300">
+                                        {problem.description}
+                                    </p>
                                 </div>
-                                <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-white">
-                                    {problem.title}
-                                </h3>
-                                <p className="text-gray-600 group-hover:text-white text-sm leading-relaxed">
-                                    {problem.description}
-                                </p>
                             </div>
                         ))}
                     </div>
@@ -322,7 +327,7 @@ const LandingPage = () => {
                         <span className="text-blue-600 text-sm sm:text-lg font-semibold uppercase tracking-widest">
                             What We Offer
                         </span>
-                        <h2 className="text-3xl sm:text-4xl font-bold mt-3 text-gray-900">
+                        <h2 className="text-3xl sm:text-4xl font-bold mt-3 text-gray-900 leading-tight">
                             Everything You Need In One Place
                         </h2>
                         <p className="text-gray-600 mt-4 max-w-2xl mx-auto text-sm leading-relaxed">
@@ -336,18 +341,21 @@ const LandingPage = () => {
                         {features.map((feature, index) => (
                             <div
                                 key={index}
-                                className="feature-card bg-white rounded-xl p-6 sm:p-8 border border-gray-200 hover:shadow-lg hover:border-blue-200 transition-all group hover:bg-blue-600"
+                                className="feature-card bg-white rounded-2xl p-7 sm:p-8 border border-gray-200 hover:shadow-2xl hover:border-blue-300 transition-all duration-300 group hover:bg-gradient-to-br hover:from-blue-50/80 hover:to-blue-100/40 relative overflow-hidden"
                             >
-                                <div className="bg-blue-50 w-14 h-14 flex items-center justify-center rounded-lg shrink-0  group-hover:bg-blue-100 transition-colors">
-                                    {feature.icon}
-                                </div>
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 to-blue-600/0 group-hover:from-blue-600/5 group-hover:to-blue-600/10 transition-all duration-300 pointer-events-none" />
+                                <div className="relative z-10">
+                                    <div className="bg-blue-50 w-14 h-14 flex items-center justify-center rounded-xl shrink-0 group-hover:bg-blue-100 transition-all duration-300 group-hover:shadow-lg group-hover:scale-110">
+                                        {feature.icon}
+                                    </div>
 
-                                <h3 className="font-bold text-gray-900 text-lg mt-4 mb-2 group-hover:text-white">
-                                    {feature.title}
-                                </h3>
-                                <p className="text-gray-600 text-sm leading-relaxed group-hover:text-white">
-                                    {feature.description}
-                                </p>
+                                    <h3 className="font-bold text-gray-900 text-lg mt-5 mb-2 group-hover:text-blue-900 transition-colors duration-300">
+                                        {feature.title}
+                                    </h3>
+                                    <p className="text-gray-600 text-sm leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
+                                        {feature.description}
+                                    </p>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -372,63 +380,69 @@ const LandingPage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
                         {steps.map((step, index) => (
                             <div key={index} className="step-card flex flex-col items-center text-center">
-                                <div className="step-number w-14 h-14 sm:w-16 sm:h-16 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-2xl mb-6 shadow-lg">
+                                <div className="step-number w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full flex items-center justify-center font-bold text-3xl mb-6 shadow-xl hover:shadow-2xl transition-all duration-300 group-hover:scale-110 relative">
                                     {step.number}
+                                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-400/20 to-transparent" />
                                 </div>
-                                <div className="step-card-content bg-gray-50 rounded-xl p-6 w-full hover:shadow-lg border border-gray-200 transition-all group hover:border-blue-200 hover:bg-blue-600">
-                                    <div className="bg-blue-50 w-12 h-12 rounded-lg mx-auto mb-4 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                                        {step.icon}
+                                <div className="step-card-content bg-white rounded-2xl p-7 w-full hover:shadow-2xl border border-gray-200 transition-all duration-300 group hover:border-blue-300 hover:bg-gradient-to-br hover:from-blue-50/80 hover:to-blue-100/40 relative overflow-hidden">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 to-blue-600/0 group-hover:from-blue-600/5 group-hover:to-blue-600/10 transition-all duration-300 pointer-events-none" />
+                                    <div className="relative z-10">
+                                        <div className="bg-blue-50 w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center group-hover:bg-blue-100 transition-all duration-300 group-hover:shadow-lg">
+                                            {step.icon}
+                                        </div>
+                                        <h3 className="group-hover:text-blue-900 font-bold text-gray-900 text-lg mb-2 transition-colors duration-300">
+                                            {step.title}
+                                        </h3>
+                                        <p className="text-gray-600 text-sm leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
+                                            {step.description}
+                                        </p>
                                     </div>
-                                    <h3 className="group-hover:text-white font-bold text-gray-900 text-lg mb-2 ">
-                                        {step.title}
-                                    </h3>
-                                    <p className="text-gray-600 text-sm leading-relaxed group-hover:text-white">
-                                        {step.description}
-                                    </p>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
-            <section  className="faqs-section bg-gray-50 py-16 sm:py-20 px-4 sm:px-8">
-                <div className="max-w-4xl mx-auto px-6 space-y-2">
+            <section  className="faqs-section bg-gradient-to-b from-white to-gray-50 py-16 sm:py-20 px-4 sm:px-8">
+                <div className="max-w-3xl mx-auto px-6 space-y-3">
                     <div className="text-center mb-12 sm:mb-14">
                         <span className="text-blue-600 text-sm sm:text-lg tracking-widest font-semibold uppercase">
                             Common Questions
                         </span>
                         <h2 className="text-3xl sm:text-4xl font-bold mt-3 text-gray-900 mb-3">
-                            FAQ
+                            Frequently Asked Questions
                         </h2>
+                        <p className="text-gray-600 max-w-2xl mx-auto">Everything you need to know about CampusFlow</p>
+                    </div>
 
-                        {faqs.map((faq) => (
+                        {faqs.map((faq, idx) => (
                             <Disclosure key={faq.question}>
                                 {({open})=>(
                                     <div className="faq-section">
-                                        <Disclosure.Button className="flex justify-between items-center w-full py-5 font-medium border px-6 text-left
-                                       text-gray-800 hover:text-blue-600 transition-all mb-4 rounded-3xl hover:border-blue-200 hover:shadow-lg duration-500"
-
+                                        <Disclosure.Button className="flex justify-between items-center w-full py-5 font-semibold border border-gray-200 px-6 text-left
+                                       text-gray-800 hover:text-blue-600 transition-all duration-300 mb-3 rounded-2xl hover:border-blue-300 hover:shadow-lg hover:bg-blue-50 group relative overflow-hidden"
                                         >
-                                            <span>{faq.question}</span>
-                                            <ChevronDown className={`w-5 h-5 text-gray-800 transition-transform duration-400 hover:text-blue-600  ${open ? "rotate-180 text-blue-600":''}`}/>
+                                            <div className="absolute inset-0 bg-gradient-to-r from-blue-50/0 to-blue-50/0 group-hover:from-blue-50 group-hover:to-blue-50/50 transition-all duration-300 pointer-events-none" />
+                                            <span className="relative z-10 text-base">{faq.question}</span>
+                                            <ChevronDown className={`w-5 h-5 text-gray-600 transition-all duration-500 group-hover:text-blue-600 flex-shrink-0 relative z-10 ${open ? "rotate-180 text-blue-600":''}`}/>
                                         </Disclosure.Button>
                                   <Transition
-                                  enter="transition ease-out duration-500"
-                                  enterFrom="transform opacity-0 translate-y-8"
-                                  enterTo="transform opacity-100 translate-y-0"
-                                  leave="transition ease-in duration-400"
-                                  leaveFrom="transform opacity-100 translate-y-0"
-                                  leaveTo="transform opacity-0 translate-y-2"
+                                  enter="transition ease-out duration-300"
+                                  enterFrom="transform opacity-0 translate-y-4 max-h-0"
+                                  enterTo="transform opacity-100 translate-y-0 max-h-96"
+                                  leave="transition ease-in duration-200"
+                                  leaveFrom="transform opacity-100 translate-y-0 max-h-96"
+                                  leaveTo="transform opacity-0 translate-y-4 max-h-0"
                                   >
-                                      <Disclosure.Panel className="py-2 pb-3 leading-relaxed text-gray-600">
-                                          {faq.answer}
+                                      <Disclosure.Panel className="py-5 px-6 leading-relaxed text-gray-700 bg-gradient-to-r from-blue-50/50 to-blue-50/20 rounded-xl mb-3 border border-blue-100/50 relative overflow-hidden">
+                                          <div className="absolute inset-0 bg-gradient-to-r from-blue-400/5 to-transparent pointer-events-none" />
+                                          <p className="relative z-10">{faq.answer}</p>
                                       </Disclosure.Panel>
                                   </Transition>
                                     </div>
                                 )}
                             </Disclosure>
                         ))}
-                    </div>
                 </div>
             </section>
 

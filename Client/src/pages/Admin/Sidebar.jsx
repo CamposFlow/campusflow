@@ -1,12 +1,8 @@
 import React, { useState } from "react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 import {
     LayoutDashboard,
-    ClipboardList,
-    Monitor,
-    Award,
-    Bell,
     Megaphone,
     User,
     Settings,
@@ -15,13 +11,12 @@ import {
     Menu,
     X, ChevronRight,
 } from "lucide-react"
-import {OverviewPanel} from "@/Panels/OverviewPanel.jsx";
 
 const studentLinks = [
     { icon: LayoutDashboard, label: "Dashboard", path: "overview" },
-    { icon: User, label: "Records", path: "hh" },
-    { icon: Megaphone, label: "Announcement", path: "/queue" },
-    { icon: User, label: "Profile", path: "/profile" },
+    { icon: User, label: "Records", path: "record" },
+    { icon: Megaphone, label: "Announcement", path: "Announcements" },
+    { icon: User, label: "Profile", path: "profile" },
 ]
 
 const bottomLinks = [

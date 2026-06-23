@@ -20,7 +20,10 @@ export const Footer = () => {
         <footer id="contact" className="bg-gradient-to-b from-blue-400 to-blue-700 text-gray-300 pt-16 px-6">
 <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10 md:px-6">
 <div>
-    <h2 className="text-3xl font-bold text-white">Campus<span className="text-blue-600">Flow</span></h2>
+    <div className="flex items-center gap-2 mb-6">
+        <img src="./LOGO1.png" alt="CampusFlow" className="w-9 h-9"/>
+        <h1 className="text-2xl font-bold text-primary text-white">Campus<span className='text-blue-600'>Flow</span></h1>
+    </div>
     <p className="mt-4 text-sm font-medium leading-6 text-white">Simplifying campus management with smart tools for students, lecturers and administrators - powered by BlockChain.</p>
 
 

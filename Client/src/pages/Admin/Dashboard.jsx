@@ -7,7 +7,7 @@ import {AdminRecord} from "@/pages/Admin/Panel/AdminRecord.jsx";
 import {AdminProfile} from "@/pages/Admin/Panel/AdminProfile.jsx";
 
 export const AdminDashboard = () => {
-const [activeTab, setActiveTab] = useState("overview");
+const [activeTab, setActiveTab] = useState('overview');
 const [loading, setLoading] = useState(true);
 
 const tabTitle={
@@ -17,7 +17,7 @@ const tabTitle={
 }
     const panels ={
         overview:<AdminOverview/>,
-        record:<AdminRecord />,
+        record:<AdminRecord/>,
         profile:<AdminProfile/>,
 
     }
@@ -32,14 +32,14 @@ const tabTitle={
     }
 
     return (
-        <div className=" flex min-h-screen">
+        <div className=" flex min-h-screen ">
 
             <Sidebar
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             />
 
-            <main className="flex-1 md:ml-64 min-h-screen bg-gray-200 flex flex-col">
+            <main className="min-w-0 flex-1 md:ml-64 min-h-screen bg-gray-200 flex flex-col">
                 <header className="sticky top-0 z-20 bg-white border-b border-gray-100 px-5 py-3.5 flex items-center justify-between">
                     <div className="ml-10">
                         <h1 className="text-base font-bold text-gray-900 capitalize">{tabTitle[activeTab]}</h1>
@@ -59,9 +59,11 @@ const tabTitle={
                     </div>
                 </header>
 
+
                 <div className="flex-1 p-5 sm:p-8">
                     {panels[activeTab]}
                 </div>
+
             </main>
         </div>
     )
