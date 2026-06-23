@@ -1,7 +1,20 @@
-import {pool} from 'pg';
+import { Pool } from 'pg';
+import { configDotenv } from 'dotenv';
+configDotenv();
 
-export const connectDB = async () => {
-  console.log("Database Exempted for now")
-};
+export const pool = new Pool({
+  connectionString: process.env.SUPABASE_CONNECTION_STRING,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
-export default connectDB;
+export async function connectDB() {
+  try {
+    console.log('PostgreSQL Database connected successfully!');
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+
+export default pool;
