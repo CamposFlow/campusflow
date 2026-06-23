@@ -10,7 +10,6 @@ import authRoutes from './routes/auth.routes.js';
 const app = express();
 const isDev = process.env.NODE_ENV === 'development';
 
-// Middleware
 app.use(cors({
   origin: isDev ? '*' : 'https://camposflow.github.io/campusflow/',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -25,9 +24,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Initialize Passport Strategies
 passportLocalConfig(passport);
-app.use(passport.initialize()); // Only initialization is needed for stateless JWT APIs
+app.use(passport.initialize());
 
 // Routes
 app.use('/', authRoutes);
