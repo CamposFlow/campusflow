@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, logout, getMe } from '../controllers/authController.js';
+import { register, login, logout, forgotPassword, resetPassword, getMe } from '../controllers/auth.controllers.js';
 
 const router = express.Router();
 
@@ -13,6 +13,8 @@ const ensureAuthenticated = (req, res, next) => {
 
 router.post('/register', register);
 router.post('/login', login);
+router.post('/forgot-password', forgotPassword)
+router.post('/reset-password', resetPassword)
 router.get('/logout', logout);
 router.get('/me', ensureAuthenticated, getMe);
 router.get('/', getMe);

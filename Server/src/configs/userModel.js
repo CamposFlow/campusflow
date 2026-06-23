@@ -33,6 +33,7 @@ class User {
     );
     return res.rows[0];
   }
+
 }
 
 export default User;

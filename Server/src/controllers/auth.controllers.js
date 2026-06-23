@@ -1,18 +1,14 @@
 import bcrypt from 'bcrypt';
 import passport from 'passport';
-import User from '../config/userModel.js';
+import User from '../configs/userModel.js';
+import { transporter } from '../configs/mailer.js';
 
 export const register = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { username, email, role, passworde } = req.body;
 
   // Basic validation
-  if (!username || !email || !password) {
-    return res.status(400).json({ message: 'Please enter all fields' });
-  }
-
-  // Password length validation
-  if (password.length < 8) {
-    return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+  if (!username || !email || !password || !role) {
+    return res.status(400).json({ message: 'Fields not completely filled.' });
   }
 
   try {
@@ -32,7 +28,7 @@ export const register = async (req, res, next) => {
     const passwordHash = await bcrypt.hash(password, salt);
 
     // Create new user
-    const newUser = await User.create(username.toLowerCase(), email.toLowerCase(), passwordHash);
+    const newUser = await User.create(username.toLowerCase(), email.toLowerCase(), role, passwordHash);
 
     // Log in the user after successful registration
     req.logIn(newUser, (err) => {
@@ -40,10 +36,10 @@ export const register = async (req, res, next) => {
         console.error('Login after register error:', err);
         return next(err);
       }
-      res.status(201).json({ message: 'User registered and logged in successfully', user: { id: newUser.id, username: newUser.username, email: newUser.email } });
+      res.status(201).json({ message: 'User registered and logged in successfully', user: { id: newUser.id, username: newUser.username, role: newUser.role } });
     });
   } catch (err) {
-    console.error('Register error:', err);
+    console.error('Registration error:', err);
     next(err);
   }
 };
@@ -60,7 +56,7 @@ export const login = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.status(200).json({ message: 'Logged in successfully', user: { id: user.id, username: user.username, email: user.email } });
+      return res.status(200).json({ message: 'Logged in successfully', user: { id: user.id, username: user.username, role: user.role } });
     });
   })(req, res, next);
 };
@@ -81,6 +77,19 @@ export const logout = (req, res, next) => {
   });
 };
 
+export const forgotPassword = async (req, res, next) => {
+  const {email} = req.body;
+
+  const user = await User.findByEmail(email);
+  
+  if(!user) {
+
+  }
+}
+
+export const resetPassword = async (req, res, next) => {
+  
+}
 
 // getMe endpoint to return current authenticated user's info
 export const getMe = (req, res) => {
