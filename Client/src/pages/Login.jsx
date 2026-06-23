@@ -8,6 +8,7 @@ import {loginUser} from "../services/api.js";
 import {Eye, EyeOff, Mail} from "lucide-react";
 
 export const Login = () => {
+    const [rememberMe, setRememberMe] = useState(false);
     const [matricNo, setMatricNo] = useState("");
     const [password, setPassword] = useState("");
     const[error, setError] = useState("");
@@ -37,15 +38,27 @@ export const Login = () => {
             }, "-=0.3") // Overlap with container animation
     })
 
-    const handleLogin = ()=>{
-        if (matricNo === "CampusFlow" && password === "CampusFlow") {
-            toast.success("Successfully logged in!")
-            setLoading(true);
-            setTimeout(()=>{
-             navigate("/dashboard")
-            },1500)
+    const handleLogin = async ()=>{
+        if(!matricNo || !password){
+            toast.error('Please fill in both Fields')
+            return
         }
+setLoading(true);
+        await new Promise(resolve => setTimeout(resolve, 800));
 
+        if (matricNo === "CampusFlow" && password === "CampusFlow") {
+        if(rememberMe){
+            localStorage.setItem('isLoggedIn','true')
+        }
+        else{
+            sessionStorage.setItem('isLoggedIn','true')
+        }
+        toast.success('LoggedIn Successfully!')
+        navigate('/dashboard')
+        }else{
+            toast.error('Invalid Username or Password!')
+        }
+        setLoading(false)
     }
 
 
@@ -53,9 +66,9 @@ export const Login = () => {
         <div className="login min-h-screen bg-white flex items-center justify-center p-4">
             <div className="container bg-gray-100 rounded-2xl shadow-lg w-full max-w-md p-8">
 
-                {/* HEADER  */}
-                <div className="flex items-center gap-2 mb-6">
-                    <img src="./logo.png" alt="CampusFlow" className="w-9 h-9"/>
+
+                <div className="flex items-center gap-2 mb-3">
+                    <img src="./LOGO1.png" alt="CampusFlow" className="w-9 h-9"/>
                     <h1 className="text-xl font-bold text-primary">Campus<span className='text-blue-600'>Flow</span></h1>
                 </div>
 
@@ -128,7 +141,17 @@ export const Login = () => {
                     </button>
                 </div>
 
-    <div className="mb-3 ml-2 mr-2">
+    <div className="flex justify-between mb-3 ml-2 mr-2">
+       <div className="flex items-center justify-center gap-2">
+           <input type="checkbox"
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onChange={(e)=>setRememberMe(e.target.checked)}
+                  className="w-4 h-4 accent-blue-600"
+           />
+           <label htmlFor="rememberMe" className="text-sm text-gray-600">Remember Me</label>
+       </div>
+
         <Link to="/reset" className="text-blue-500 text-sm hover:underline">
             Forgot Password?
         </Link>

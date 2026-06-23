@@ -192,8 +192,8 @@ const result =[
       {/* Logo */}
       <div className="px-5 py-6 border-b border-gray-100">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <img src="./logo.png" alt="CampusFlow" className="w-9 h-9" />
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+            <img src="./LOGO1.png" alt="CampusFlow" className="w-9 h-9" />
           </div>
           <span className="font-bold text-gray-900 text-base tracking-tight">Campus<span className="text-blue-600">Flow</span></span>
         </div>
@@ -286,7 +286,8 @@ const result =[
             </button>
             <div>
               <h1 className="text-base font-bold text-gray-900 capitalize">{activeTab}</h1>
-              <p className="text-xs text-gray-400 hidden sm:block">Student Portal — {new Date().toLocaleDateString('en-NG', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}</p>
+              <p className="text-xs text-gray-400 hidden sm:block">Student Portal — {new Date().toLocaleDateString
+              ('en-NG', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

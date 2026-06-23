@@ -53,7 +53,7 @@ export const ForgotPassword = () => {
         <div className="login min-h-screen bg-white flex items-center justify-center p-4">
             <div className="container bg-gray-100 rounded-2xl shadow-lg w-full max-w-md p-8">
                 <div className="flex items-center gap-2 mb-6">
-                    <img src="/logo.png" alt="CampusFlow" className="w-9 h-9" />
+                    <img src="/LOGO1.png" alt="CampusFlow" className="w-9 h-9" />
                     <span className="font-bold text-xl text-[#0A1628]">
             Campus<span className="text-blue-600">Flow</span>
           </span>
@@ -129,7 +129,7 @@ export const ForgotPassword = () => {
                 </div>
 
 
-                <div className="m-2 text-sm">
+                <div className="mb-2 text-sm">
                     <Link
                         to="/login"
                         className="text-blue-500 font-semibold hover:underline"

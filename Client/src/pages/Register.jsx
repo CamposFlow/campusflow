@@ -68,7 +68,10 @@ function Register() {
         <div className="login min-h-screen bg-surface flex items-center justify-center p-4">
 
             <div className="container bg-gray-100 rounded-2xl shadow-lg w-full max-w-md p-8">
-
+                <div className="flex items-center gap-2 mb-6">
+                    <img src="./LOGO1.png" alt="CampusFlow" className="w-9 h-9"/>
+                    <h1 className="text-xl font-bold text-primary">Campus<span className='text-blue-600'>Flow</span></h1>
+                </div>
                 <h1 className="text-2xl font-bold text-blue-600 mb-1">Create Account</h1>
                 <p className="text-gray-500 text-sm mb-6">Fill in Your Credentials to Register</p>
 

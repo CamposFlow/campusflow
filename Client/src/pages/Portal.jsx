@@ -93,7 +93,7 @@ const steps =[
                     <>
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2">
-                        <img src="./logo.png" alt="CampusFlow" className="w-9 h-9" />
+                        <img src="./LOGO1.png" alt="CampusFlow" className="w-9 h-9" />
                         <span className="font-bold text-xl text-navy">Campus<span className="text-blue-600">Flow</span></span>
                     </Link>
                     <div className="hidden md:flex items-center gap-8">
