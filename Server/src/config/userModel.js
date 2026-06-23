@@ -1,4 +1,5 @@
-import { query } from './db.js';
+import pool from './db.js';
+const query = pool.query;
 
 class User {
   static async create(username, email, passwordHash) {

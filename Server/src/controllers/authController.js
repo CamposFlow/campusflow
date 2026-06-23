@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import User from '../config/userModel.js'; // Path updated to match src/config location
 import passport from 'passport';
+import User from '../config/userModel.js';
 
 export const register = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -11,8 +11,8 @@ export const register = async (req, res, next) => {
   }
 
   // Password length validation
-  if (password.length < 6) {
-    return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+  if (password.length < 8) {
+    return res.status(400).json({ message: 'Password must be at least 8 characters long' });
   }
 
   try {
@@ -75,7 +75,7 @@ export const logout = (req, res, next) => {
         console.error('Session destroy error:', err);
         return next(err);
       }
-      res.clearCookie('connect.sid'); // Clear session cookie
+      res.clearCookie('connect.sid');
       res.status(200).json({ message: 'Logged out successfully' });
     });
   });
@@ -84,9 +84,7 @@ export const logout = (req, res, next) => {
 
 // getMe endpoint to return current authenticated user's info
 export const getMe = (req, res) => {
-  // req.user is populated by Passport's deserializeUser after successful session check
   if (req.isAuthenticated()) {
-    // Return sanitized user data
     const { id, username, email } = req.user;
     res.status(200).json({ user: { id, username, email } });
   } else {

@@ -1,16 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import apiRoutes from './routes/apiRoutes.js';
-
-// Commented out authRoutes for now since we haven't implemented database and authentication yet.
-// import authRoutes from './routes/authRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 
 const isDev = process.env.NODE_ENV === 'development';
+
 // Middleware
 app.use(cors({
-  origin: isDev ? '*' : 'https://camposflow.github.io/campusflow/', // Adjust origin for production and development.
+  origin: isDev ? '*' : 'https://camposflow.github.io/campusflow/',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -24,7 +22,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/', apiRoutes);
+app.use('/', authRoutes);
 
 // 404 Handler
 app.use((req, res) => {
