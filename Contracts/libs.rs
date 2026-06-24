@@ -249,7 +249,7 @@ pub university: Account<'info, University>,
 
     #[account(mut)]
     pub authority: Signer<'info>,
-    
+
     pub system_program: Program<'info, System>,
 }
 
@@ -302,7 +302,7 @@ pub struct ResolveIncident<'info>{
 //like a table and data fields in it
 #[account]
 pub struct Certificate{
-    pub hash: String, // fingerprint of the document 
+    pub hash: String, // fingerprint of the document
     pub student_id :String,
     pub student_name: String,
     pub certificate_type: String,
