@@ -11,6 +11,6 @@ export const transporter = nodemailer.createTransport({
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_APP_PASS
   },
-  // Automatically apply the bypass ONLY in development mode
+  // Allow unauthorized connections during development mode
   tls: isDev ? { rejectUnauthorized: false } : undefined
 });
