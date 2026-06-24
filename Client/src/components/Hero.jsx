@@ -1,138 +1,209 @@
 import { motion } from 'framer-motion'
-import { useEffect, useRef } from 'react'
-import Typed from 'typed.js'
-import { GraduationCap, UserPlus, LogIn, Shield, ArrowRight } from 'lucide-react'
+import { Shield, UserPlus, LogIn, GraduationCap , CheckCircle, AlertTriangle } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import {Button} from "@/components/ui/button.jsx";
 
 export default function Hero() {
-    const typedRef = useRef(null)
-
-    useEffect(() => {
-        const typed = new Typed(typedRef.current, {
-            strings: ['Clearance.', 'Verification.', 'Campus Safety.'],
-            typeSpeed: 60,
-            backSpeed: 40,
-            loop: true,
-        })
-        return () => typed.destroy()
-    }, [])
-
     return (
-        <section id="main"
-                 className="relative w-full min-h-screen flex flex-col
-                items-center justify-center overflow-hidden"
+        <section className="relative min-h-screen w-full overflow-hidden
+         bg-[#EFF6FF]
+            flex flex-col items-center justify-center px-6">
+
+
+            <div className="absolute inset-0"
                  style={{
-                     backgroundImage: "url('./campus.jpg')",
-                     backgroundSize: "cover",
-                     backgroundPosition: "center",
+                     backgroundImage: 'radial-gradient(circle, rgb(173, 216, 230) 1px, transparent 1px)',
+                     backgroundSize: '28px 28px'
                  }}
-        >
-
-            <div className="absolute inset-0 bg-gradient-to-b
-                from-black/80 via-black/60 to-black/90" />
+            />
 
 
-            <div className="absolute top-1/4 left-1/4 w-96 h-96
-                bg-blue-600/20 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-1/4 right-1/4 w-80 h-80
-                bg-blue-400/10 rounded-full blur-3xl animate-pulse
-                delay-1000" />
-
-            <div className="relative z-10 flex flex-col items-center
-                text-center px-6 max-w-screen mx-auto pt-24">
-
-                <motion.div
-                    initial={{ opacity: 0, y: -30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="flex items-center gap-2 bg-blue-600/20
-                        border border-blue-500/40 text-blue-300 text-sm
-                        px-5 py-2 rounded-full mb-8 backdrop-blur-sm"
-                >
-                    <Shield className="w-4 h-4" />
-                    Blockchain Powered Campus System
-                </motion.div>
-
-                <motion.h1
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.2 }}
-                    className="text-4xl sm:text-6xl font-bold text-white
-                        leading-tight mb-4 tracking-tight"
-                >
-                    Smarter Campus.
-                    <br />
-                    <span className="bg-gradient-to-r from-blue-400 to-blue-600
-                        bg-clip-text text-transparent">
-                        Zero Stress.
-                    </span>
-                </motion.h1>
+            <div className="absolute top-0 left-1/2 -translate-x-1/2
+                w-[600px] h-[300px] bg-blue-100/60 rounded-full
+                blur-3xl -translate-y-1/2" />
 
 
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    className="text-white/60 text-lg mb-3"
-                >
-                    Powered by blockchain for
-                </motion.p>
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.5 }}
-                    className="text-blue-400 text-xl font-semibold mb-10 h-9"
-                >
-                    <span ref={typedRef} />
-                </motion.div>
+            <div className="relative z-10 flex flex-col items-center text-center">
+
+                <div className="relative z-10 flex flex-col items-center text-center max-w-3xl pt-24">
 
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
-                    className="flex items-center gap-3 bg-white/10 border
-                        border-white/20 rounded-xl px-5 py-3 mb-8 w-full
-                        max-w-sm backdrop-blur-md"
-                >
-                    <GraduationCap className="text-white/60 shrink-0" size={18} />
-                    <select className="bg-transparent text-white text-sm
-                        outline-none flex-1 cursor-pointer">
-                        <option className="bg-gray-900" value="">Select University</option>
-                        <option className="bg-gray-900" value="FUTO">FUTO</option>
-                        <option className="bg-gray-900" value="UNILAG">UNILAG</option>
-                        <option className="bg-gray-900" value="UNN">UNN</option>
-                    </select>
-                </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="flex items-center gap-2 bg-blue-50 border border-blue-100
+            text-blue-600 text-sm px-4 py-2 rounded-full mb-4 md:mb-8"
+                    >
+                        <Shield className="w-4 h-4" />
+                        Blockchain Powered Campus System
+                    </motion.div>
 
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.8 }}
-                    className="flex flex-col sm:flex-row items-center gap-4
-                        "
-                >
-                    <Link to="/register">
-                        <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3 flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-300
-                        transform hover:scale-105 hover:shadow-xl shadow-lg relative overflow-hidden hover:shadow-2xl hover:shadow-blue-600/30">
-                            <UserPlus className="w-5 h-5" />
-                            Get Started
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1
-                                transition-transform" />
-                        </Button>
-                    </Link>
-                    <Link to="/login">
-                        <Button className="w-full border-2 border-white text-white hover:bg-white/20 bg-white/10 px-8 py-3 flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 backdrop-blur-sm hover:shadow-xl shadow-lg relative overflow-hidden">
-                            <LogIn className="w-5 h-5" />
-                            Login
-                        </Button>
-                    </Link>
-                </motion.div>
+                    <motion.h1
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="text-4xl sm:text-5xl font-bold text-gray-900
+            leading-tight tracking-tight mb-4"
+                    >
+                        Stress-free Campus.
+                        <br />
+                        <span className="bg-gradient-to-r from-blue-500 to-blue-700
+            bg-clip-text text-transparent">
+            Powered by Blockchain.
+        </span>
+                    </motion.h1>
 
+                    {/* Subtitle */}
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6, delay: 0.4 }}
+                        className="text-gray-500 text-base sm:text-lg max-w-xl mb-10"
+                    >
+                        CampusFlow handles your clearance, verifies your documents,
+                        and keeps you safe — all in one place.
+                    </motion.p>
+
+                    {/* Buttons */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.6 }}
+                        className="flex flex-col sm:flex-row items-center gap-3"
+                    >
+                        <Link to="/register">
+                            <button className="flex items-center gap-2 bg-blue-600
+                hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl
+                font-semibold transition-all hover:scale-105
+                hover:shadow-lg hover:shadow-blue-200">
+                                <UserPlus className="w-5 h-5" />
+                                Get Started
+                            </button>
+                        </Link>
+                        <Link to="/login">
+                            <button className="flex items-center gap-2 border border-gray-600
+                text-gray-700 hover:bg-gray-50 px-8 py-3.5 rounded-xl
+                font-semibold transition-all hover:scale-105">
+                                <LogIn className="w-5 h-5" />
+                                Login
+                            </button>
+                        </Link>
+                    </motion.div>
+
+                    {/* University selector */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.6, delay: 0.8 }}
+                        className="flex items-center gap-3 bg-white border border-gray-200
+            rounded-xl px-5 py-3 mt-6 w-full max-w-xs shadow-sm"
+                    >
+                        <GraduationCap className="text-gray-400 shrink-0" size={18} />
+                        <select className="bg-transparent text-gray-600 text-sm
+            outline-none flex-1 cursor-pointer">
+                            <option value="">Select University</option>
+                            <option value="FUTO">FUTO</option>
+                            <option value="UNILAG">UNILAG</option>
+                            <option value="UNN">UNN</option>
+                        </select>
+                    </motion.div>
+                    {/* Mobile only — feature badges */}
+                    <div className="flex lg:hidden items-center gap-3 mt-6 overflow-x-auto
+    pb-2 w-full justify-center">
+                        {[
+                            { label: 'Clearance', color: 'bg-green-50 text-green-600' },
+                            { label: 'Verification', color: 'bg-blue-50 text-blue-600' },
+                            { label: 'SOS Safety', color: 'bg-red-50 text-red-600' },
+                        ].map((item, i) => (
+                            <span key={i} className={`shrink-0 text-xs px-3 py-1.5 
+            rounded-full font-medium ${item.color}`}>
+            {item.label}
+        </span>
+                        ))}
+                    </div>
+
+                </div>
             </div>
 
+            {/* Top left card — Clearance */}
+            <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0, y: [0, -6, 0] }}
+                transition={{
+                    duration: 0.7,
+                    delay: 1,
+                    y: { repeat: Infinity, duration: 3, ease: "easeInOut" }
+                }}
+                className="hidden lg:block absolute left-16 top-1/4
+        bg-white rounded-2xl shadow-lg border border-gray-100 p-4 w-52"
+            >
+                <p className="text-xs text-gray-400 mb-2">Clearance Status</p>
+                <div className="flex flex-col gap-2">
+                    {['Library', 'Medical', 'Departmental'].map((stage, i) => (
+                        <div key={i} className="flex items-center justify-between">
+                            <span className="text-xs text-gray-600">{stage}</span>
+                            <span className={`text-xs px-2 py-0.5 rounded-full
+                    ${i === 0 ? 'bg-green-50 text-green-600'
+                                : i === 1 ? 'bg-yellow-50 text-yellow-600'
+                                    : 'bg-gray-50 text-gray-400'}`}>
+                    {i === 0 ? 'Approved' : i === 1 ? 'Pending' : 'Not Started'}
+                </span>
+                        </div>
+                    ))}
+                </div>
+            </motion.div>
+
+            {/* Top right card — Verification */}
+            <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0, y: [0, -6, 0] }}
+                transition={{
+                    duration: 0.7,
+                    delay: 1,
+                    y: { repeat: Infinity, duration: 3, ease: "easeInOut" }
+                }}
+                className="hidden lg:block absolute right-24 top-1/4
+        bg-white rounded-2xl shadow-lg border border-gray-100 p-4 w-48"
+            >
+                <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 rounded-full bg-green-50
+            flex items-center justify-center">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div>
+                        <p className="text-xs font-semibold text-gray-700">Certificate Valid</p>
+                        <p className="text-xs text-gray-400">FUTO • 2024</p>
+                    </div>
+                </div>
+                <p className="text-xs text-gray-400 font-mono truncate">
+                    0x71C7656EC7ab88...
+                </p>
+            </motion.div>
+
+            {/* Bottom right card — SOS */}
+            <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, x: 0, y: [0, -6, 0] }}
+                transition={{
+                    duration: 0.7,
+                    delay: 1,
+                    y: { repeat: Infinity, duration: 3, ease: "easeInOut" }
+                }}
+                className="hidden lg:block absolute right-24 bottom-1/3
+        bg-white rounded-2xl shadow-lg border border-red-100 p-4 w-44"
+            >
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-red-50
+            flex items-center justify-center animate-pulse">
+                        <AlertTriangle className="w-4 h-4 text-red-500" />
+                    </div>
+                    <div>
+                        <p className="text-xs font-semibold text-red-600">SOS Triggered</p>
+                        <p className="text-xs text-gray-400">Security notified</p>
+                    </div>
+                </div>
+            </motion.div>
         </section>
     )
 }
