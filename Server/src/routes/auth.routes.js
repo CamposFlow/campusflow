@@ -1,0 +1,19 @@
+import express from 'express';
+import passport from 'passport'; 
+import { register, login, logout, forgotPassword, resetPassword, getMe } from '../controllers/auth.controllers.js';
+import { authRateLimiter, passwordResetRateLimiter } from '../middlewares/rateLimiter.middleware.js'; 
+
+const router = express.Router();
+
+// Higher rate limit 
+router.post('/register', authRateLimiter, register);
+router.post('/login', authRateLimiter, login);
+
+// Strict otp management for password reset.
+router.post('/forgot-password', passwordResetRateLimiter, forgotPassword);
+router.post('/reset-password', passwordResetRateLimiter, resetPassword);
+
+router.get('/logout', logout);
+router.get('/me', passport.authenticate('jwt', { session: false }), getMe);
+
+export default router;
