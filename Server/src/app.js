@@ -6,9 +6,12 @@ import cors from 'cors';
 import passport from 'passport';
 import { passportLocalConfig } from './configs/passport.js';
 import authRoutes from './routes/auth.routes.js';
+import { globalRateLimiter } from './middlewares/rateLimiter.middleware.js'; 
 
 const app = express();
 const isDev = process.env.NODE_ENV === 'development';
+
+app.use(globalRateLimiter);
 
 app.use(cors({
   origin: isDev ? '*' : 'https://camposflow.github.io/campusflow/',

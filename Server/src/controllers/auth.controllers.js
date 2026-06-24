@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
 import passport from 'passport';
-import jwt from 'jsonwebtoken'; // 1. Imported JWT
-import User from '../configs/userModel.js';
+import jwt from 'jsonwebtoken';
+import User from '../models/userModel.js';
 import { transporter } from '../configs/mailer.js';
+import { requestPasswordReset, resetPasswordWithOTP } from '../services/auth.service.js';
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -31,10 +32,10 @@ export const register = async (req, res, next) => {
     const newUser = await User.create(username.toLowerCase(), email.toLowerCase(), role, passwordHash);
     const token = generateToken(newUser);
 
-    res.status(201).json({ 
-      message: 'User registered successfully', 
+    res.status(201).json({
+      message: 'User registered successfully',
       token: `Bearer ${token}`,
-      user: { id: newUser.id, username: newUser.username, role: newUser.role } 
+      user: { id: newUser.id, username: newUser.username, role: newUser.role }
     });
   } catch (err) {
     console.error('Registration error:', err);
@@ -52,10 +53,10 @@ export const login = (req, res, next) => {
     }
     const token = generateToken(user);
 
-    return res.status(200).json({ 
-      message: 'Logged in successfully', 
+    return res.status(200).json({
+      message: 'Logged in successfully',
       token: `Bearer ${token}`,
-      user: { id: user.id, username: user.username, role: user.role } 
+      user: { id: user.id, username: user.username, role: user.role }
     });
   })(req, res, next);
 };
@@ -66,14 +67,37 @@ export const logout = (req, res) => {
 
 export const forgotPassword = async (req, res, next) => {
   const { email } = req.body;
-  const user = await User.findByEmail(email);
-  if (!user) {
-    // Logic for forgot password
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email field is required.' });
+  }
+
+  try {
+    await requestPasswordReset(email);
+    return res.status(200).json({ 
+      message: 'If that email address exists in our system, an OTP code has been sent.' 
+    });
+  } catch (err) {
+    console.error('Forgot password controller error:', err);
+    next(err);
   }
 };
 
 export const resetPassword = async (req, res, next) => {
-  // Logic for reset password
+  const { email, otp, newPassword } = req.body;
+  if (!email || !otp || !newPassword) {
+    return res.status(400).json({ message: 'Fields not completely filled.' });
+  }
+  try {
+    await resetPasswordWithOTP(email, otp, newPassword);
+
+    return res.status(200).json({ 
+      message: 'Password reset successful. You can now log in with your new password.' 
+    });
+  } catch (err) {
+    console.error('Reset password controller error:', err);
+    return res.status(400).json({ error: err.message || 'Failed to reset password.' });
+  }
 };
 
 export const getMe = (req, res) => {

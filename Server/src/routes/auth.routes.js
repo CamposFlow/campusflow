@@ -1,22 +1,19 @@
 import express from 'express';
+import passport from 'passport'; 
 import { register, login, logout, forgotPassword, resetPassword, getMe } from '../controllers/auth.controllers.js';
+import { authRateLimiter, passwordResetRateLimiter } from '../middlewares/rateLimiter.middleware.js'; 
 
 const router = express.Router();
 
-// Middleware to ensure user is authenticated
-const ensureAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.status(401).json({ message: 'Unauthorized' });
-};
+// Higher rate limit 
+router.post('/register', authRateLimiter, register);
+router.post('/login', authRateLimiter, login);
 
-router.post('/register', register);
-router.post('/login', login);
-router.post('/forgot-password', forgotPassword)
-router.post('/reset-password', resetPassword)
+// Strict otp management for password reset.
+router.post('/forgot-password', passwordResetRateLimiter, forgotPassword);
+router.post('/reset-password', passwordResetRateLimiter, resetPassword);
+
 router.get('/logout', logout);
-router.get('/me', ensureAuthenticated, getMe);
-router.get('/', getMe);
+router.get('/me', passport.authenticate('jwt', { session: false }), getMe);
 
 export default router;
