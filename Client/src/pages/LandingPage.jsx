@@ -24,6 +24,7 @@ import { useRef } from "react";
 import { ToastContainer, toast } from 'react-toast';
 import {Disclosure, Transition} from "@headlessui/react";
 import {Footer} from "@/components/Footer.jsx";
+import Hero from "@/components/Hero.jsx";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -226,70 +227,7 @@ const LandingPage = () => {
             <Cookies/>
             <Navbar />
 
-            <section id="main"
-                className="relative w-full min-h-[600px] flex items-center"
-                style={{
-                    backgroundImage: "url('./campus.jpg')",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                }}
-            >
-                <div className="absolute inset-0 bg-black/70" />
-
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-24 w-full">
-                    <div className="max-w-xl">
-                        <span className="inline-block bg-gradient-to-r from-blue-600/20 to-blue-400/10 border border-blue-500/40 text-blue-200 text-sm px-4 py-2 rounded-full mb-6 hover:bg-blue-600/30 hover:border-blue-400/60 transition-all duration-300 shadow-lg backdrop-blur-sm">
-                            Smart Campus. Smart Students
-                        </span>
-
-                        <h1 className="welcome text-4xl sm:text-5xl font-bold text-white leading-tight mb-4">
-                            Welcome To <br />
-                            <span className="text-blue-400">CampusFlow</span>
-                        </h1>
-
-                        <p className="text-white/80 font-medium text-base mb-8 leading-relaxed">
-                            Taking the stress out of clearance, document verification,
-                            <br /> and campus safety - powered by blockchain
-                        </p>
-
-                        <div className="flex items-center gap-3 bg-white/10 border border-white/20 rounded-lg px-4 py-3 mb-8 max-w-sm backdrop-blur-sm hover:bg-white/15 transition-all">
-                            <GraduationCap className="text-white/80 flex-shrink-0" size={20} />
-                            <select className="bg-transparent text-white text-sm outline-none flex-1 cursor-pointer placeholder-white/50">
-                                <option className="bg-gray-900 text-white" value="">
-                                    Select University
-                                </option>
-                                <option className="bg-gray-900 text-white" value="FUTO">
-                                    FUTO
-                                </option>
-                                <option className="bg-gray-900 text-white" value="UNILAG">
-                                    UNILAG
-                                </option>
-                                <option className="bg-gray-900 text-white" value="UNN">
-                                    UNN
-                                </option>
-                            </select>
-                        </div>
-
-                        <div className="flex flex-col sm:flex-row items-center gap-4">
-                            <Link to="/register" className="w-full sm:w-auto group">
-                                <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3 flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl shadow-lg relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/20 group-hover:from-white/10 group-hover:to-white/30 transition-all duration-300" />
-                                    <UserPlus className="w-5 h-5 relative z-10" />
-                                    <span className="relative z-10">Register Now</span>
-                                </Button>
-                            </Link>
-                            <Link to="/login" className="w-full sm:w-auto group">
-                                <Button className="w-full border-2 border-white text-white hover:bg-white/20 bg-white/10 px-8 py-3 flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 backdrop-blur-sm hover:shadow-xl shadow-lg relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/10 group-hover:from-white/5 group-hover:to-white/20 transition-all duration-300" />
-                                    <LogIn className="w-5 h-5 relative z-10" />
-                                    <span className="relative z-10">Login</span>
-                                </Button>
-                            </Link>
-
-                        </div>
-                    </div>
-                      </div>
-            </section>
+         <Hero/>
 
             <section className="problems-section bg-white py-16 sm:py-20 px-4 sm:px-8">
                 <div className="max-w-7xl mx-auto">
