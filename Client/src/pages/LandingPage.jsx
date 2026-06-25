@@ -1,17 +1,11 @@
 import {
-
-    GraduationCap,
     UserPlus,
-    LogIn,
     FileQuestion,
     ShieldX,
     AlertTriangle,
     ClipboardList,
     ShieldCheck,
-    Bell,
-    Mail,
-    MapPin,
-    Globe, ChevronDown,
+    Bell, ChevronDown,
 } from "lucide-react";
 import {Cookies} from "@/components/Cookies.jsx";
 import Navbar from "@/components/Navbar";
@@ -21,7 +15,6 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
-import { ToastContainer, toast } from 'react-toast';
 import {Disclosure, Transition} from "@headlessui/react";
 import {Footer} from "@/components/Footer.jsx";
 import Hero from "@/components/Hero.jsx";

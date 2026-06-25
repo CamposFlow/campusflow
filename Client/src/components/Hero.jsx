@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 export default function Hero() {
     return (
-        <section className="relative min-h-screen w-full overflow-hidden
+        <section id="main" className="relative min-h-screen w-full overflow-hidden
          bg-[#EFF6FF]
             flex flex-col items-center justify-center px-6">
 
