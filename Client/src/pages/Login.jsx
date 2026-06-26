@@ -16,7 +16,7 @@ export const Login = () => {
         const realButton = hiddenGoogleBtnRef.current?.querySelector('div[role="button"]');
         realButton?.click();
     }
-    const {login} = useAuth();
+    // const {login} = useAuth();
     const [rememberMe, setRememberMe] = useState(false);
     const [username, setEmail] = useState("");
     const [password, setPassword] = useState("");

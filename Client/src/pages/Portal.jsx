@@ -79,7 +79,7 @@ const Portal = () => {
           <Navbar/>
 
            <section>
-               <div className="pt-20 pb-32 px-6 relative ">
+               <div className="pt-20 pb-32 px-6 relative overflow-hidden">
                    <motion.div
                        animate={{ x: [0, 40, 0], y: [0, -30, 0] }}
                        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
