@@ -7,7 +7,8 @@ import passport from 'passport';
 import { passportLocalConfig } from './configs/passport.js';
 import authRoutes from './routes/auth.routes.js';
 import { globalRateLimiter } from './middlewares/rateLimiter.middleware.js'; 
-
+import solanaRoutes from './routes/solana.routes.js'
+import mainAlerts from './routes/main.alerts.js'
 const app = express();
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -32,6 +33,8 @@ app.use(passport.initialize());
 
 // Routes
 app.use('/', authRoutes);
+app.use('/api/universities', solanaRoutes)
+app.use('/api', mainAlerts)
 
 // 404 Handler
 app.use((req, res) => {

@@ -3,8 +3,25 @@ import { motion } from 'framer-motion';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Siren, AlertTriangle, Zap, ShieldAlert, HeartPulse } from 'lucide-react';
+import axios from 'axios';
+
 
 function SOSPanel() {
+ const [topic, setTopic] = useState('');
+
+    const sendAlert = async () => {
+        try {
+            const res = await axios.post("http://localhost:3000/api/telegram/send", {
+                message: "STUDENT NEEDS EMERGENT HELP AT LOCATION ...................",
+                channelRef: "TG_ALT_JQPZOZ73WKSZKLC"
+            });
+
+            console.log(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     const [holding, setHolding] = useState(false);
     const [progress, setProgress] = useState(0);
     const [fired, setFired] = useState(false);
@@ -20,7 +37,7 @@ function SOSPanel() {
     ]
 
     function startHold() {
-        if (fired) return;
+        if (fired || holding) return;
         setHolding(true);
         let count = 0;
         const id = setInterval(() => {
@@ -30,6 +47,7 @@ function SOSPanel() {
                 clearInterval(id);
                 setFired(true);
                 setHolding(false);
+                sendAlert();
             }
         }, 60);
         setIntervalId(id);
