@@ -14,7 +14,7 @@ const generateToken = (user) => {
 };
 
 export const register = async (req, res, next) => {
-  const { username, email, role, password } = req.body;
+  const { fullname, email, role, password, university } = req.body;
   if (!username || !email || !password || !role) {
     return res.status(400).json({ message: 'Fields not completely filled.' });
   }
@@ -56,7 +56,7 @@ export const login = (req, res, next) => {
     return res.status(200).json({
       message: 'Logged in successfully',
       token: `Bearer ${token}`,
-      user: { id: user.id, username: user.username, role: user.role }
+      user: { id: user.id, email: user.email, role: user.role }
     });
   })(req, res, next);
 };
@@ -74,8 +74,8 @@ export const forgotPassword = async (req, res, next) => {
 
   try {
     await requestPasswordReset(email);
-    return res.status(200).json({ 
-      message: 'If that email address exists in our system, an OTP code has been sent.' 
+    return res.status(200).json({
+      message: 'If that email address exists in our system, an OTP code has been sent.'
     });
   } catch (err) {
     console.error('Forgot password controller error:', err);
@@ -91,8 +91,8 @@ export const resetPassword = async (req, res, next) => {
   try {
     await resetPasswordWithOTP(email, otp, newPassword);
 
-    return res.status(200).json({ 
-      message: 'Password reset successful. You can now log in with your new password.' 
+    return res.status(200).json({
+      message: 'Password reset successful. You can now log in with your new password.'
     });
   } catch (err) {
     console.error('Reset password controller error:', err);
