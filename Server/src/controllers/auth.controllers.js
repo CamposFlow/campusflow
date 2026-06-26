@@ -8,7 +8,7 @@ import { requestPasswordReset, resetPasswordWithOTP } from '../services/auth.ser
 // Helper function for token
 const generateToken = (user) => {
   return jwt.sign(
-    { id: user.id, role: user.role },
+    { id: user.id, fullname: user.fullname, role: user.role },
     process.env.JWT_SECRET,
     { expiresIn: '24h' }
   );
@@ -18,8 +18,8 @@ export const register = async (req, res, next) => {
   const { fullname, email, role, university, password } = req.body;
   console.log(req.body);
 
-  
-  const testCases = [ fullname, email, role, university, password ];
+
+  const testCases = [fullname, email, role, university, password];
 
   testCases.forEach(e => {
     if (!e) console.log(e + " is not defined.")
@@ -44,7 +44,7 @@ export const register = async (req, res, next) => {
     res.status(201).json({
       message: 'User registered successfully',
       token: `Bearer ${token}`,
-      user: { id: newUser.id, fullname: newUser.fullname, email: newUser.email, role: newUser.role, university: newUser.university }
+      user: { id: newUser.id, fullname: newUser.fullname, email: newUser.email, role: newUser.role }
     });
   } catch (err) {
     console.error('Registration error:', err);
