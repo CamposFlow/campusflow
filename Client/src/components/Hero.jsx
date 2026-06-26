@@ -1,14 +1,29 @@
 import { motion } from 'framer-motion'
 import { Shield, UserPlus, LogIn, GraduationCap , CheckCircle, AlertTriangle } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import React from "react";
 
 export default function Hero() {
     return (
         <section id="main" className="relative min-h-screen w-full overflow-hidden
-         bg-[#EFF6FF]
+
             flex flex-col items-center justify-center px-6">
 
-
+            <motion.div
+                animate={{ x: [0, 40, 0], y: [0, -30, 0] }}
+                transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-20 -left-20 w-[420px] h-[420px] bg-blue-400/30 rounded-full blur-3xl"
+            />
+            <motion.div
+                animate={{ x: [0, -50, 0], y: [0, 40, 0] }}
+                transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-10 right-0 w-[380px] h-[380px] bg-blue-600/20 rounded-full blur-3xl"
+            />
+            <motion.div
+                animate={{ x: [0, 30, 0], y: [0, 30, 0] }}
+                transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute bottom-0 left-1/3 w-[300px] h-[300px] bg-blue-300/25 rounded-full blur-3xl"
+            />
             <div className="absolute inset-0"
                  style={{
                      backgroundImage: 'radial-gradient(circle, rgb(173, 216, 230) 1px, transparent 1px)',

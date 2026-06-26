@@ -1,14 +1,14 @@
 import { program, connection } from "../configs/solana.js";
 
-const testConnection = async () => {
+const test = async () => {
     try {
         const slot = await connection.getSlot();
-        console.log("Connected to Solana Devnet ✅");
-        console.log("Current slot:", slot);
-        console.log("Program ID:", program.programId.toString());
-    } catch (error) {
-        console.error("Connection failed ❌", error);
+        console.log("✅ Connected to Solana Devnet");
+        console.log("📦 Current slot:", slot);
+        console.log("🔑 Program ID:", program.programId.toString());
+    } catch (err) {
+        console.error("❌ Connection failed:", err.message);
     }
 };
 
-testConnection();
+test();

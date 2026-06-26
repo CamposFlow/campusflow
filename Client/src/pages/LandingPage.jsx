@@ -222,7 +222,7 @@ const LandingPage = () => {
 
          <Hero/>
 
-            <section className="problems-section bg-white py-16 sm:py-20 px-4 sm:px-8">
+            <section className="problems-section py-16 sm:py-20 px-4 sm:px-8">
                 <div className="max-w-7xl mx-auto">
                     <h2 className="text-3xl sm:text-4xl font-bold text-center text-gray-900 mb-12">
                         The Problems We Solve
@@ -315,10 +315,13 @@ const LandingPage = () => {
                                     {step.number}
                                     <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-400/20 to-transparent" />
                                 </div>
-                                <div className="step-card-content bg-white rounded-2xl p-7 w-full hover:shadow-2xl border border-gray-200 transition-all duration-300 group hover:border-blue-300 hover:bg-gradient-to-br hover:from-blue-50/80 hover:to-blue-100/40 relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 to-blue-600/0 group-hover:from-blue-600/5 group-hover:to-blue-600/10 transition-all duration-300 pointer-events-none" />
+                                <div className="step-card-content bg-white rounded-2xl p-7 w-full hover:shadow-2xl border border-gray-200 transition-all duration-300 group hover:border-blue-300 hover:bg-gradient-to-br hover:from-blue-50/80
+                                hover:to-blue-100/40 relative overflow-hidden">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 to-blue-600/0 group-hover:from-blue-600/5
+                                     group-hover:to-blue-600/10 transition-all duration-300 pointer-events-none" />
                                     <div className="relative z-10">
-                                        <div className="bg-blue-50 w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center group-hover:bg-blue-100 transition-all duration-300 group-hover:shadow-lg">
+                                        <div className="bg-blue-50 w-12 h-12 rounded-xl mx-auto mb-4 flex items-center justify-center group-hover:bg-blue-100
+                                         transition-all duration-300 group-hover:shadow-lg">
                                             {step.icon}
                                         </div>
                                         <h3 className="group-hover:text-blue-900 font-bold text-gray-900 text-lg mb-2 transition-colors duration-300">

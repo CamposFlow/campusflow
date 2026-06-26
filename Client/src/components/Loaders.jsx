@@ -1,4 +1,4 @@
-import { ClipLoader } from "react-spinners";
+
 import gsap from "gsap";
 import React, { useEffect, useRef } from "react";
 import "../Loader.css"

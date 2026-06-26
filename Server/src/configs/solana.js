@@ -5,28 +5,20 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// Connect to Devnet
 const connection = new Connection(process.env.SOLANA_NETWORK, "confirmed");
 
-// Load backend wallet
 const secretKey = JSON.parse(process.env.WALLET_SECRET_KEY);
-const wallet = Keypair.fromSecretKey(Uint8Array.from(secretKey));
-const anchorWallet = new anchor.Wallet(wallet);
+const keypair = Keypair.fromSecretKey(Uint8Array.from(secretKey));
+const wallet = new anchor.Wallet(keypair);
 
-// Load IDL
-const idl = JSON.parse(readFileSync("./idl/campusflow.json", "utf8"));
-
-// Program ID
+const idl = JSON.parse(readFileSync("./idl/idl.json", "utf8"));
 const programId = new PublicKey(process.env.PROGRAM_ID);
 
-// Provider
-const provider = new anchor.AnchorProvider(connection, anchorWallet, {
+const provider = new anchor.AnchorProvider(connection, wallet, {
     commitment: "confirmed",
 });
-
 anchor.setProvider(provider);
 
-// Program interface
-const program = new anchor.Program(idl, provider);
+const program = new anchor.Program(idl, programId, provider);
 
-export { program, provider, connection, wallet, programId };
+export { program, provider, connection, wallet, keypair, programId };
