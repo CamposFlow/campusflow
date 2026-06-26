@@ -1,4 +1,4 @@
-import {ShieldCheck, CheckCircle, Clock} from "lucide-react";
+/* import {ShieldCheck, CheckCircle, Clock} from "lucide-react";
 import React from "react";
 
 export const ClearancePanel = () => {
@@ -42,3 +42,4 @@ export const ClearancePanel = () => {
         </div>
     )
 };
+ */
