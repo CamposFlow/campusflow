@@ -5,37 +5,46 @@ import User from '../models/userModel.js';
 import { transporter } from '../configs/mailer.js';
 import { requestPasswordReset, resetPasswordWithOTP } from '../services/auth.service.js';
 
+// Helper function for token
 const generateToken = (user) => {
   return jwt.sign(
-    { id: user.id, username: user.username, role: user.role },
+    { id: user.id, role: user.role },
     process.env.JWT_SECRET,
     { expiresIn: '24h' }
   );
 };
 
 export const register = async (req, res, next) => {
-  const { username, email, role, password } = req.body;
-  if (!username || !email || !password || !role) {
+  const { fullname, email, role, university, password } = req.body;
+  console.log(req.body);
+
+  
+  const testCases = [ fullname, email, role, university, password ];
+
+  testCases.forEach(e => {
+    if (!e) console.log(e + " is not defined.")
+  })
+
+
+
+  if (!fullname || !email || !role || !university || !password) {
     return res.status(400).json({ message: 'Fields not completely filled.' });
   }
+
   try {
-    let user = await User.findByUsername(username);
+    let user = await User.findByEmail(email);
     if (user) {
-      return res.status(400).json({ message: 'Username already exists' });
-    }
-    user = await User.findByEmail(email);
-    if (user) {
-      return res.status(400).json({ message: 'Email already registered' });
+      return res.status(400).json({ message: 'User with email already exists' });
     }
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
-    const newUser = await User.create(username.toLowerCase(), email.toLowerCase(), role, passwordHash);
+    const newUser = await User.create(fullname.toLowerCase(), email.toLowerCase(), role, university, passwordHash);
     const token = generateToken(newUser);
 
     res.status(201).json({
       message: 'User registered successfully',
       token: `Bearer ${token}`,
-      user: { id: newUser.id, username: newUser.username, role: newUser.role }
+      user: { id: newUser.id, fullname: newUser.fullname, email: newUser.email, role: newUser.role, university: newUser.university }
     });
   } catch (err) {
     console.error('Registration error:', err);
@@ -56,7 +65,7 @@ export const login = (req, res, next) => {
     return res.status(200).json({
       message: 'Logged in successfully',
       token: `Bearer ${token}`,
-      user: { id: user.id, username: user.username, role: user.role }
+      user: { id: user.id, email: user.email, role: user.role }
     });
   })(req, res, next);
 };
@@ -74,8 +83,8 @@ export const forgotPassword = async (req, res, next) => {
 
   try {
     await requestPasswordReset(email);
-    return res.status(200).json({ 
-      message: 'If that email address exists in our system, an OTP code has been sent.' 
+    return res.status(200).json({
+      message: 'If that email address exists in our system, an OTP code has been sent.'
     });
   } catch (err) {
     console.error('Forgot password controller error:', err);
@@ -91,8 +100,8 @@ export const resetPassword = async (req, res, next) => {
   try {
     await resetPasswordWithOTP(email, otp, newPassword);
 
-    return res.status(200).json({ 
-      message: 'Password reset successful. You can now log in with your new password.' 
+    return res.status(200).json({
+      message: 'Password reset successful. You can now log in with your new password.'
     });
   } catch (err) {
     console.error('Reset password controller error:', err);
@@ -102,8 +111,8 @@ export const resetPassword = async (req, res, next) => {
 
 export const getMe = (req, res) => {
   if (req.user) {
-    const { id, username, email } = req.user;
-    res.status(200).json({ user: { id, username, email } });
+    const { id, fullname, email } = req.user;
+    res.status(200).json({ user: { id, fullname, email } });
   } else {
     res.status(401).json({ message: 'Not authenticated' });
   }

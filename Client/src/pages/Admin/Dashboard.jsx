@@ -4,7 +4,8 @@ import {Bell} from "lucide-react";
 import {AdminOverview} from "@/pages/Admin/Panel/AdminOverview.jsx"
 import Loaders from "@/components/Loaders.jsx";
 import {AdminRecord} from "@/pages/Admin/Panel/AdminRecord.jsx";
-import {AdminProfile} from "@/pages/Admin/Panel/AdminProfile.jsx";
+import {AdminProfile} from "@/pages/Admin/Panel/AdminProfile.jsx"
+import SOSPanel from "@/pages/Admin/Panel/Security.jsx"
 
 export const AdminDashboard = () => {
 const [activeTab, setActiveTab] = useState('overview');
@@ -14,11 +15,13 @@ const tabTitle={
     overview:'Overview',
     record:'Student Record',
     profile:'Profile',
+    security:'Security, Lets Keep Our Society Safe',
 }
     const panels ={
         overview:<AdminOverview/>,
         record:<AdminRecord/>,
         profile:<AdminProfile/>,
+        security:<SOSPanel/>,
 
     }
     useEffect(() => {

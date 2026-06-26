@@ -1,22 +1,31 @@
-import {useState} from 'react'
+import {useState, useRef} from 'react'
 import { useNavigate, Link} from 'react-router-dom'
+import {FcGoogle} from "react-icons/fc";
 import gsap from "gsap";
+import {GoogleLogin} from "@react-oauth/google";
 import {toast} from "react-hot-toast";
+import {Button} from "@/components/ui/button.jsx";
 import {useGSAP} from "@gsap/react";
-import {useAuth} from "./AuthContext.jsx";
-import {loginUser} from "../services/api.js";
-import {Eye, EyeOff, Mail} from "lucide-react";
+import {loginUser} from "@/api/axios.js";
+import {Eye, EyeOff} from "lucide-react";
+import {useAuth} from "@/pages/AuthContext.jsx";
 
 export const Login = () => {
+    const hiddenGoogleBtnRef = useRef(null);
+    const triggerGoogleLogin=()=>{
+        const realButton = hiddenGoogleBtnRef.current?.querySelector('div[role="button"]');
+        realButton?.click();
+    }
+    // const {login} = useAuth();
     const [rememberMe, setRememberMe] = useState(false);
-    const [matricNo, setMatricNo] = useState("");
+    const [username, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const[error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState("");
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
-    const {login} = useAuth();
+
     useGSAP(() => {
         const tl = gsap.timeline();
 
@@ -38,27 +47,48 @@ export const Login = () => {
             }, "-=0.3") // Overlap with container animation
     })
 
-    const handleLogin = async ()=>{
-        if(!matricNo || !password){
-            toast.error('Please fill in both Fields')
-            return
+    const handleGoogleLogin = async (credentialResponse) => {
+        try{
+            setError(null);
+            setLoading(true);
+            console.log(credentialResponse.credential);
         }
-setLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 800));
+        catch(error){
+            setError("Google Sign-in Failed.");
+        }
+        finally {
+            setLoading(false);
+        }
+    }
 
-        if (matricNo === "CampusFlow" && password === "CampusFlow") {
-        if(rememberMe){
-            localStorage.setItem('isLoggedIn','true')
+    const handleLogin = async ()=>{
+        try {
+            setError(null);
+            setLoading(true);
+            const data = await loginUser(username, password);
+
+            login(data.token, data.user.role, rememberMe);
+            setSuccess("Login Successful! Redirecting.....");
+            toast.success('LoggedIn Successfully!');
+            setTimeout(()=>{
+                if (data.user.role === "admin")
+                    navigate("/admin");
+                else
+                    navigate("/dashboard");
+
+            },2000)
         }
-        else{
-            sessionStorage.setItem('isLoggedIn','true')
+        catch (error) {
+            if (error.response)
+                setError(error.response.data.error || "Invalid Email or password");
+            else if (error.request)
+                setError("Cannot reach server, Check your Connection.")
+            else
+                setError("Something went wrong, Try again.");
         }
-        toast.success('LoggedIn Successfully!')
-        navigate('/dashboard')
-        }else{
-            toast.error('Invalid Username or Password!')
+        finally {
+            setLoading(false);
         }
-        setLoading(false)
     }
 
 
@@ -74,6 +104,26 @@ setLoading(true);
 
                 <h2 className="text-2xl font-bold text-blue-400 mb-1">Welcome Back</h2>
                 <p className="text-gray-500 text-sm mb-6">Please sign in into your account</p>
+
+
+                <div ref={hiddenGoogleBtnRef} className="hidden">
+                    <GoogleLogin
+                        onSuccess={handleGoogleLogin}
+                        onError={() => setError("Google sign-in failed. Try again.")}
+                    />
+                </div>
+
+                <button
+                    type="button"
+                    onClick={triggerGoogleLogin}
+                    className="mb-4 w-full flex items-center justify-center gap-3 border
+                    border-gray-300 bg-white text-gray-700 font-semibold p-2 rounded-lg
+                    hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
+                >
+                    <FcGoogle className="w-5 h-5" />
+                    Continue with Google
+                </button>
+
 
                 {
                     error && (
@@ -93,14 +143,14 @@ setLoading(true);
                 <div className="relative mb-4 ml-2 mr-2">
                     <input
                         type="username"
-                        placeholder=""
-                        onChange={(e)=>setMatricNo(e.target.value)}
+                        placeholder=" "
+                        onChange={(e)=>setEmail(e.target.value)}
                         className="peer w-full bg-white border border-gray-200 rounded-lg px-4 pt-5 pb-2 text-sm
                 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                 transition-all duration-200
                 "/>
                     <label
-                        htmlFor="username"
+                        htmlFor="email"
                         className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
      peer-focus:top-0
     peer-placeholder-shown:top-3.5
@@ -108,7 +158,7 @@ setLoading(true);
     peer-[&:not(:placeholder-shown)]:top-0
     peer-[&:not(:placeholder-shown)]:text-blue-600"
                     >
-                        Matric Number
+                        Email
                     </label>
 
                 </div>
@@ -156,18 +206,17 @@ setLoading(true);
             Forgot Password?
         </Link>
     </div>
-                <button
-                    onClick={handleLogin}
-                        disabled={loading}
-                        className="w-full bg-blue-500 text-white font-semibold py-3 rounded-lg
-            hover:bg-blue-600 transition-colors duration-200 disabled:opacity-50"
-                >
-                    {
-                        loading ? "Signing In...": "Sign In"
-                    }
 
-                </button>
-
+<Button
+    type="button"
+    onClick={handleLogin}
+    className="w-full bg-blue-500 hover:bg-blue-700
+font-semibold
+transition-colors duration-300 py-4">
+    {
+        loading ? "Signing In...": "Sign In"
+    }
+</Button>
                 <p className="text-center text-sm text-gray-800 font-medium mt-6">
                     New To CampusFlow? {" "}
                     <Link to="/register" className="text-blue-500 font-semibold hover:underline">Sign Up</Link>

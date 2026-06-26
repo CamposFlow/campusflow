@@ -1,52 +1,97 @@
-
-import {Routes, Route, Navigate} from 'react-router-dom';
+import {Routes, Route, Navigate, Outlet} from 'react-router-dom';
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
-import {useAuth} from "./pages/AuthContext.jsx"
+import {AuthProvider, useAuth} from "./pages/AuthContext.jsx"
 import LandingPage from "./pages/LandingPage.jsx";
 import Portal from "./pages/Portal.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
-import Staff from "./components/Staff.jsx";
+
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import {Toaster} from "react-hot-toast";
 import {AdminDashboard} from "@/pages/Admin/Dashboard.jsx";
 
 
-function ProtectedRoute({children}) {
+function ProtectedRoute({allowedRoles}) {
+const {token,role} = useAuth();
 
-const {token} = useAuth();
   if (!token) {
     return <Navigate to={`/login`} replace/>
   }
-  return children;
+  if (allowedRoles && !allowedRoles.includes(role)){
+     return <Navigate to={`/login`} replace/>
+  }
+  return <Outlet/>;
 }
+
+function PublicRoute({children}) {
+    const {token,role} = useAuth();
+    if (token) {
+        return <Navigate to={role === "admin" ? "/admin" : "/dashboard"} replace/>
+    }
+    return children;
+}
+
 function App() {
 
-  return (<>
-      <Toaster
-          position="bottom-right"
-          toastOptions={{
-              className:'',
-              style: {
-                  border:'1px solid blue',
-                  color:'white',
-                  padding:'8px',
-                  backgroundColor:'navy',
-              },
-          }}/>
-      <Routes>
-        <Route path="/login" element={<Login/>} />
-          <Route path="/reset" element={<ForgotPassword/>} />
-        <Route path="/register" element={<Register/>} />
-        <Route path="/" element={<LandingPage/>}/>
-        <Route path="/verify" element={<Portal/>}/>
-        <Route path="/dashboard" element={<Dashboard/>}/>
-          <Route path="/admin" element={<AdminDashboard/>}/>
-        <Route path="/me" element={<ProtectedRoute>
-        </ProtectedRoute>}/>
-      </Routes>
-      </>
-  )
-}
+    return (<>
+            <Toaster
+                position="bottom-right"
+                toastOptions={{
+                    className:'',
+                    style: {
+                        border:'1px solid blue',
+                        color:'white',
+                        padding:'8px',
+                        backgroundColor:'navy',
+                    },
+                }}/>
+            <Routes>
+                <Route path="/login" element={<Login/>} />
+                <Route path="/reset" element={<ForgotPassword/>} />
+                <Route path="/register" element={<Register/>} />
+                <Route path="/" element={<LandingPage/>}/>
+                <Route path="/verify" element={<Portal/>}/>
+                    <Route path="/dashboard" element={<Dashboard/>}/>
+                    <Route path="/admin" element={<AdminDashboard/>}/>
 
+
+            </Routes>
+        </>
+    )
+}
 export default App;
+// function App() {
+//
+//   return (<AuthProvider>
+//       <Toaster
+//           position="bottom-right"
+//           toastOptions={{
+//               className:'',
+//               style: {
+//                   border:'1px solid blue',
+//                   color:'white',
+//                   padding:'8px',
+//                   backgroundColor:'navy',
+//               },
+//           }}/>
+//       <Routes>
+//           <Route path="/login" element={<PublicRoute><Login/></PublicRoute>} />
+//           <Route path="/reset" element={<PublicRoute><ForgotPassword/></PublicRoute>} />
+//         <Route path="/register" element={<PublicRoute><Register/></PublicRoute>} />
+//         <Route path="/" element={<LandingPage/>}/>
+//         <Route path="/verify" element={<Portal/>}/>
+//           <Route element={<ProtectedRoute allowedRoles={["student"]}/>}>
+//               <Route path="/dashboard" element={<Dashboard/>}/>
+//           </Route>
+//
+//           <Route element={<ProtectedRoute allowedRoles={["admin"]}/>}>
+//               <Route path="/admin" element={<AdminDashboard/>}/>
+//           </Route>
+//
+//       </Routes>
+//       </AuthProvider>
+//   )
+// }
+//
+// export default App;
+

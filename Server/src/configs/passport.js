@@ -5,13 +5,12 @@ import User from '../models/userModel.js';
 
 export const passportLocalConfig = (passport) => {
   passport.use(
-    new LocalStrategy(async (username, password, done) => {
+    new LocalStrategy({usernameField: "email"}, async (email, password, done) => {
       try {
-        const user = await User.findByUsername(username);
-        if (!user) return done(null, false, { message: 'Incorrect username.' });
-
+        const user = await User.findByEmail(email);
         const isMatch = await bcrypt.compare(password, user.password_hash);
-        if (!isMatch) return done(null, false, { message: 'Incorrect password.' });
+
+        if (!user || !isMatch) return done(null, false, {message: 'Invalid credentials'})
 
         return done(null, user);
       } catch (err) {

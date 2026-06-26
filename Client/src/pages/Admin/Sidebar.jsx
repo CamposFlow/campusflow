@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
+import {useAuth} from "@/pages/AuthContext.jsx";
 import {
     LayoutDashboard,
     Megaphone,
@@ -15,7 +16,7 @@ import {
 const studentLinks = [
     { icon: LayoutDashboard, label: "Dashboard", path: "overview" },
     { icon: User, label: "Records", path: "record" },
-    { icon: Megaphone, label: "Announcement", path: "Announcements" },
+    { icon: Megaphone, label: "Security", path: "security" },
     { icon: User, label: "Profile", path: "profile" },
 ]
 
@@ -27,12 +28,14 @@ const bottomLinks = [
 export const Sidebar = ({activeTab ,setActiveTab}) => {
     const [mobileOpen, setMobileOpen] = useState(false)
     const navigate = useNavigate()
+    // const {logout}= useAuth();
 
     const handleLogout = () => {
-        toast.success("Successfully Logged Out!")
-        setTimeout(() => {
-            navigate("/login")
-        }, 1500)
+        // logout();
+        // toast.success("Successfully Logged Out!")
+        // setTimeout(() => {
+        //     navigate("/login")
+        // }, 1500)
     }
 
 
