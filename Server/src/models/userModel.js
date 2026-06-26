@@ -1,21 +1,17 @@
 import pool from '../configs/db.js';
 
 class User {
-  static async create(username, email, role, passwordHash) {
+  static async create(fullname, email, role, university, passwordHash) {
     const res = await pool.query( 
-      'INSERT INTO users (username, email, role, password_hash) VALUES ($1, $2, $3, $4) RETURNING id, username, email, role',
-      [username, email, role, passwordHash]
+      'INSERT INTO users (fullname, email, role, university, password_hash) VALUES ($1, $2, $3, $4, $5) RETURNING id, fullname, email, role, university',
+      [fullname, email, role, university, passwordHash]
     );
     return res.rows[0];
   }
 
-  static async findByUsername(username) {
-    const res = await pool.query(
-      'SELECT * FROM users WHERE username = $1',
-      [username.toLowerCase()]
-    );
-    return res.rows[0];
-  }
+
+
+
 
   static async findByEmail(email) {
     const res = await pool.query( 

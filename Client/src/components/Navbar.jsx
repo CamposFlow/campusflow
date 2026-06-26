@@ -48,6 +48,12 @@ rounded-full shadow-sm w-[92%] justify-between md:w-auto md:justify-start`}>
                     {link.label}
                 </ScrollLink>
             ))}
+            <Link 
+        to="/dashboard" 
+        className="text-sm px-4 py-2 whitespace-nowrap rounded-full cursor-pointer transition-all duration-300 text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+    >
+        Dashboard
+    </Link>
 
         </div>
 
