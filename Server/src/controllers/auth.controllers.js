@@ -8,7 +8,7 @@ import { requestPasswordReset, resetPasswordWithOTP } from '../services/auth.ser
 // Helper function for token
 const generateToken = (user) => {
   return jwt.sign(
-    { id: user.id, role: user.role },
+    { id: user.id, fullname: user.fullname, role: user.role },
     process.env.JWT_SECRET,
     { expiresIn: '24h' }
   );

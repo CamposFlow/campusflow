@@ -5,7 +5,7 @@
 ## 🚀 Architectural Circuit Flow
 
 1. **Registration/Login:** User validates credentials against the PostgreSQL database.
-2. **Token Minting:** Upon verification, the server creates a cryptographically signed JWT containing non-sensitive metadata (`id`, `username`, `role`) with a 24-hour expiration window.
+2. **Token Minting:** Upon verification, the server creates a cryptographically signed JWT containing non-sensitive metadata (`id`, `fullname`, `role`) with a 24-hour expiration window.
 3. **Protected Requests:** The client attaches the JWT token via the HTTP `Authorization` header.
 4. **Middleware Inspection:** Passport intercepts the incoming packet, verifies the signature using the server's private `JWT_SECRET`, checks the database, and injects user attributes directly into `req.user`.
 
@@ -32,7 +32,7 @@ To protect the server from Denial of Service (DDoS) loops, brute-force hacking, 
 * **Payload:**
   ```json
   {
-    "username": "kendrick",
+    "fullname": "kendrick jackson",
     "email": "kendrick@example.com",
     "role": "student",
     "password": "securePassword123"
@@ -45,7 +45,7 @@ To protect the server from Denial of Service (DDoS) loops, brute-force hacking, 
     "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "user": {
       "id": "2",
-      "username": "kendrick",
+      "fullname": "kendrick jackson",
       "role": "student"
     }
   }
@@ -57,7 +57,7 @@ To protect the server from Denial of Service (DDoS) loops, brute-force hacking, 
 * **Payload:**
   ```json
   {
-    "username": "kendrick",
+    "fullname": "kendrick jackson",
     "password": "securePassword123"
   }
   ```
@@ -68,7 +68,7 @@ To protect the server from Denial of Service (DDoS) loops, brute-force hacking, 
     "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "user": {
       "id": "2",
-      "username": "kendrick",
+      "fullname": "kendrick jackson",
       "role": "student"
     }
   }
@@ -82,7 +82,7 @@ To protect the server from Denial of Service (DDoS) loops, brute-force hacking, 
   {
     "user": {
       "id": "2",
-      "username": "kendrick",
+      "fullname": "kendrick jackson",
       "email": "kendrick@example.com"
     }
   }
