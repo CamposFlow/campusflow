@@ -19,3 +19,4 @@ router.get('/auth/google/callback', verifyGoogleSigninUser);
 router.get('/me', passport.authenticate('jwt', { session: false }), getMe);
 
 export default router;
+

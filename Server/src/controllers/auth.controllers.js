@@ -16,14 +16,6 @@ const generateToken = (user) => {
 
 export const register = async (req, res, next) => {
   const { fullname, email, role, university, password } = req.body;
-  console.log(req.body);
-
-
-  const testCases = [fullname, email, role, university, password];
-
-  testCases.forEach(e => {
-    if (!e) console.log(e + " is not defined.")
-  })
 
   if (!fullname || !email || !role || !university || !password) {
     return res.status(400).json({ message: 'Fields not completely filled.' });
@@ -107,16 +99,51 @@ export const resetPassword = async (req, res, next) => {
   }
 };
 
-export const loadGoogleConcentScreen = () => {
-  passport.authenticate('google', {scope: ['email', 'profile']})
+export const loadGoogleConcentScreen = (req, res, next) => {
+  passport.authenticate('google', { scope: ['email', 'profile'], session: false })(req, res, next)
 }
 
-export const verifyGoogleSigninUser = () => {
-  passport.authenticate('google', {
-    successRedirect: '/',
-    failureRedirect: '/'
-  })
-}
+export const verifyGoogleSigninUser = (req, res, next) => {
+  passport.authenticate('google', { session: false }, async (err, user, info) => {
+    if (err) {
+      return res.status(500).json({
+        message: 'Internal server error during authentication',
+        error: err.message
+      });
+    }
+    if (!user) {
+      return res.status(401).json({
+        message: info?.message || 'Google authentication failed'
+      });
+    }
+
+    let isNewUser = false;
+    let authorisedUser = await User.findByEmail(user.email);
+    if (!authorisedUser) {
+      authorisedUser = await User.create(user.fullname, user.email);
+      isNewUser = true;
+    }
+
+    try {
+      const token = generateToken(authorisedUser);
+      return res.status(200).json({
+        message: 'Logged in successfully',
+        token: `Bearer ${token}`,
+        user: {
+          id: authorisedUser.id,
+          email: authorisedUser.email,
+          role: authorisedUser.role,
+          isNewUser: isNewUser
+        }
+      });
+    } catch (tokenError) {
+      return res.status(500).json({
+        message: 'Failed to generate access token',
+        error: tokenError.message
+      });
+    }
+  })(req, res, next);
+};
 
 export const getMe = (req, res) => {
   if (req.user) {

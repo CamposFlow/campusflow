@@ -43,8 +43,22 @@ export const passportOauthGoogleConfig = (passport) => {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "http://localhost:3000/auth/google/callback",
-
   }, async (accessToken, refreshToken, profile, done) => {
-    console.log({googleId: profile.id, });
-  }))
-}
+    try {
+      const emailString = profile.emails && profile.emails.length > 0 
+        ? profile.emails[0].value 
+        : null;
+
+      if (!emailString) {
+        return done(new Error("No email associated with this Google account"), null);
+      }
+      const user = {
+        fullname: profile.displayName,
+        email: emailString,
+      };
+      return done(null, user);
+    } catch (error) {
+      return done(error, null);
+    }
+  }));
+};
