@@ -25,8 +25,6 @@ export const register = async (req, res, next) => {
     if (!e) console.log(e + " is not defined.")
   })
 
-
-
   if (!fullname || !email || !role || !university || !password) {
     return res.status(400).json({ message: 'Fields not completely filled.' });
   }
@@ -108,6 +106,17 @@ export const resetPassword = async (req, res, next) => {
     return res.status(400).json({ error: err.message || 'Failed to reset password.' });
   }
 };
+
+export const loadGoogleConcentScreen = () => {
+  passport.authenticate('google', {scope: ['email', 'profile']})
+}
+
+export const verifyGoogleSigninUser = () => {
+  passport.authenticate('google', {
+    successRedirect: '/',
+    failureRedirect: '/'
+  })
+}
 
 export const getMe = (req, res) => {
   if (req.user) {
