@@ -1,3 +1,214 @@
+# 🚀 CampusFlow
+
+CampusFlow is a blockchain-powered university management platform designed to streamline student clearance, certificate verification, incident reporting, and document management across higher institutions.
+
+The platform combines blockchain technology with a secure backend to ensure transparency, tamper-proof records, and efficient communication.
+
+---
+
+## 📌 Core Features
+
+* 🎓 Digital Certificate Issuance
+* ✅ Student Clearance Management
+* 🔐 Blockchain-backed Certificate Verification
+* 🚨 Campus Emergency & Incident Reporting
+* 📂 Secure Physical Document Storage
+* 🏫 Multi-University Support
+* 🤖 Telegram Security Alerts using Alerta
+
+---
+
+## 🏗️ System Architecture
+
+```
+Frontend (React + Vite)
+        │
+        ▼
+Backend (Node.js + Express)
+        │
+        ├── PostgreSQL Database
+        ├── Solana Blockchain
+        └── Alerta API
+                │
+                ▼
+        Telegram Security Group
+```
+
+Telegram Group For Alerta Alerts:
+
+https://t.me/campusflowteam
+
+---
+
+# Database Schema
+
+## Universities
+
+Stores all registered institutions.
+
+```sql
+CREATE TABLE universities (
+    id UUID PRIMARY KEY,
+    university_id TEXT UNIQUE,
+    name TEXT NOT NULL,
+    admin TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    timestamp BIGINT,
+    tx_signature TEXT,
+    pda_address TEXT
+);
+```
+
+---
+
+## Certificates
+
+Stores issued digital certificates.
+
+```sql
+CREATE TABLE certificates (
+    id UUID PRIMARY KEY,
+    hash TEXT UNIQUE NOT NULL,
+    student_id TEXT NOT NULL,
+    student_name TEXT NOT NULL,
+    certificate_type TEXT NOT NULL,
+    institution TEXT NOT NULL,
+    university_id TEXT REFERENCES universities(university_id),
+    timestamp BIGINT,
+    is_valid BOOLEAN DEFAULT TRUE,
+    tx_signature TEXT,
+    pda_address TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+## Incidents
+
+Stores emergency incidents reported by students.
+
+```sql
+CREATE TABLE incidents (
+    id UUID PRIMARY KEY,
+    incident_id TEXT UNIQUE NOT NULL,
+    student_id TEXT NOT NULL,
+    student_name TEXT NOT NULL,
+    category TEXT NOT NULL,
+    location_text TEXT,
+    latitude TEXT NOT NULL,
+    longitude TEXT NOT NULL,
+    description TEXT NOT NULL,
+    university_id TEXT REFERENCES universities(university_id),
+    timestamp BIGINT,
+    is_resolved BOOLEAN DEFAULT FALSE,
+    tx_signature TEXT,
+    pda_address TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+## Verification Records
+
+Stores every certificate verification carried out.
+
+```sql
+CREATE TABLE verification_records (
+    id UUID PRIMARY KEY,
+    document_hash TEXT NOT NULL REFERENCES certificates(hash),
+    verifier_org TEXT NOT NULL,
+    verifier_id TEXT NOT NULL,
+    university_id TEXT REFERENCES universities(university_id),
+    timestamp BIGINT,
+    tx_signature TEXT,
+    pda_address TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+## Clearance Records
+
+Stores each approval stage of the student clearance process.
+
+```sql
+CREATE TABLE clearance_records (
+    id UUID PRIMARY KEY,
+    student_id TEXT NOT NULL,
+    student_name TEXT NOT NULL,
+    stage_name TEXT NOT NULL,
+    document_hash TEXT NOT NULL,
+    staff_id TEXT NOT NULL,
+    university_id TEXT REFERENCES universities(university_id),
+    timestamp BIGINT,
+    is_approved BOOLEAN DEFAULT FALSE,
+    tx_signature TEXT,
+    pda_address TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+## Documents
+
+Stores uploaded physical documents required during clearance.
+
+```sql
+CREATE TABLE documents (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    student_id TEXT NOT NULL,
+    university_id TEXT REFERENCES universities(university_id),
+    stage_name TEXT NOT NULL,
+    file_name TEXT NOT NULL,
+    file_url TEXT NOT NULL,
+    file_type TEXT,
+    is_approved BOOLEAN DEFAULT FALSE,
+    uploaded_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+---
+
+---
+
+# Project Flow
+
+```
+Student
+    │
+    ▼
+React Frontend
+    │
+    ▼
+Express Backend
+    │
+    ├── PostgreSQL
+    ├── Solana Blockchain
+    └── Alerta API
+            │
+            ▼
+Telegram Security Team
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Campus Flow - Core Authentication & Security API
 
 ---
