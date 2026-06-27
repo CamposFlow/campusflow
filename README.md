@@ -341,6 +341,42 @@ To protect the server from Denial of Service (DDoS) loops, brute-force hacking, 
     "message": "Logged out successfully. Please delete the token from client storage."
   }
   ```
+### 📡 Google OAuth 2.0 Endpoints
+
+#### 1. Initiate Google Authentication
+* **Endpoint:** `GET /auth/google`
+* **Description:** Initiates the Google OAuth 2.0 flow. **Do not** fetch this route with Axios or the Fetch API; it must be called directly via browser navigation.
+* **Frontend Implementation Blueprint:**
+  ```html
+  <!-- HTML Link -->
+  <a href="http://localhost:3000/auth/google">Sign in with Google</a>
+  ```
+  ```javascript
+  // JavaScript Handler
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:3000/auth/google";
+  };
+  ```
+
+#### 2. Google OAuth Callback Validation
+* **Endpoint:** `GET /auth/google/callback`
+* **Description:** Automatically targeted by Google upon successful user authentication to verify profiles, manage database persistence, and mint sessions.
+* **Success Response (`200 OK`):**
+  ```json
+  {
+    "message": "Logged in successfully",
+    "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": 12,
+      "email": "student@example.com",
+      "role": null,
+      "isNewUser": true
+    }
+  }
+  ```
+* **Frontend Workflow Logic:**
+  * **If `isNewUser: true`**: Intercept the flow and redirect the user layout straight to the onboarding screen (`/complete-profile`) to harvest required fields like `university` and `role`.
+  * **If `isNewUser: false`**: Access token is valid for returning accounts; redirect directly to the main workspace dashboard.
 
 ---
 
