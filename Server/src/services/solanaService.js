@@ -28,7 +28,8 @@ export const getUniversity = async (universityId) => {
     const data = await program.account.university.fetch(universityPDA);
 
     return{
-        universityPDA : data.universityId,
+        universityPDA : universityPDA.toString(),
+        universityId : data.universityId,
         name : data.name,
         admin : data.admin.toString(),
         timestamp : data.timestamp.toString(),

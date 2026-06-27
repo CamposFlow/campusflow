@@ -5,6 +5,8 @@ import {fetchAllUniversity} from '../controllers/solana.controllers.js'
 const routes = express.Router();
 
 routes.post('/', createUniversity);
-export default routes;
+
 
 routes.get('/',  fetchAllUniversity);
+
+export default routes;

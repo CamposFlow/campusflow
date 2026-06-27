@@ -4,22 +4,41 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Siren, AlertTriangle, Zap, ShieldAlert, HeartPulse } from 'lucide-react';
 import axios from 'axios';
-
+import {toast} from "react-hot-toast";
+import api from "@/api/axios.js";
 
 function SOSPanel() {
  const [topic, setTopic] = useState('');
+    const [locationText, setLocationText] = useState("");
+    const [description, setDescription] = useState("");
+    const [photo, setPhoto] = useState(null);
+    const [submitting, setSubmitting] = useState(false);
 
     const sendAlert = async () => {
-        try {
-            const res = await axios.post("http://localhost:3000/api/telegram/send", {
-                message: "STUDENT NEEDS EMERGENT HELP AT LOCATION ...................",
-                channelRef: "TG_ALT_JQPZOZ73WKSZKLC"
-            });
-
-            console.log(res.data);
-        } catch (err) {
-            console.error(err);
-        }
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { longitude, latitude } = position.coords;
+                try {
+                    const res = await api.post("/api/telegram/send", {
+                        latitude,
+                        longitude,
+                    });
+                    toast.success("Alert sent! Help is on the way.");
+                } catch (err) {
+                    console.error(err);
+                    toast.error("Failed to send alert. Try again or call security directly.");
+                }
+            },
+            (error) => {
+                console.log("Location error:", error.message);
+                alert("Please allow location access so we can send your location");
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0,
+            }
+        );
     };
 
     const [holding, setHolding] = useState(false);
@@ -35,6 +54,49 @@ function SOSPanel() {
             {icon: ShieldAlert, title: 'Unauthorized Access', desc: 'Report trespassers or security breach', color: 'text-purple-500', bg: 'bg-purple-50', border: 'border-purple-200', id: 'unauthorized'},
         {icon:HeartPulse, title: "Medical Concern", desc: 'Medical Emergency', color:'text-red-500', bg:'bg-red-50', border: 'border-red-200', id: 'medical'},
     ]
+
+    const handleSubmitReport = async () => {
+        if (!locationText.trim() || !description.trim()) {
+            toast.error("Please fill in location and description.");
+            return;
+        }
+
+        setSubmitting(true);
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { longitude, latitude } = position.coords;
+                try {
+                    await api.post("/api/telegram/report", {
+                        category: activeReport,
+                        locationText,
+                        description,
+                        longitude,
+                        latitude,
+                    });
+                    toast.success("Report submitted!");
+                    setLocationText("");
+                    setDescription("");
+                    setPhoto(null);
+                    setActiveReport(null);
+                } catch (err) {
+                    toast.error("Failed to submit report. Try again.");
+                } finally {
+                    setSubmitting(false);
+                }
+            },
+            (error) => {
+                console.log("Location error:", error.message);
+                toast.error("Please allow location access so we can send your location.");
+                setSubmitting(false);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0,
+            }
+        );
+    };
 
     function startHold() {
         if (fired || holding) return;
@@ -201,6 +263,8 @@ function SOSPanel() {
                                 </label>
                                 <input
                                     type="text"
+                                    value={locationText}
+                                    onChange={(e) => setLocationText(e.target.value)}
                                     placeholder="e.g. Engineering Block, Gate 2..."
                                     className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500"
                                 />
@@ -211,6 +275,8 @@ function SOSPanel() {
                                     Description
                                 </label>
                                 <textarea
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
                                     rows={4}
                                     placeholder="Describe what happened..."
                                     className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 resize-none"
@@ -224,18 +290,18 @@ function SOSPanel() {
                                 <input
                                     type="file"
                                     accept="image/*"
+                                    onChange={(e) => setPhoto(e.target.files[0])}
                                     className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
                                 />
                             </div>
 
                             <button
-                                onClick={() => {
-                                    alert('Report submitted!');
-                                    setActiveReport(null);
-                                }}
+                                onClick={handleSubmitReport
+                                }
+                                disabled={submitting}
                                 className="w-full bg-[#2563EB] text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all"
                             >
-                                Submit Report
+                                {submitting ? "Submitting..." : "Submit Report"}
                             </button>
                         </div>
                     </motion.div>

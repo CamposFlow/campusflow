@@ -2,21 +2,6 @@ import axios from "axios";
 
 
 
-export const sendAlerts = async (title, message) => {
-    try{
-        await axios.post("/api/alerts", {
-            title,
-            message,
-        },{
-            headers: {
-                authorization: `Bearer ${process.env.REACT_APP_AUTH_TOKEN}`,
-            },
-        });
-    }catch(err){
-        console.error(err.response?.data || err.message);
-    }
-};
-
 const api = axios.create({
     baseURL: "http://localhost:3000",
     headers: { 'Content-Type': 'application/json' }
