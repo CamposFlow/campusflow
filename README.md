@@ -341,6 +341,7 @@ To protect the server from Denial of Service (DDoS) loops, brute-force hacking, 
     "message": "Logged out successfully. Please delete the token from client storage."
   }
   ```
+  ```
 ### 📡 Google OAuth 2.0 Endpoints
 
 #### 1. Initiate Google Authentication
