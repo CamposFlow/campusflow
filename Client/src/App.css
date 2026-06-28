@@ -222,27 +222,40 @@ html {
   will-change: transform, box-shadow;
 }
 
-@keyframes pulse-select {
-  0%,
-  100% {
-    transform: scale(1);
+@keyframes pulse-border {
+  0% {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.12);
+  }
+  25% {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
   }
   50% {
-    transform: scale(1.03);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+  }
+  75% {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.1);
+  }
+  100% {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.12);
   }
 }
 
 .pulse-select {
-  animation: pulse-select 1.8s ease-in-out infinite;
-  will-change: transform;
+  animation: pulse-border 2.2s ease-in-out infinite;
+  will-change: border-color, box-shadow;
 }
 
 .pulse-select-item {
-  animation: pulse-select 2s ease-in-out infinite;
+  animation: pulse-border 2.4s ease-in-out infinite;
 }
 
 .pulse-button {
-  animation: pulse-select 1.6s ease-in-out infinite;
+  animation: pulse-border 1.8s ease-in-out infinite;
 }
 
 @keyframes panel-landing {
@@ -264,6 +277,7 @@ html {
   transition: width 0.9s ease-out 0.7s;
 }
 
+<<<<<<< Updated upstream
 .leaflet-popup-content-wrapper {
   background: #0A1628;
   color: white;
@@ -294,3 +308,25 @@ html {
 .leaflet-bottom {
   z-index: 1 !important;
 }
+=======
+@keyframes avatar-click {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.12);
+  }
+  70% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-avatar-click {
+  animation: avatar-click 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+  will-change: transform;
+}
+>>>>>>> Stashed changes

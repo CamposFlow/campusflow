@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import Loaders from "@/components/Loaders.jsx";
 import { SIDEBAR_LINKS } from "../constants/sidebarLinks.js";
 import { OverviewPanel } from "@/Panels/OverviewPanel.jsx";
@@ -31,6 +33,7 @@ import {
 } from "lucide-react";
 import { BarChart } from "recharts";
 import { ProfileAvatar } from "@/components/Profile.jsx";
+import { useAuth } from "@/pages/AuthContext.jsx";
 
 /* ─────────────────────────────────────────────
    Tiny inline-style helpers (no extra deps)
@@ -115,6 +118,8 @@ const Profile = ({ student, stats, activities }) => {
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const student = {
     name: "John Doe",
@@ -280,6 +285,14 @@ const StudentDashboard = () => {
       setLoading1(false);
     }, 6000);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    toast.success("Successfully logged out!");
+    setTimeout(() => {
+      navigate("/login");
+    }, 800);
+  };
   if (loading1) {
     return <Loaders />;
   }
@@ -333,7 +346,11 @@ const StudentDashboard = () => {
         <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors">
           <Settings className="w-4 h-4 text-gray-400" /> Settings
         </button>
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 transition-colors">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-800 hover:bg-red-300/20 hover:text-red-400 transition-colors"
+        >
           <LogOut className="w-4 h-4" /> Logout
         </button>
       </div>

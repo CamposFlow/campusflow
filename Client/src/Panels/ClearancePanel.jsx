@@ -127,12 +127,12 @@ export const ClearancePanel = ({ clearances }) => {
       </div>
       <div
         style={{ width: 210 }}
-        className="bg-blue-50 border border-blue-200 rounded-2xl p-3 flex gap-4 items-start mb-4 pulse-select"
+        className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-3 flex gap-4 items-start mb-4 pulse-button"
       >
         <select
           value={selected}
           onChange={(e) => setSelected(e.target.value)}
-          className="text-sm text-blue-700 bg-transparent pulse-select-item"
+          className="text-sm text-blue-700 bg-transparent"
         >
           <option value="">List of Clearance</option>
           {dropdownOptions.map((opt) => (
@@ -161,7 +161,7 @@ export const ClearancePanel = ({ clearances }) => {
               <div className="flex items-center gap-3">
                 <button
                   onClick={openFilePicker}
-                  className="px-3 py-2 bg-blue-600 text-white rounded-2xl text-sm pulse-button hover:bg-blue-700 transition-all duration-300"
+                  className="px-3 py-2 rounded-2xl text-sm pulse-button border-2 border-blue-200 text-blue-700 bg-transparent hover:bg-blue-50 transition-all duration-300"
                 >
                   Upload files
                 </button>
