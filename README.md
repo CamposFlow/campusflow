@@ -1,24 +1,34 @@
-# 🚀 CampusFlow
+# CampusFlow
 
-CampusFlow is a blockchain-powered university management platform designed to streamline student clearance, certificate verification, incident reporting, and document management across higher institutions.
-
-The platform combines blockchain technology with a secure backend to ensure transparency, tamper-proof records, and efficient communication.
+A blockchain-powered university management platform for student clearance, certificate verification, incident reporting, and document management.
 
 ---
 
-## 📌 Core Features
+## Table of Contents
 
-* 🎓 Digital Certificate Issuance
-* ✅ Student Clearance Management
-* 🔐 Blockchain-backed Certificate Verification
-* 🚨 Campus Emergency & Incident Reporting
-* 📂 Secure Physical Document Storage
-* 🏫 Multi-University Support
-* 🤖 Telegram Security Alerts using Alerta
+- [Core Features](#core-features)
+- [System Architecture](#system-architecture)
+- [Database Schema](#database-schema)
+- [Authentication & Security API](#authentication--security-api)
+- [API Reference](#api-reference)
+- [Frontend Implementation](#frontend-implementation)
+- [Local Development](#local-development)
 
 ---
 
-## 🏗️ System Architecture
+## Core Features
+
+- Digital Certificate Issuance
+- Student Clearance Management
+- Blockchain-backed Certificate Verification
+- Campus Emergency & Incident Reporting
+- Secure Physical Document Storage
+- Multi-University Support
+- Telegram Security Alerts via Alerta
+
+---
+
+## System Architecture
 
 ```
 Frontend (React + Vite)
@@ -34,17 +44,13 @@ Backend (Node.js + Express)
         Telegram Security Group
 ```
 
-Telegram Group For Alerta Alerts:
-
-https://t.me/campusflowteam
+Telegram alerts channel: https://t.me/campusflowteam
 
 ---
 
-# Database Schema
+## Database Schema
 
-## Universities
-
-Stores all registered institutions.
+### Universities
 
 ```sql
 CREATE TABLE universities (
@@ -59,11 +65,7 @@ CREATE TABLE universities (
 );
 ```
 
----
-
-## Certificates
-
-Stores issued digital certificates.
+### Certificates
 
 ```sql
 CREATE TABLE certificates (
@@ -82,11 +84,7 @@ CREATE TABLE certificates (
 );
 ```
 
----
-
-## Incidents
-
-Stores emergency incidents reported by students.
+### Incidents
 
 ```sql
 CREATE TABLE incidents (
@@ -108,11 +106,7 @@ CREATE TABLE incidents (
 );
 ```
 
----
-
-## Verification Records
-
-Stores every certificate verification carried out.
+### Verification Records
 
 ```sql
 CREATE TABLE verification_records (
@@ -128,11 +122,7 @@ CREATE TABLE verification_records (
 );
 ```
 
----
-
-## Clearance Records
-
-Stores each approval stage of the student clearance process.
+### Clearance Records
 
 ```sql
 CREATE TABLE clearance_records (
@@ -151,11 +141,7 @@ CREATE TABLE clearance_records (
 );
 ```
 
----
-
-## Documents
-
-Stores uploaded physical documents required during clearance.
+### Documents
 
 ```sql
 CREATE TABLE documents (
@@ -173,182 +159,203 @@ CREATE TABLE documents (
 
 ---
 
+## Authentication & Security API
+
+### Auth Flow
+
+1. **Registration/Login** — Credentials validated against PostgreSQL.
+2. **Token Minting** — Server issues a signed JWT containing `id`, `fullname`, and `role` with a 24-hour expiry.
+3. **Protected Requests** — Client attaches the JWT via the `Authorization` header.
+4. **Middleware Inspection** — Passport verifies the signature using `JWT_SECRET`, checks the database, and injects the user into `req.user`.
+
+### Rate Limiting
+
+| Scope | Endpoints | Limit | Purpose |
+|---|---|---|---|
+| Global | All endpoints | 120 req / 1 min | Protects overall server |
+| Auth | `/login`, `/register` | 30 req / 5 min | Safe for shared campus Wi-Fi |
+| OTP | `/forgot-password`, `/reset-password` | 5 req / 15 min | Prevents mail API abuse |
+
 ---
 
-# Project Flow
+## API Reference
 
+### `POST /register`
+
+**Content-Type:** `application/json`
+
+**Request:**
+```json
+{
+  "fullname": "kendrick jackson",
+  "email": "kendrick@example.com",
+  "role": "student",
+  "password": "securePassword123"
+}
 ```
-Student
-    │
-    ▼
-React Frontend
-    │
-    ▼
-Express Backend
-    │
-    ├── PostgreSQL
-    ├── Solana Blockchain
-    └── Alerta API
-            │
-            ▼
-Telegram Security Team
+
+**Response `201`:**
+```json
+{
+  "message": "User registered successfully",
+  "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "2",
+    "fullname": "kendrick jackson",
+    "role": "student"
+  }
+}
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Campus Flow - Core Authentication & Security API
-
 ---
 
-## 🚀 Architectural Circuit Flow
+### `POST /login`
 
-1. **Registration/Login:** User validates credentials against the PostgreSQL database.
-2. **Token Minting:** Upon verification, the server creates a cryptographically signed JWT containing non-sensitive metadata (`id`, `fullname`, `role`) with a 24-hour expiration window.
-3. **Protected Requests:** The client attaches the JWT token via the HTTP `Authorization` header.
-4. **Middleware Inspection:** Passport intercepts the incoming packet, verifies the signature using the server's private `JWT_SECRET`, checks the database, and injects user attributes directly into `req.user`.
+**Request:**
+```json
+{
+  "fullname": "kendrick jackson",
+  "password": "securePassword123"
+}
+```
 
-
----
-
-## 🛑 Layered Rate Limiting Thresholds
-
-To protect the server from Denial of Service (DDoS) loops, brute-force hacking, and email API cost exhaustion, client IPs are throttled dynamically across endpoints:
-
-| Scope | Apply Area | Threshold Constraint | Purpose |
-| :--- | :--- | :--- | :--- |
-| **Global Limiter** | All App Endpoints | Max 120 requests / 1 minute | Protects overall server infrastructure |
-| **Auth Limiter** | `/login`, `/register` | Max 30 requests / 5 minutes | Designed safely for shared school Wi-Fi IPs |
-| **OTP Limiter** | `/forgot-password`, `/reset-password` | Max 5 requests / 15 minutes | Prevents mail server resource spam abuse |
-
----
-
-## 📡 API Endpoint Reference
-
-### 1. Account Creation
-* **Endpoint:** `POST /register`
-* **Content-Type:** `application/json`
-* **Payload:**
-  ```json
-  {
+**Response `200`:**
+```json
+{
+  "message": "Logged in successfully",
+  "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "2",
     "fullname": "kendrick jackson",
-    "email": "kendrick@example.com",
-    "role": "student",
-    "password": "securePassword123"
+    "role": "student"
   }
-  ```
-* **Response (`201 Created`):**
-  ```json
-  {
-    "message": "User registered successfully",
-    "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-      "id": "2",
-      "fullname": "kendrick jackson",
-      "role": "student"
-    }
-  }
-  ```
-
-### 2. User Authentication
-* **Endpoint:** `POST /login`
-* **Content-Type:** `application/json`
-* **Payload:**
-  ```json
-  {
-    "fullname": "kendrick jackson",
-    "password": "securePassword123"
-  }
-  ```
-* **Response (`200 OK`):**
-  ```json
-  {
-    "message": "Logged in successfully",
-    "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    "user": {
-      "id": "2",
-      "fullname": "kendrick jackson",
-      "role": "student"
-    }
-  }
-  ```
-
-### 3. Fetch User Context
-* **Endpoint:** `GET /me`
-* **Required Header:** `Authorization: Bearer <your_jwt_token>`
-* **Response (`200 OK`):**
-  ```json
-  {
-    "user": {
-      "id": "2",
-      "fullname": "kendrick jackson",
-      "email": "kendrick@example.com"
-    }
-  }
-  ```
-
-### 4. Password Recovery Request
-* **Endpoint:** `POST /forgot-password`
-* **Payload:**
-  ```json
-  {
-    "email": "prayskeyo@gmail.com"
-  }
-  ```
-* **Response (`200 OK`):**
-  *(Note: This returns 200 regardless of database existence to prevent account harvesting)*
-  ```json
-  {
-    "message": "If that email address exists in our system, an OTP code has been sent."
-  }
-  ```
-
-### 5. Finalize Password Reset
-* **Endpoint:** `POST /reset-password`
-* **Payload:**
-  ```json
-  {
-    "email": "prayskeyo@gmail.com",
-    "otp": "482019",
-    "newPassword": "campusFlowSecure2026"
-  }
-  ```
-* **Response (`200 OK`):**
-  ```json
-  {
-    "message": "Password reset successful. You can now log in with your new password."
-  }
-  ```
-* **Potential Errors (`400 Bad Request`):** `{"error": "Invalid OTP"}`, `{"error": "OTP expired"}`
-
-### 6. Session Invalidation
-* **Endpoint:** `GET /logout`
-* **Response (`200 OK`):**
-  ```json
-  {
-    "message": "Logged out successfully. Please delete the token from client storage."
-  }
-  ```
+}
+```
 
 ---
 
-## 💻 Frontend Implementation Blueprint (Axios)
+### `GET /me`
 
-Integrate this interceptor engine inside your frontend source layout to handle authorization headers and track expired tokens effortlessly:
+**Headers:** `Authorization: Bearer <token>`
 
-```javascript
+**Response `200`:**
+```json
+{
+  "user": {
+    "id": "2",
+    "fullname": "kendrick jackson",
+    "email": "kendrick@example.com"
+  }
+}
+```
+
+---
+
+### `POST /forgot-password`
+
+> Returns `200` regardless of whether the email exists, to prevent account enumeration.
+
+**Request:**
+```json
+{
+  "email": "user@example.com"
+}
+```
+
+**Response `200`:**
+```json
+{
+  "message": "If that email address exists in our system, an OTP code has been sent."
+}
+```
+
+---
+
+### `POST /reset-password`
+
+**Request:**
+```json
+{
+  "email": "user@example.com",
+  "otp": "482019",
+  "newPassword": "campusFlowSecure2026"
+}
+```
+
+**Response `200`:**
+```json
+{
+  "message": "Password reset successful. You can now log in with your new password."
+}
+```
+
+**Errors `400`:**
+```json
+{ "error": "Invalid OTP" }
+{ "error": "OTP expired" }
+```
+
+---
+
+### `GET /logout`
+
+**Response `200`:**
+```json
+{
+  "message": "Logged out successfully. Please delete the token from client storage."
+}
+```
+
+---
+
+## Google OAuth 2.0
+
+### `GET /auth/google`
+
+Initiates the OAuth flow. Must be triggered via browser navigation — **do not use Axios or Fetch**.
+
+```html
+<a href="http://localhost:3000/auth/google">Sign in with Google</a>
+```
+
+```js
+const handleGoogleLogin = () => {
+  window.location.href = "http://localhost:3000/auth/google";
+};
+```
+
+---
+
+### `GET /auth/google/callback`
+
+Handled automatically by Google after authentication. Verifies the profile, persists to the database, and mints a session.
+
+**Response `200`:**
+```json
+{
+  "message": "Logged in successfully",
+  "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 12,
+    "email": "student@example.com",
+    "role": null,
+    "isNewUser": true
+  }
+}
+```
+
+**Frontend logic:**
+
+- `isNewUser: true` → Redirect to `/complete-profile` to collect `university` and `role`.
+- `isNewUser: false` → Redirect directly to the dashboard.
+
+---
+
+## Frontend Implementation
+
+Axios instance with automatic JWT injection and 401 handling:
+
+```js
 import axios from 'axios';
 
 const api = axios.create({
@@ -356,21 +363,20 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' }
 });
 
-// Request Interceptor: Automatically appends the JWT bearer token
+// Attach JWT to every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
-    config.headers.Authorization = token; // Must include 'Bearer ' string prefix
+    config.headers.Authorization = token; // Must include 'Bearer ' prefix
   }
   return config;
 }, (error) => Promise.reject(error));
 
-// Response Interceptor: Catches 401 token expirations and re-routes users cleanly
+// Handle token expiry
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
-      console.warn('Access token expired. Wiping cache and redirecting to login...');
+    if (error.response?.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';
     }
@@ -383,18 +389,17 @@ export default api;
 
 ---
 
-## 🏃 Local Development Initialization
-
-To launch your development ecosystem locally, navigate to your workspace directory and execute the following commands:
+## Local Development
 
 ```bash
-# 1. Access Server Workspace directory
+# Navigate to server directory
 cd Server
 
-# 2. Extract and establish all packages
+# Install dependencies
 npm install
 
-# 3. Boot runtime daemon via Nodemon
+# Start development server
 npm run dev
 ```
-Your backend will spin up instantly at `http://localhost:3000`.
+
+Server runs at `http://localhost:3000`.

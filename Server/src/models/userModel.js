@@ -1,7 +1,7 @@
 import pool from '../configs/db.js';
 
 class User {
-  static async create(fullname, email, role, university, passwordHash) {
+  static async create(fullname, email, role= null, university=null, passwordHash=null) {
     const res = await pool.query( 
       'INSERT INTO users (fullname, email, role, university, password_hash) VALUES ($1, $2, $3, $4, $5) RETURNING id, fullname, email, role, university',
       [fullname, email, role, university, passwordHash]

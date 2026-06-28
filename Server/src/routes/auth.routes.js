@@ -1,7 +1,7 @@
 import express from 'express';
-import passport from 'passport'; 
-import { register, login, logout, forgotPassword, resetPassword, getMe } from '../controllers/auth.controllers.js';
-import { authRateLimiter, passwordResetRateLimiter } from '../middlewares/rateLimiter.middleware.js'; 
+import passport from 'passport';
+import { register, login, logout, forgotPassword, resetPassword, getMe, loadGoogleConcentScreen, verifyGoogleSigninUser } from '../controllers/auth.controllers.js';
+import { authRateLimiter, passwordResetRateLimiter } from '../middlewares/rateLimiter.middleware.js';
 
 const router = express.Router();
 
@@ -14,6 +14,9 @@ router.post('/forgot-password', passwordResetRateLimiter, forgotPassword);
 router.post('/reset-password', passwordResetRateLimiter, resetPassword);
 
 router.get('/logout', logout);
+router.get('/auth/google', loadGoogleConcentScreen);
+router.get('/auth/google/callback', verifyGoogleSigninUser);
 router.get('/me', passport.authenticate('jwt', { session: false }), getMe);
 
 export default router;
+

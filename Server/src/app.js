@@ -4,7 +4,7 @@ configDotenv();
 import express from 'express';
 import cors from 'cors';
 import passport from 'passport';
-import { passportLocalConfig } from './configs/passport.js';
+import { passportLocalConfig, passportOauthGoogleConfig } from './configs/passport.js';
 import authRoutes from './routes/auth.routes.js';
 import { globalRateLimiter } from './middlewares/rateLimiter.middleware.js'; 
 import solanaRoutes from './routes/solana.routes.js'
@@ -28,6 +28,7 @@ app.use((req, res, next) => {
   next();
 });
 
+passportOauthGoogleConfig(passport);
 passportLocalConfig(passport);
 app.use(passport.initialize());
 
