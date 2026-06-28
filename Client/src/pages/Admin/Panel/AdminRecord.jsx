@@ -2,8 +2,9 @@ import React, { useState } from "react"
 import {Search, Plus, Eye, ShieldOff, ShieldCheck, Link2, ClipboardPaste, X} from "lucide-react"
 import {AnimatePresence, motion} from "framer-motion"
 import {Button} from "@/components/ui/button.jsx";
+import IssueCertificateModal from "@/pages/Admin/Panel/IssueCertificateModal.jsx";
 
-const years = ["2021", "2022", "2023", "2024", "2025"]
+const years = [ "2022","2023", "2024", "2025"]
 
 const mockCertificates = [
     { id: 1, studentName: "Chukwuemeka Obi", studentId: "FUT/SET/21/0001", type: "B.Tech", date: "2025-06-01", isValid: true },
@@ -22,6 +23,7 @@ const certificateData = {
 }
 
 const AdminRecords = () => {
+    const [isIssueOpen, setIsIssueOpen] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [activeYear, setActiveYear] = useState("2025")
     const [search, setSearch] = useState("")
@@ -32,34 +34,39 @@ const AdminRecords = () => {
     )
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="space-y-6">
 
-            {/* Header */}
+
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Records</h1>
-                    <p className="text-sm text-gray-400 mt-0.5">All certificates issued by your institution</p>
+                    <p className="break-normal text-sm text-gray-400 mt-0.5 ">All certificates issued by your institution</p>
                 </div>
-                <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
+                <Button
+                    onClick={() => setIsIssueOpen(true)}
+                    className="whitespace-nowrap flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm
+                 font-medium px-4 py-2.5 rounded-lg transition-colors">
                     <Plus size={16} />
                     Issue Certificate
-                </button>
+                </Button>
             </div>
 
-            {/* Search */}
-            <div className="relative max-w-sm">
-                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
+
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+                <div className="relative">
+                    <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                    <input
                     type="text"
                     placeholder="Search by name or ID..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500"
+                    />
+                </div>
             </div>
 
-            {/* Year Tabs */}
-            <div className="flex items-center gap-2">
+
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-2 flex gap-2 relative">
                 {years.map((year) => (
                     <button
                         key={year}
@@ -75,8 +82,9 @@ const AdminRecords = () => {
                 ))}
             </div>
 
-            {/* Table */}
-            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                     <thead>
                     <tr className="border-b border-gray-100 bg-gray-50">
@@ -89,6 +97,7 @@ const AdminRecords = () => {
                     </tr>
                     </thead>
                     <tbody>
+                    <AnimatePresence>
                     {filtered.map((cert, index) => (
                         <motion.tr
                             key={cert.id}
@@ -126,8 +135,10 @@ onClick={() => setShowModal(true)}
                             </td>
                         </motion.tr>
                     ))}
+                    </AnimatePresence>
                     </tbody>
                 </table>
+            </div>
 
                 {filtered.length === 0 && (
                     <div className="text-center py-12 text-gray-400 text-sm">
@@ -173,7 +184,7 @@ onClick={() => setShowModal(true)}
                                     Issued by <span className="font-medium text-slate-700">{certificateData.universityName}</span>
                                 </p>
 
-                                {/* This certifies that */}
+
                                 <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">This certifies that</p>
                                 <p className="text-2xl font-semibold text-slate-900 mb-8">
                                     {certificateData.studentName}
@@ -224,7 +235,7 @@ onClick={() => setShowModal(true)}
                     </motion.div>
                 )}
             </AnimatePresence>
-
+s
         </div>
     )
 }

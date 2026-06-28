@@ -289,8 +289,8 @@ const StudentDashboard = () => {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="h-20 px-5 border-b border-gray-100 flex items-center">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+        <div className="flex items-center">
+          <div className="w-10 h-10 rounded-lg flex items-center justify-center">
             <img src="./LOGO1.png" alt="CampusFlow" className="w-9 h-9" />
           </div>
           <span className="font-bold text-gray-900 text-base tracking-tight">

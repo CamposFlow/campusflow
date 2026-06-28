@@ -17,6 +17,7 @@ const AdminLink = [
     { icon: LayoutDashboard, label: "Dashboard", path: "overview" },
     { icon: User, label: "Records", path: "record" },
     { icon: Shield, label: "Security", path: "security" },
+    {icon: User, label: "Student Info", path: "student" },
 ]
 
 const AdminbottomLinks = [
@@ -69,8 +70,8 @@ export const AdminSidebar = ({activeTab ,setActiveTab}) => {
                     <X className="w-5 h-5" />
                 </button>
                 <div className="px-6 py-5 border-b border-white/10">
-                    <div className="flex items-center gap-3">
-                        <img src="/logo.png" alt="CampusFlow" className="w-9 h-9" />
+                    <div className="flex items-center gap-2">
+                        <img src="./LOGO1.png" alt="CampusFlow" className="w-10 h-10" />
                         <div>
                             <p className="text-gray-900 font-bold text-base leading-none">
                                 Campus<span className="text-blue-600">Flow</span>

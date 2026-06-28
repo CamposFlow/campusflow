@@ -6,6 +6,8 @@ import React from "react";
 import {Sidebar} from "@/pages/Staff/Sidebar.jsx";
 import {useState} from "react";
 import {Bell} from "lucide-react";
+import AdminSecurity from "@/pages/Admin/Panel/AdminSecurity.jsx";
+import {AdminStudent} from "@/pages/Admin/Panel/AdminStudent.jsx";
 
 export const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState("overview");
@@ -13,6 +15,8 @@ export const AdminDashboard = () => {
     const panels ={
         overview:<AdminOverview/>,
         record:<AdminRecords/>,
+        security:<AdminSecurity/>,
+        student:<AdminStudent/>,
 
 
     }

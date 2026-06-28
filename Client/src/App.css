@@ -263,3 +263,34 @@ html {
 .progress-fill {
   transition: width 0.9s ease-out 0.7s;
 }
+
+.leaflet-popup-content-wrapper {
+  background: #0A1628;
+  color: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+.leaflet-popup-tip {
+  background: #0A1628;
+}
+.leaflet-popup-content {
+  margin: 12px 16px;
+  font-family: inherit;
+}
+.leaflet-control-zoom a {
+  background: #0A1628 !important;
+  color: white !important;
+  border: none !important;
+}
+.leaflet-control-zoom a:hover {
+  background: #14294a !important;
+}
+.leaflet-container {
+  z-index: 0 !important;
+  position: relative;
+}
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 1 !important;
+}

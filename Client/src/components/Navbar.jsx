@@ -21,9 +21,9 @@ const links=[
     <nav className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 flex p-2 items-center gap-12 px-6 bg-white/90 backdrop-blur-md border border-gray-200
 rounded-full shadow-sm w-[92%] justify-between md:w-auto md:justify-start`}>
 
-        <div className="flex items-center gap-2">
-            <Link to="/" className="flex items-center gap-2">
-                <img src="./LOGO1.png" alt="CampusFlow" className="w-9 h-9 transition-transform duration-300 group-hover:rotate-12" />
+        <div className="flex items-center">
+            <Link to="/" className="flex items-center">
+                <img src="./LOGO1.png" alt="CampusFlow" className="w-10 h-10 transition-transform duration-300 group-hover:rotate-12" />
                 <span className="font-bold text-lg text-[#0A1628]">
             Campus
             <span className="text-blue-600">Flow</span>

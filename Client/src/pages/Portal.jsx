@@ -539,7 +539,7 @@ const Portal = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-slate-900 px-4 py-4 flex items-center justify-between gap-2">
+                            <div className="bg-slate-900 px-4 py-4 flex items-center justify-between gap-2 whitespace-nowrap">
                                <div className="flex flex-row whitespace-nowrap gap-1">
                                    <Link2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                                    <p className="text-[11px] text-slate-400 font-mono truncate">
