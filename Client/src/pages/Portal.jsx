@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import toast from "react-hot-toast"
 import { motion, AnimatePresence } from "framer-motion"
+import {Footer} from "@/components/Footer.jsx";
 import {
     Menu, X, ShieldCheck, Link2, ClipboardPaste,
     Lock, Network, Globe, FileSearch, Check
@@ -18,12 +19,22 @@ const Portal = () => {
     const [hash, setHash] = useState("")
     const [result, setResult] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [showCertificate, setShowCertificate] = useState(false)
 
+// hardcoded for now — swap for real verified data later
+    const certificateData = {
+        studentName: "Eziokwubundu Jenissi Ezichi",
+        universityName: "Federal University of Technology, Owerri",
+        certificateType: "Bachelor of Engineering — Software Engineering",
+        issueDate: "June 15, 2026",
+        hash: "0x71c7656ec7ab88b098defb751b7401b5f6d8976",
+        verifiedAt: "June 26, 2026, 11:42 AM",
+    }
     const handleVerify = ()=>{
         console.log(hash)
     }
     // stepper state
-    const [currentStep, setCurrentStep] = useState("name")   // "name" | "privacy" | "hash"
+    const [currentStep, setCurrentStep] = useState("name")
     const [verifierName, setVerifierName] = useState("")
     const [privacyOpen, setPrivacyOpen] = useState(false)
     const [privacyAccepted, setPrivacyAccepted] = useState(false)
@@ -191,7 +202,9 @@ const Portal = () => {
                                            <p className="text-sm text-slate-500">Paste certificate hash</p>
                                        </div>
 
-                                       <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2.5 px-2 text-sm font-medium">
+                                       <Button
+
+                                           className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2.5 px-2 text-sm font-medium">
                                            Continue
                                        </Button>
 
@@ -361,7 +374,7 @@ const Portal = () => {
                                                                Back
                                                            </Button>
                                                            <Button
-                                                               onClick={handleVerify}
+                                                               onClick={() => setShowCertificate(true)}
                                                                disabled={!hash.trim() || loading}
                                                                className={`flex-1 rounded-lg py-2.5 text-sm font-medium text-white ${
                                                                    hash.trim() && !loading ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-300 cursor-not-allowed"
@@ -376,7 +389,7 @@ const Portal = () => {
                                        </div>
                                    </div>
 
-                                   {/* Trust strip below the card */}
+
                                    <div className="flex items-center justify-center gap-6 mt-6 text-xs text-slate-400">
             <span className="flex items-center gap-1.5">
                 <Lock className="w-3.5 h-3.5" />
@@ -464,6 +477,96 @@ const Portal = () => {
                     }
                 </div>
             </section>
+            <AnimatePresence>
+                {showCertificate && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        onClick={() => setShowCertificate(false)}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            transition={{ type: "spring", damping: 22, stiffness: 300 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="relative w-full max-w-lg bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-2xl overflow-hidden"
+                        >
+                            <div className="p-8 sm:p-10">
+
+
+                                <div className="absolute top-6 right-6 w-14 h-14 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
+                                    <ShieldCheck className="w-6 h-6 text-white" />
+                                </div>
+
+
+                                <p className="text-[11px] font-semibold text-green-500 uppercase tracking-widest mb-6">
+                                    Certificate of Authenticity
+                                </p>
+
+
+                                <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">
+                                    {certificateData.certificateType}
+                                </h2>
+
+                                <p className="text-sm text-slate-500 mb-8">
+                                    Issued by <span className="font-medium text-slate-700">{certificateData.universityName}</span>
+                                </p>
+
+                                {/* This certifies that */}
+                                <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">This certifies that</p>
+                                <p className="text-2xl font-semibold text-slate-900 mb-8">
+                                    {certificateData.studentName}
+                                </p>
+
+                                <p className="text-sm text-slate-500 leading-relaxed mb-8">
+                                    has been verified as the rightful holder of this certificate, with its
+                                    authenticity confirmed against an immutable blockchain record.
+                                </p>
+
+
+                                <div className="grid grid-cols-2 gap-4 pt-6 border-t border-blue-100">
+                                    <div>
+                                        <p className="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Issue Date</p>
+                                        <p className="text-sm font-medium text-slate-800">{certificateData.issueDate}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Verified At</p>
+                                        <p className="text-sm font-medium text-slate-800">{certificateData.verifiedAt}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-slate-900 px-4 py-4 flex items-center justify-between gap-2">
+                               <div className="flex flex-row whitespace-nowrap gap-1">
+                                   <Link2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                                   <p className="text-[11px] text-slate-400 font-mono truncate">
+                                       {certificateData.hash}
+                                   </p>
+                               </div>
+                               <div> <Button
+                                   onClick={() => console.log("download triggered - wire this up later")}
+                                   className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2.5 text-sm font-medium flex items-center justify-center gap-2"
+                               >
+                                   <ClipboardPaste className="w-4 h-4" />
+                                   Download Certificate
+                               </Button></div>
+                            </div>
+
+
+                            <button
+                                onClick={() => setShowCertificate(false)}
+                                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-slate-500"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            <Footer/>
         </div>
     )
 }

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Siren, AlertTriangle, Zap, ShieldAlert, HeartPulse } from 'lucide-react';
-import axios from 'axios';
+import { RiskZoneMap } from "@/components/RiskZone";
 import {toast} from "react-hot-toast";
 import api from "@/api/axios.js";
 
@@ -146,7 +146,7 @@ function SOSPanel() {
                                 strokeLinecap: 'round',
                             })}
                         />
-                        {/* Actual button inside ring */}
+
                         <motion.button
                             className={`absolute inset-3 rounded-full flex flex-col items-center justify-center
                                 select-none cursor-pointer transition-all
@@ -208,6 +208,12 @@ function SOSPanel() {
     </motion.div>
 
 </div>
+
+            <div className="mt-10 px-2">
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">Campus Risk Map</h2>
+                <p className="text-slate-500 mb-4">Areas with repeated reports are flagged automatically.</p>
+                <RiskZoneMap />
+            </div>
             <div className="mt-10 px-2">
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">SOS Emergency Center</h2>
                 <p className="text-slate-500 mb-6">Get immediate assistance and report emergencies on campus.</p>

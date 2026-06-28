@@ -5,10 +5,10 @@ import {AuthProvider, useAuth} from "./pages/AuthContext.jsx"
 import LandingPage from "./pages/LandingPage.jsx";
 import Portal from "./pages/Portal.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
-
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import {Toaster} from "react-hot-toast";
-import {AdminDashboard} from "@/pages/Admin/Dashboard.jsx";
+import {AdminDashboard} from "@/pages/Admin/AdminDashboard.jsx";
+import {StaffDashboard} from "@/pages/Staff/StaffDashboard.jsx";
 
 
 function ProtectedRoute({allowedRoles}) {
@@ -52,8 +52,8 @@ function App() {
                 <Route path="/" element={<LandingPage/>}/>
                 <Route path="/verify" element={<Portal/>}/>
                     <Route path="/dashboard" element={<Dashboard/>}/>
-                    <Route path="/admin" element={<AdminDashboard/>}/>
-
+                    <Route path="/staff" element={<StaffDashboard/>}/>
+<Route path="/admin" element={<AdminDashboard/>}/>
 
             </Routes>
         </>
