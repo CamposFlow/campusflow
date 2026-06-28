@@ -2,6 +2,9 @@ import {registerUniversity} from "../services/solanaService.js"
 import {getAllUniversities} from "../services/solanaService.js"
 import University from "../models/University.js";
 import {wallet} from '../configs/solana.js'
+import {reportIncident} from '../services/solanaService.js'
+import createIncident from '../models/University.js'
+import crypto from 'crypto'
 
 export const createUniversity = async (req, res) => {
     try{
@@ -53,5 +56,46 @@ export const fetchAllUniversity = async (req, res) => {
             success: false,
             message: err.message,
         });
+    }
+};
+
+export const createIncidentReport = async (req, res) => {
+    try{
+        const {category, locationText, description, latitude, longitude} = req.body;
+        const studentId = req.user.id;
+        const studentName = req.user.fullname;
+        const universityId = req.user.university;
+        const incidentId = crypto.randomUUID();
+        const timestamp = Math.floor(Date.now() / 1000);
+
+        // const chainResult = await reportIncident({
+        //     universityId,
+        //     studentId: studentId.toString(),
+        //     incidentId,
+        //     studentName,
+        //     latitude,
+        //     longitude,
+        //     description,
+        // });
+
+      //  commented the chain writing out for now
+
+        const dbRecord = await createIncident.create({
+            incidentId,
+            studentId,
+            studentName,
+            category,
+            locationText,
+            latitude,
+            longitude,
+            description,
+            universityId,
+            timestamp,
+            txSignature : null, //chainResult.tx,
+            pdaAddress : null  //chainResult.incidentPDA,
+        })
+        res.status(200).json({success:true, message: `Incident reported Successfully.`, data: dbRecord});
+    }catch (err){
+        res.status(500).json({success:false, message: err.message,});
     }
 };
