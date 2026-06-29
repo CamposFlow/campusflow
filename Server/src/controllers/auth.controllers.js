@@ -9,7 +9,7 @@ import { requestPasswordReset, resetPasswordWithOTP } from '../services/auth.ser
 // Helper function for token
 const generateToken = (user) => {
   return jwt.sign(
-    { id: user.id, fullname: user.fullname, role: user.role },
+    { id: user.id, fullname: user.fullname, role: user.role, universityId: user.university },
     process.env.JWT_SECRET,
     { expiresIn: '24h' }
   );
@@ -68,7 +68,7 @@ export const login = (req, res, next) => {
     return res.status(200).json({
       message: 'Logged in successfully',
       token: `Bearer ${token}`,
-      user: { id: user.id, email: user.email, role: user.role }
+      user: { id: user.id, email: user.email, role: user.role, university: user.university },
     });
   })(req, res, next);
 };

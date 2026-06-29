@@ -1,4 +1,5 @@
-import { rateLimit } from 'express-rate-limit';
+import {rateLimit} from 'express-rate-limit';
+import jwt from 'jsonwebtoken';
 
 // Stricter limiter tailored strictly for OTP/Password Reset requests
 export const passwordResetRateLimiter = rateLimit({
@@ -32,3 +33,22 @@ export const globalRateLimiter = rateLimit({
     error: 'Server is experiencing high traffic. Please slow down your requests.',
   },
 });
+
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ success: false, message: "No token provided." });
+  }
+
+  const token = authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : authHeader;
+
+  try {
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch (err) {
+    return res.status(401).json({ success: false, message: "Invalid or expired token." });
+  }
+};
+
+export default authMiddleware;

@@ -1,46 +1,35 @@
-import {Sidebar} from "@/pages/Admin/Sidebar.jsx";
-import React, {useEffect, useState} from "react";
-import {Bell} from "lucide-react";
+import {AdminSidebar} from "@/pages/Admin/AdminSideBar.jsx";
+import AdminRecords from "@/pages/Admin/Panel/AdminRecord.jsx";
 import {AdminOverview} from "@/pages/Admin/Panel/AdminOverview.jsx"
-import Loaders from "@/components/Loaders.jsx";
-import {AdminRecord} from "@/pages/Admin/Panel/AdminRecord.jsx";
-import {AdminProfile} from "@/pages/Admin/Panel/AdminProfile.jsx"
-import SOSPanel from "@/pages/Admin/Panel/Security.jsx"
+import SOSPanel from "@/pages/Staff/Panel/Security.jsx";
+import React from "react";
+import {Sidebar} from "@/pages/Staff/Sidebar.jsx";
+import {useState} from "react";
+import {Bell} from "lucide-react";
+import AdminSecurity from "@/pages/Admin/Panel/AdminSecurity.jsx";
+import {AdminStudent} from "@/pages/Admin/Panel/AdminStudent.jsx";
 
 export const AdminDashboard = () => {
-const [activeTab, setActiveTab] = useState('overview');
-const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState("overview");
 
-const tabTitle={
-    overview:'Overview',
-    record:'Student Record',
-    profile:'Profile',
-    security:'Security, Lets Keep Our Society Safe',
-}
     const panels ={
         overview:<AdminOverview/>,
-        record:<AdminRecord/>,
-        profile:<AdminProfile/>,
-        security:<SOSPanel/>,
+        record:<AdminRecords/>,
+        security:<AdminSecurity/>,
+        student:<AdminStudent/>,
+
 
     }
-    useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        },6000)
-    },[]);
-    if (loading){
-
-        return <Loaders />;
+    const tabTitle= {
+        overview: 'Overview',
+        record: 'Student Record',
+        security: 'Security',
     }
 
     return (
         <div className=" flex min-h-screen ">
-
-            <Sidebar
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            />
+            <AdminSidebar activeTab={activeTab}
+                          setActiveTab={setActiveTab} />
 
             <main className="min-w-0 flex-1 md:ml-64 min-h-screen bg-gray-200 flex flex-col">
                 <header className="sticky top-0 z-20 bg-white border-b border-gray-100 px-5 py-3.5 flex items-center justify-between">
@@ -62,11 +51,9 @@ const tabTitle={
                     </div>
                 </header>
 
-
-                <div className="flex-1 p-5 sm:p-8">
-                    {panels[activeTab]}
-                </div>
-
+            <div className="flex-1 p-5 sm:p-8">
+                {panels[activeTab]}
+            </div>
             </main>
         </div>
     )
