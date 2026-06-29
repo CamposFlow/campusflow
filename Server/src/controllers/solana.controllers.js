@@ -89,10 +89,10 @@ export const createIncidentReport = async (req, res) => {
             latitude,
             longitude,
             description,
-            universityId,
+            universityId: "FUTO_UNI",
             timestamp,
             txSignature : null, //chainResult.tx,
-            pdaAddress : null  //chainResult.incidentPDA,
+            pdaAddress : null,  //chainResult.incidentPDA,
         })
         res.status(200).json({success:true, message: `Incident reported Successfully.`, data: dbRecord});
     }catch (err){
