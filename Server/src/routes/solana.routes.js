@@ -1,12 +1,12 @@
-import express from 'express';
-import {createUniversity} from '../controllers/solana.controllers.js'
-import {fetchAllUniversity} from '../controllers/solana.controllers.js'
+import { Router } from 'express';
+import { createUniversity } from '../controllers/solana.controllers.js'
+import { fetchAllUniversity } from '../controllers/solana.controllers.js'
 
-const routes = express.Router();
+const routes = Router();
 
 routes.post('/', createUniversity);
 
 
-routes.get('/',  fetchAllUniversity);
+routes.get('/', fetchAllUniversity);
 
 export default routes;

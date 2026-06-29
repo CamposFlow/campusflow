@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
+import { validate } from 'deep-email-validator'
 import User from '../models/userModel.js';
 import { transporter } from '../configs/mailer.js';
 import { requestPasswordReset, resetPasswordWithOTP } from '../services/auth.service.js';
@@ -16,9 +17,21 @@ const generateToken = (user) => {
 
 export const register = async (req, res, next) => {
   const { fullname, email, role, university, password } = req.body;
+  console.log(req.body)
 
   if (!fullname || !email || !role || !university || !password) {
     return res.status(400).json({ message: 'Fields not completely filled.' });
+  }
+
+  const result = await validate({ email });
+
+  console.log(result);
+  console.log(email)
+
+  if (!result.valid) {
+    return res.json({
+      message: `Email is NOT valid`
+    })
   }
 
   try {

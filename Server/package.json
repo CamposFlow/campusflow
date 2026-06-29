@@ -16,6 +16,7 @@
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "deep-email-validator": "^0.1.27",
     "dotenv": "^16.6.1",
     "express": "^4.21.0",
     "express-rate-limit": "^8.5.2",
