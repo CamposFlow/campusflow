@@ -34,7 +34,7 @@ app.use(passport.initialize());
 
 // Routes
 app.use('/', authRoutes);
-app.use('/api/universities', solanaRoutes)
+app.use('/universities', solanaRoutes)
 app.use('/api', mainAlerts)
 
 // 404 Handler
