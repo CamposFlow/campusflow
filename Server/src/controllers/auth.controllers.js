@@ -5,6 +5,7 @@ import { validate } from 'deep-email-validator'
 import User from '../models/userModel.js';
 import { transporter } from '../configs/mailer.js';
 import { requestPasswordReset, resetPasswordWithOTP } from '../services/auth.service.js';
+import { sendEmail } from '../services/email.service.js';
 
 // Helper function for token
 const generateToken = (user) => {
@@ -23,16 +24,16 @@ export const register = async (req, res, next) => {
     return res.status(400).json({ message: 'Fields not completely filled.' });
   }
 
-  const result = await validate({ email });
+  // const result = await validate({ email });
 
-  console.log(result);
-  console.log(email)
+  // console.log(result);
+  // console.log(email)
 
-  if (!result.valid) {
-    return res.json({
-      message: `Email is NOT valid`
-    })
-  }
+  // if (!result.valid) {
+  //   return res.json({
+  //     message: `Email is NOT valid`
+  //   })
+  // }
 
   try {
     let user = await User.findByEmail(email);
@@ -44,6 +45,8 @@ export const register = async (req, res, next) => {
     const newUser = await User.create(fullname.toLowerCase(), email.toLowerCase(), role, university, passwordHash);
     const token = generateToken(newUser);
 
+    // send a welcome email to the newly registered user
+    await sendEmail(email, "welcome", fullname);
     res.status(201).json({
       message: 'User registered successfully',
       token: `Bearer ${token}`,
@@ -136,6 +139,8 @@ export const verifyGoogleSigninUser = (req, res, next) => {
       authorisedUser = await User.create(user.fullname, user.email);
       isNewUser = true;
     }
+    // send a welcome email to the newly registered user
+    if (isNewUser) await sendEmail(user.email, "welcome", user.fullname);
 
     try {
       const token = generateToken(authorisedUser);
@@ -166,3 +171,9 @@ export const getMe = (req, res) => {
     res.status(401).json({ message: 'Not authenticated' });
   }
 };
+
+export const getAllStudents = (req, res) => {
+  res.json({
+    message: "All students route hit"
+  })
+}

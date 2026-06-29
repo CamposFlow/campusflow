@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import User from '../models/userModel.js';
 import { generateOTP, getOTPExpiry, isOTPExpired } from '../utils/otp.util.js';
 import { transporter } from '../configs/mailer.js';
+import { sendEmail } from './email.service.js';
 
 export const requestPasswordReset = async (email) => {
   try {
@@ -17,16 +18,7 @@ export const requestPasswordReset = async (email) => {
 
     await User.updateResetOTP(email, otp, expiresAt.toISOString());
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: 'Password Reset Verification Code',
-      text: `Your password reset verification code is: ${otp}. It will expire in 10 minutes.`,
-      html: `<p>Your password reset verification code is: <b>${otp}</b>.</p><p>It will expire in 10 minutes.</p>`
-    };
-
-    await transporter.sendMail(mailOptions);
-    return { success: true };
+    await sendEmail(email, "resetPassword", otp);
   } catch (error) {
     console.error('Request password reset service error:', error);
     throw error;
@@ -48,7 +40,7 @@ export const resetPasswordWithOTP = async (email, otp, newPassword) => {
     throw new Error('OTP expired');
   }
 
-  
+
   if (!newPassword || newPassword.length < 6) {
     throw new Error('Password must be at least 6 characters');
   }
