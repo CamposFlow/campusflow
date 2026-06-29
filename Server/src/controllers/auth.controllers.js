@@ -6,6 +6,7 @@ import User from '../models/userModel.js';
 import { transporter } from '../configs/mailer.js';
 import { requestPasswordReset, resetPasswordWithOTP } from '../services/auth.service.js';
 import { sendEmail } from '../services/email.service.js';
+import Student from '../models/studentModel.js';
 
 // Helper function for token
 const generateToken = (user) => {
@@ -172,8 +173,11 @@ export const getMe = (req, res) => {
   }
 };
 
-export const getAllStudents = (req, res) => {
+export const getAllStudents = async (req, res) => {
+  const students = await Student.getAllStudentsFromDB();
   res.json({
-    message: "All students route hit"
+    message: "All students route hit",
+    students
   })
 }
+

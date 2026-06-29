@@ -17,7 +17,8 @@ router.get('/logout', logout);
 router.get('/auth/google', loadGoogleConcentScreen);
 router.get('/auth/google/callback', verifyGoogleSigninUser);
 router.get('/me', passport.authenticate('jwt', { session: false }), getMe);
-router.get('/students', passport.authenticate('jwt', { session: false }), getAllStudents);
+// router.get('/students', passport.authenticate('jwt', { session: false }), getAllStudents);
+router.get('/students', getAllStudents);
 
 
 export default router;
