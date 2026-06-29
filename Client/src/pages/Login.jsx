@@ -17,7 +17,7 @@ export const Login = () => {
         const realButton = hiddenGoogleBtnRef.current?.querySelector('div[role="button"]');
         realButton?.click();
     }
-    // const {login} = useAuth();
+    const {login} = useAuth();
     const [rememberMe, setRememberMe] = useState(false);
     const [username, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -48,19 +48,9 @@ export const Login = () => {
             }, "-=0.3") // Overlap with container animation
     })
 
-    const handleGoogleLogin = async (credentialResponse) => {
-        try{
-            setError(null);
-            setLoading(true);
-            console.log(credentialResponse.credential);
-        }
-        catch(error){
-            setError("Google Sign-in Failed.");
-        }
-        finally {
-            setLoading(false);
-        }
-    }
+    const handleGoogleLogin1 = () => {
+        window.location.href = "http://localhost:3000/auth/google";
+    };
 
     const handleLogin = async ()=>{
         try {
@@ -106,17 +96,9 @@ export const Login = () => {
                 <h2 className="text-2xl font-bold text-blue-400 mb-1">Welcome Back</h2>
                 <p className="text-gray-500 text-sm mb-6">Please sign in into your account</p>
 
-
-                <div ref={hiddenGoogleBtnRef} className="hidden">
-                    <GoogleLogin
-                        onSuccess={handleGoogleLogin}
-                        onError={() => setError("Google sign-in failed. Try again.")}
-                    />
-                </div>
-
                 <button
                     type="button"
-                    onClick={triggerGoogleLogin}
+                    onClick={handleGoogleLogin1}
                     className="mb-4 w-full flex items-center justify-center gap-3 border
                     border-gray-300 bg-white text-gray-700 font-semibold p-2 rounded-lg
                     hover:bg-gray-50 transition-colors duration-200 cursor-pointer"

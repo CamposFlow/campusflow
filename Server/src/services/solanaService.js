@@ -20,7 +20,7 @@ export const registerUniversity = async (universityId, name)=>{
     };
 };
 
-export const getUniversity = async (universityId) => {
+export const getUniversityId = async (universityId) => {
     const [universityPDA] = PublicKey.findProgramAddressSync(
         [Buffer.from("university"),Buffer.from(universityId)],
         program.programId
@@ -49,6 +49,20 @@ export const getAllUniversities = async ()=>{
          isActive : item.account.isActive,
      }));
 };
+
+export const fetchAllIncidents = async ()=>{
+    const incidents = await program.account.incident.all();
+    return incidents.map((item)=>({
+        incidentPDA : item.publicKey.toString(),
+        universityId : item.account.universityId,
+        studentId : item.account.studentId,
+        studentName : item.account.studentName,
+        latitude : item.account.latitude,
+        longitude : item.account.longitude,
+        description : item.account.description,
+        timestamp : item.account.timestamp.toString(),
+    }));
+}
 
 export const reportIncident =async ({
     universityId, studentId, incidentId, studentName, latitude, longitude,description

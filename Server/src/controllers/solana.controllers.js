@@ -1,9 +1,10 @@
 import {registerUniversity} from "../services/solanaService.js"
 import {getAllUniversities} from "../services/solanaService.js"
 import University from "../models/University.js";
+import {fetchAllIncidents} from "../services/solanaService.js"
 import {wallet} from '../configs/solana.js'
 import {reportIncident} from '../services/solanaService.js'
-import createIncident from '../models/University.js'
+import Incident from '../models/Incident.js'
 import crypto from 'crypto'
 
 export const createUniversity = async (req, res) => {
@@ -80,7 +81,7 @@ export const createIncidentReport = async (req, res) => {
 
       //  commented the chain writing out for now
 
-        const dbRecord = await createIncident.create({
+        const dbRecord = await Incident.create({
             incidentId,
             studentId,
             studentName,
@@ -99,3 +100,21 @@ export const createIncidentReport = async (req, res) => {
         res.status(500).json({success:false, message: err.message,});
     }
 };
+
+export const getAllIncidents = async (req, res) => {
+    try{
+        const incidents = await Incident.findAllIncidents();
+        const incident = await fetchAllIncidents();
+        res.status(200).json({
+            success: true,
+            count: incidents.length,
+            chain: incident,
+            data : incidents,
+        });
+    }catch (err){
+        res.status(500).json({
+            success: false,
+            message: err.message,
+        });
+    }
+}

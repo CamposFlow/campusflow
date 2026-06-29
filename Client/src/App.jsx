@@ -9,7 +9,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import {Toaster} from "react-hot-toast";
 import {AdminDashboard} from "@/pages/Admin/AdminDashboard.jsx";
 import {StaffDashboard} from "@/pages/Staff/StaffDashboard.jsx";
-
+import {GoogleSuccess} from "./components/Google";
 
 function ProtectedRoute({allowedRoles}) {
 const {token,role} = useAuth();
@@ -33,7 +33,7 @@ function PublicRoute({children}) {
 
 function App() {
 
-    return (<>
+    return (<AuthProvider>
             <Toaster
                 position="bottom-right"
                 toastOptions={{
@@ -46,52 +46,57 @@ function App() {
                     },
                 }}/>
             <Routes>
-                <Route path="/login" element={<Login/>} />
-                <Route path="/reset" element={<ForgotPassword/>} />
-                <Route path="/register" element={<Register/>} />
+                <Route path="/login" element={<PublicRoute><Login/></PublicRoute>} />
+                <Route path="/google-success" element={<GoogleSuccess/>} />
+                <Route path="/reset" element={<PublicRoute><ForgotPassword/></PublicRoute>} />
+                <Route path="/register" element={<PublicRoute><Register/></PublicRoute>} />
                 <Route path="/" element={<LandingPage/>}/>
                 <Route path="/verify" element={<Portal/>}/>
+                <Route element={<ProtectedRoute allowedRoles={["student"]}/>}>
                     <Route path="/dashboard" element={<Dashboard/>}/>
-                    <Route path="/staff" element={<StaffDashboard/>}/>
-<Route path="/admin" element={<AdminDashboard/>}/>
+                </Route>
+
+                <Route element={<ProtectedRoute allowedRoles={["admin"]}/>}>
+                    <Route path="/admin" element={<AdminDashboard/>}/>
+                </Route>
 
             </Routes>
-        </>
+        </AuthProvider>
     )
 }
+
 export default App;
+
+
+
+
 // function App() {
 //
-//   return (<AuthProvider>
-//       <Toaster
-//           position="bottom-right"
-//           toastOptions={{
-//               className:'',
-//               style: {
-//                   border:'1px solid blue',
-//                   color:'white',
-//                   padding:'8px',
-//                   backgroundColor:'navy',
-//               },
-//           }}/>
-//       <Routes>
-//           <Route path="/login" element={<PublicRoute><Login/></PublicRoute>} />
-//           <Route path="/reset" element={<PublicRoute><ForgotPassword/></PublicRoute>} />
-//         <Route path="/register" element={<PublicRoute><Register/></PublicRoute>} />
-//         <Route path="/" element={<LandingPage/>}/>
-//         <Route path="/verify" element={<Portal/>}/>
-//           <Route element={<ProtectedRoute allowedRoles={["student"]}/>}>
-//               <Route path="/dashboard" element={<Dashboard/>}/>
-//           </Route>
+//     return (<>
+//             <Toaster
+//                 position="bottom-right"
+//                 toastOptions={{
+//                     className:'',
+//                     style: {
+//                         border:'1px solid blue',
+//                         color:'white',
+//                         padding:'8px',
+//                         backgroundColor:'navy',
+//                     },
+//                 }}/>
+//             <Routes>
+//                 <Route path="/login" element={<Login/>} />
+//                 <Route path="/reset" element={<ForgotPassword/>} />
+//                 <Route path="/register" element={<Register/>} />
+//                 <Route path="/" element={<LandingPage/>}/>
+//                 <Route path="/verify" element={<Portal/>}/>
+//                     <Route path="/dashboard" element={<Dashboard/>}/>
+//                     <Route path="/staff" element={<StaffDashboard/>}/>
+// <Route path="/admin" element={<AdminDashboard/>}/>
 //
-//           <Route element={<ProtectedRoute allowedRoles={["admin"]}/>}>
-//               <Route path="/admin" element={<AdminDashboard/>}/>
-//           </Route>
-//
-//       </Routes>
-//       </AuthProvider>
-//   )
+//             </Routes>
+//         </>
+//     )
 // }
-//
 // export default App;
 

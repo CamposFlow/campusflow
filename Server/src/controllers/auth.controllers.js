@@ -126,16 +126,10 @@ export const verifyGoogleSigninUser = (req, res, next) => {
 
     try {
       const token = generateToken(authorisedUser);
-      return res.status(200).json({
-        message: 'Logged in successfully',
-        token: `Bearer ${token}`,
-        user: {
-          id: authorisedUser.id,
-          email: authorisedUser.email,
-          role: authorisedUser.role,
-          isNewUser: isNewUser
-        }
-      });
+      const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
+      return res.redirect(
+          `${frontendURL}/#/google-success?token=${encodeURIComponent(token)}&role=${authorisedUser.role}&isNewUser=${isNewUser}`
+      );
     } catch (tokenError) {
       return res.status(500).json({
         message: 'Failed to generate access token',
