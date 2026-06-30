@@ -24,9 +24,10 @@ const {token,role} = useAuth();
 }
 
 function PublicRoute({children}) {
-    const {token,role} = useAuth();
+    const {token, role} = useAuth();
     if (token) {
-        return <Navigate to={role === "admin" ? "/admin" : "/dashboard"} replace/>
+        const redirectMap = { admin: "/admin", staff: "/staff", student: "/dashboard" };
+        return <Navigate to={redirectMap[role] || "/dashboard"} replace/>
     }
     return children;
 }

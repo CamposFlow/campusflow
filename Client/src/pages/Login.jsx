@@ -58,11 +58,8 @@ export const Login = () => {
             setSuccess("Login Successful! Redirecting.....");
             toast.success('LoggedIn Successfully!');
             setTimeout(()=>{
-                if (data.user.role === "admin")
-                    navigate("/admin");
-                else
-                    navigate("/dashboard");
-
+                const redirectMap = { admin: "/admin", staff: "/staff", student: "/dashboard" };
+                navigate(redirectMap[data.user.role] || "/dashboard");
             },2000)
         }
         catch (error) {

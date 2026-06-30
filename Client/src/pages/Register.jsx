@@ -58,12 +58,10 @@ function Register() {
             register(data.token, data.user.role);
             setSuccess("Registration Successful! Redirecting.....");
             toast.success('Registered Successfully!');
-            setTimeout(() => {
-                if (data.user.role === "admin")
-                    navigate("/admin");
-                else
-                    navigate("/dashboard");
-            }, 2000);
+            setTimeout(()=>{
+                const redirectMap = { admin: "/admin", staff: "/staff", student: "/dashboard" };
+                navigate(redirectMap[data.user.role] || "/dashboard");
+            },2000)
         } catch (error) {
             if (error.response)
                 setError(error.response.data.error || "Registration failed");
