@@ -12,11 +12,7 @@ import {useAuth} from "@/pages/AuthContext.jsx";
 
 
 export const Login = () => {
-    const hiddenGoogleBtnRef = useRef(null);
-    const triggerGoogleLogin=()=>{
-        const realButton = hiddenGoogleBtnRef.current?.querySelector('div[role="button"]');
-        realButton?.click();
-    }
+
     const {login} = useAuth();
     const [rememberMe, setRememberMe] = useState(false);
     const [username, setEmail] = useState("");
@@ -86,8 +82,6 @@ export const Login = () => {
     return (
         <div className="login min-h-screen bg-white flex items-center justify-center p-4">
             <div className="container bg-gray-100 rounded-2xl shadow-lg w-full max-w-md p-8">
-
-
                 <div className="flex items-center gap-2 mb-3">
                     <img src="./LOGO1.png" alt="CampusFlow" className="w-9 h-9"/>
                     <h1 className="text-xl font-bold text-primary">Campus<span className='text-blue-600'>Flow</span></h1>

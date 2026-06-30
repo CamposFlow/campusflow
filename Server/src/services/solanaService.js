@@ -1,13 +1,13 @@
 import {program, wallet, keypair} from "../configs/solana.js"
 import {PublicKey, SystemProgram} from "@solana/web3.js";
-import {publicKey} from "@solana/web3.js/src/layout.ts";
 
 export const registerUniversity = async (universityId, name)=>{
     const [universityPDA] = PublicKey.findProgramAddressSync(
-        [Buffer.from("university"),Buffer.from(universityId)],
+        [Buffer.from("university"),Buffer.from(universityId)], // anchor seeds for university
         program.programId
     );
-    const tx = await program.methods.registerUniversity(universityId, name).accounts({
+    const tx = await program.methods.registerUniversity(universityId, name)// pb function parameters in rust
+        .accounts({
             university : universityPDA,
             authority : wallet.publicKey,
             systemProgram: SystemProgram.programId,
@@ -22,7 +22,7 @@ export const registerUniversity = async (universityId, name)=>{
 
 export const getUniversityId = async (universityId) => {
     const [universityPDA] = PublicKey.findProgramAddressSync(
-        [Buffer.from("university"),Buffer.from(universityId)],
+        [Buffer.from("university"),Buffer.from(universityId)],// anchor seeds
         program.programId
     );
 
@@ -50,9 +50,27 @@ export const getAllUniversities = async ()=>{
      }));
 };
 
-export const fetchAllIncidents = async ()=>{
+export const givemeCertificate = async (universityId) => {
+    const certificate = await program.account.certificate.all();
+    return certificate
+        .filter(item => item.account.universityId === universityId)
+        .map((item)=>({
+        hash: item.hash,
+        studentId: item.account.studentId,
+        studentName: item.account.studentName,
+        certificateType : item.account.certificateType,
+        institution : item.account.institution,
+        timestamp : item.account.timestamp.toString(),
+        is_valid: item.account.is_valid,
+
+    }));
+}
+
+export const fetchAllIncidents = async (universityId)=>{
     const incidents = await program.account.incident.all();
-    return incidents.map((item)=>({
+    return incidents
+        .filter(item => item.account.universityId === universityId)
+        .map((item)=>({
         incidentPDA : item.publicKey.toString(),
         universityId : item.account.universityId,
         studentId : item.account.studentId,
@@ -68,15 +86,15 @@ export const reportIncident =async ({
     universityId, studentId, incidentId, studentName, latitude, longitude,description
 })=>{
     const [universityPDA] = PublicKey.findProgramAddressSync(
-        [Buffer.from("university"),Buffer.from(universityId)],
+        [Buffer.from("university"),Buffer.from(universityId)], // anchor seeds for university
         program.programId
     );
     const [incidentPDA] = PublicKey.findProgramAddressSync(
-        [Buffer.from("incident"),Buffer.from(universityId),Buffer.from(studentId),Buffer.from(incidentId)],
+        [Buffer.from("incident"),Buffer.from(universityId),Buffer.from(studentId),Buffer.from(incidentId)], // anchor seeds for incidents
         program.programId
     );
     const tx = await program.methods
-        .reportIncident(incidentId,studentId,studentName,latitude.toString(),longitude.toString(),description)
+        .reportIncident(incidentId,studentId,studentName,latitude.toString(),longitude.toString(),description)// pb function parameters in rust
         .accounts({
             incident : incidentPDA,
             university: universityPDA,
@@ -87,3 +105,91 @@ export const reportIncident =async ({
         .rpc();
     return{ tx, incidentPDA:incidentPDA.toString()};
 };
+
+export const issueCertificate = async ({universityId,studentId, studentName, certificateType, institution, hash}) => {
+    const [certificatePDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from("certificate"),Buffer.from(studentId),Buffer.from(hash)], // anchor seeds
+        program.programId
+    );
+    const [universityPDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from("university"),Buffer.from(universityId)],
+        program.programId
+    )
+
+    const tx = await program.methods
+        .issueCertificate(hash, studentId, studentName, certificateType) // pb function parameters in rust
+        .accounts({
+            certificate : certificatePDA,
+            university: universityPDA,
+            authority : wallet.publicKey,
+            systemProgram: SystemProgram.programId,
+        })
+        .signers([keypair])
+        .rpc();
+    return {tx, certificatePDA:certificatePDA.toString()};
+}
+
+export const verifyCertificate = async ({ documentHash, verifierOrg, studentId, universityId }) => {
+    const [certificatePDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from("certificate"), Buffer.from(studentId), Buffer.from(documentHash)],
+        program.programId
+    );
+    const [universityPDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from("university"), Buffer.from(universityId)],
+        program.programId
+    );
+    const [verificationPDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from("verification"), wallet.publicKey.toBuffer(), Buffer.from(documentHash)],
+        program.programId
+    );
+
+    const tx = await program.methods
+        .verifyCertificate(documentHash, verifierOrg)
+        .accounts({
+            verificationRecord: verificationPDA,
+            certificate: certificatePDA,
+            university: universityPDA,
+            verifier: wallet.publicKey,
+            systemProgram: SystemProgram.programId,
+        })
+        .signers([keypair])
+        .rpc();
+
+    return { tx, verificationPDA: verificationPDA.toString() };
+};
+
+export const revokeCertificate = async ({hash, studentId, universityId}) => {
+    const [certificatePDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from("certificate"),Buffer.from(hash),Buffer.from(studentId)],
+        program.programId
+    );
+    const [universityPDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from("university"),Buffer.from(universityId)],
+        program.programId
+    );
+
+    const tx =await program.methods.revokeCertificate(hash,studentId)
+        .accounts({
+            certificate : certificatePDA,
+            university : universityPDA,
+            authority : wallet.publicKey,
+            systemProgram: SystemProgram.programId,
+        })
+        .signers([keypair])
+        .rpc();
+    return{tx,certificatePDA:certificatePDA.toString()};
+}
+
+export const fetchAllVerification =async (universityId) => {
+    const records = await program.account.verificationRecord.all();
+    return records.filter(item =>item.account.universityId === universityId)
+        .map((item)=>({
+            verificationPDA: item.publicKey.toString(),
+            documentHash: item.account.documentHash,
+            verifierOrg: item.account.verifierOrg,
+            verifier:item.account.verifier.toString(),
+            timestamp : item.account.timestamp.toString(),
+
+        }))
+}
+

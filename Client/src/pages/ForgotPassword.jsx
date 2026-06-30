@@ -4,7 +4,9 @@ import {motion, AnimatePresence} from "framer-motion";
 import {Button} from "@/components/ui/button.jsx";
 import {Mail, ArrowLeft, CheckCircle, Eye, EyeOff, Check, XCircle} from "lucide-react";
 import OtpInput from 'react-otp-input';
-import zxcvbn from 'zxcvbn';
+import zxcvbn from 'zxcvbn'
+import {useAuth} from "@/pages/AuthContext.jsx";
+import {forgotPassword as forgotPasswordRequest} from "@/api/axios.js";
 
 const steps = ["Find Account", "Verify OTP", "New Password"];
 
@@ -17,10 +19,7 @@ export const ForgotPassword = () => {
     const [email, setEmail] = useState("");
     const [direction, setDirection] = useState(1);
     const [otp, setOtp] = useState("");
-    const goNext = () => {
-        setDirection(1);
-        setStep((prev) => prev + 1);
-    }
+
     const goPrev = () => {
         setDirection(-1);
         setStep((prev) => prev - 1);
@@ -47,6 +46,23 @@ export const ForgotPassword = () => {
         2: { label: "Fair", color: "bg-yellow-500", width: "75%" },
         3: { label: "Strong", color: "bg-green-500", width: "100%" },
         4: { label: "Very Strong", color: "bg-blue-600", width: "100%" },
+    }
+
+    const forgotPassword = async () => {
+       try {
+           const response = await forgotPasswordRequest(email);
+           console.log(response);
+       }catch(err) {
+           console.log(err);
+           console.log(err.message || "Couldn't confirm Email");
+
+       }
+    }
+
+    const goNext = () => {
+        setDirection(1);
+        setStep((prev) => prev + 1);
+        forgotPassword();
     }
 
     return (

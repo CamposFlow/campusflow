@@ -58,6 +58,15 @@ export const AuthProvider = ({children}) => {
         setRole(newRole);
         scheduleAutoLogout(newToken);
     }
+    const register = (newToken, newRole) => {
+            const storage = localStorage;
+            storage.setItem("token", newToken);
+            storage.setItem("role", newRole);
+            setToken(newToken);
+            setRole(newRole);
+            scheduleAutoLogout(newToken);
+    }
+
     const logout = (newToken, newRole, rememberMe = false) => {
             sessionStorage.removeItem("token");
             sessionStorage.removeItem("role");

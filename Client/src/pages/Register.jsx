@@ -1,17 +1,20 @@
 
-import {useState} from "react";
+import React, {useState} from "react";
 import { Link, useNavigate} from "react-router-dom";
 import {useGSAP} from "@gsap/react";
 import {gsap} from "gsap";
 import {useAuth} from "./AuthContext.jsx";
-import {registerUser} from "../services/api.js"
-import {CheckCircle, Eye, EyeOff, XCircle} from "lucide-react";
+import {registerUser} from "../api/axios.js"
+import {CheckCircle, Eye, EyeOff, GraduationCap, XCircle} from "lucide-react"
+import {motion} from "framer-motion";
+
+
 
 function Register() {
+    const {register} = useAuth();
     const [email, setEmail] = useState("");
-    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [full_name, setFullName] = useState("");
+    const [fullname, setFullName] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState("");
@@ -19,11 +22,12 @@ function Register() {
     const navigate = useNavigate();
     const [confirmPassword, setConfirmPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+  const [university, setUniversity] = useState("");
 
-    useGSAP(() => {
+      useGSAP(() => {
         const tl = gsap.timeline();
 
-        // Container fade and slide in
+
         tl.from(".login", {
             duration: 0.6,
             opacity: 0,
@@ -40,15 +44,24 @@ function Register() {
                 ease: "power2.out"
             }, "-=0.3")
     })
+
+    const handleGoogleRegister = () => {
+
+    }
+
     const handleRegister = async () => {
-        if (!email || !username || !password || !full_name){
-            setError("");
+        if (!email || !password || !fullname || !confirmPassword || !university ){
+            setError("Please Fill in all Fields");
             return
         }
         setLoading(true);
         setError("")
         try{
-            await registerUser(username, email, password, full_name)
+            setError(null);
+            setLoading(false);
+            const data = await registerUser(fullname, email, university,password)
+
+             register(data.fullname, email, university,password)
             setSuccess("Account Created! Redirecting to login....")
             setTimeout(()=>{
                 navigate("/login")
@@ -90,7 +103,7 @@ function Register() {
 
                 <div className="mb-4 relative m-2">
                     <input
-                        type="text"
+                        type="fullname"
                         placeholder=" "
                         onChange={(e)=>setFullName(e.target.value)}
                         className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm
@@ -98,7 +111,7 @@ function Register() {
                 transition-all duration-200
                 "/>
                     <label
-                        htmlFor="full_name"
+                        htmlFor="fullname"
                         className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
      peer-focus:top-0
     peer-placeholder-shown:top-3.5
@@ -134,6 +147,24 @@ function Register() {
                        Email
                     </label>
                 </div>
+
+                <div
+                    className="flex items-center gap-3 bg-white border border-gray-200
+            rounded-lg px-3 py-3 mb-4 ml-2 mr-2"
+                >
+                    <GraduationCap className="text-gray-400 shrink-0" size={18} />
+                    <select
+                        value={university}
+                        id="university"
+                        onChange={(e)=>setUniversity(e.target.value)}
+                        className="bg-transparent text-gray-600 text-sm
+            outline-none flex-1 cursor-pointer overflow-wrap:break-word">
+                        <option value="">Select University</option>
+                        <option value="FUTO_UNI">FUTO</option>
+                        <option value="UNEC_UNI"> (University Of Nigeria Enugu)</option>
+                    </select>
+                </div>
+
                 <div className="relative mb-4 ml-2 mr-2">
                     <input
                         type={showPassword ? "text" : "password"}
@@ -205,9 +236,9 @@ function Register() {
 
                 <button
                     onClick={handleRegister}
-                    disabled={loading}
+                    disabled={loading || !email || !password || !confirmPassword || !fullname || !university}
                         className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-primary-dark transition-colors
-             disabled:opacity-50"
+             disabled:bg-blue-400"
                 >
                     {
                         loading ? "Creating Account...": "Create Account"

@@ -106,7 +106,7 @@ export default function Hero() {
                         </Link>
                     </motion.div>
 
-                    {/* University selector */}
+
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -123,7 +123,7 @@ export default function Hero() {
                             <option value="UNN">UNN</option>
                         </select>
                     </motion.div>
-                    {/* Mobile only — feature badges */}
+
                     <div className="flex lg:hidden items-center gap-3 mt-6 overflow-x-auto
     pb-2 w-full justify-center">
                         {[
@@ -141,7 +141,7 @@ export default function Hero() {
                 </div>
             </div>
 
-            {/* Top left card — Clearance */}
+
             <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0, y: [0, -6, 0] }}

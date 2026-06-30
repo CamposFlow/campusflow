@@ -41,4 +41,20 @@ export const loginUser = async (username, password) => {
     return response.data;
 }
 
-export const registerUser = async (username, password) => {}
+export const registerUser = async (email, password, university) => {
+    const response = await api.post("/register", {
+        email,
+        password,
+        university,
+    });
+    return response.data;
+}
+
+
+export const forgotPassword = async (email) => {
+    const response = await api.post("/forgot-password", {
+        email
+    })
+    return response.data;
+}
+

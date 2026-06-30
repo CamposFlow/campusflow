@@ -2,19 +2,8 @@ import pool from '../configs/db.js'
  class Incident {
 
 
-     static async create({
-                                     incidentId,
-                                     studentId,
-                                     studentName,
-                                     category,
-                                     locationText,
-                                     latitude,
-                                     longitude,
-                                     description,
-                                     universityId,
-                                     timestamp,
-                                     txSignature,
-                                     pdaAddress
+     static async create({incidentId, studentId, studentName, category, locationText, latitude,
+                             longitude, description, universityId, timestamp, txSignature, pdaAddress
                                  }) {
          const res = await pool.query(
              `INSERT INTO incidents
@@ -34,9 +23,11 @@ import pool from '../configs/db.js'
          return res.rows[0];
      }
 
-     static async findAllIncidents() {
-         const res = await pool.query('SELECT * FROM incidents ORDER BY created_at DESC');
+     static async findAllIncidents(universityId) {
+         const res = await pool.query('SELECT * FROM incidents WHERE university_id = $1 ORDER BY created_at DESC',[universityId]);
          return res.rows;
      }
+
+
  }
  export default Incident;
