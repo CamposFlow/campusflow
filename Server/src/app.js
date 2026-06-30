@@ -9,6 +9,7 @@ import authRoutes from './routes/auth.routes.js';
 import { globalRateLimiter } from './middlewares/rateLimiter.middleware.js'; 
 import solanaRoutes from './routes/solana.routes.js'
 import mainAlerts from './routes/main.alerts.js'
+import adminRoutes from './routes/admin.routes.js';
 const app = express();
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -33,8 +34,12 @@ passportLocalConfig(passport);
 app.use(passport.initialize());
 
 // Routes
+
 app.use('/', authRoutes);
-app.use('/universities', solanaRoutes)
+app.use('/', adminRoutes);
+app.use('/universities', solanaRoutes);
+app.use('/api', mainAlerts);
+
 app.use('/api', mainAlerts)
 
 // 404 Handler

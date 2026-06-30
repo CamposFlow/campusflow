@@ -12,7 +12,6 @@ import {verifyCertificateController} from '../controllers/solana.controllers.js'
 import {getVerificationRecords} from '../controllers/solana.controllers.js'
 import {getVerificationByHash} from '../controllers/solana.controllers.js'
 const routes = express.Router();
-
 routes.post('/', createUniversity);
 routes.get('/',  fetchAllUniversity);
 routes.post('/incidents',authMiddleware, createIncidentReport);

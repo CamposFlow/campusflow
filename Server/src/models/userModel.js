@@ -9,10 +9,6 @@ class User {
     return res.rows[0];
   }
 
-
-
-
-
   static async findByEmail(email) {
     const res = await pool.query( 
       'SELECT * FROM users WHERE email = $1',

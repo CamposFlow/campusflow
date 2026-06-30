@@ -6,7 +6,7 @@ import {gsap} from "gsap";
 import {useAuth} from "./AuthContext.jsx";
 import {registerUser} from "../api/axios.js"
 import {CheckCircle, Eye, EyeOff, GraduationCap, XCircle} from "lucide-react"
-import {motion} from "framer-motion";
+import toast from "react-hot-toast"
 
 
 
@@ -45,31 +45,33 @@ function Register() {
             }, "-=0.3")
     })
 
-    const handleGoogleRegister = () => {
-
-    }
+    const handleGoogleLogin1 = () => {
+        window.location.href = "http://localhost:3000/auth/google";
+    };
 
     const handleRegister = async () => {
-        if (!email || !password || !fullname || !confirmPassword || !university ){
-            setError("Please Fill in all Fields");
-            return
-        }
-        setLoading(true);
-        setError("")
-        try{
+        try {
             setError(null);
-            setLoading(false);
-            const data = await registerUser(fullname, email, university,password)
+            setLoading(true);
+            const data = await registerUser(email, password, university);
 
-             register(data.fullname, email, university,password)
-            setSuccess("Account Created! Redirecting to login....")
-            setTimeout(()=>{
-                navigate("/login")
-            },2000)
-        }catch(err){
-            setError(err.response?.data?.detail || "Registration Failed!")
-        }
-        finally {
+            register(data.token, data.user.role);
+            setSuccess("Registration Successful! Redirecting.....");
+            toast.success('Registered Successfully!');
+            setTimeout(() => {
+                if (data.user.role === "admin")
+                    navigate("/admin");
+                else
+                    navigate("/dashboard");
+            }, 2000);
+        } catch (error) {
+            if (error.response)
+                setError(error.response.data.error || "Registration failed");
+            else if (error.request)
+                setError("Cannot reach server, Check your Connection.");
+            else
+                setError("Something went wrong, Try again.");
+        } finally {
             setLoading(false);
         }
     }
