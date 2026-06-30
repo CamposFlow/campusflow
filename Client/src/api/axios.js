@@ -3,7 +3,7 @@ import axios from "axios";
 
 
 const api = axios.create({
-    baseURL: "https://campusflowserver.onrender.com",
+    baseURL: "https://campusflowserver-uc79.vercel.app",
     headers: { 'Content-Type': 'application/json' }
 });
 
