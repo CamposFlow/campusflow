@@ -45,7 +45,7 @@ export const Login = () => {
     })
 
     const handleGoogleLogin1 = () => {
-        window.location.href = "http://localhost:3000/auth/google";
+        window.location.href = "https://campusflowserver.onrender.com/auth/google";
     };
 
     const handleLogin = async ()=>{
