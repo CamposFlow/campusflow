@@ -20,10 +20,10 @@ function Register() {
     const [success, setSuccess] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
-    const [confirmPassword, setConfirmPassword] = useState(false);
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [showConfirm, setShowConfirm] = useState(false);
   const [university, setUniversity] = useState("");
-
+    const [role] = useState("student");
       useGSAP(() => {
         const tl = gsap.timeline();
 
@@ -53,7 +53,7 @@ function Register() {
         try {
             setError(null);
             setLoading(true);
-            const data = await registerUser(email, password, university);
+            const data = await registerUser(fullname, email, password, university, role);
 
             register(data.token, data.user.role);
             setSuccess("Registration Successful! Redirecting.....");
@@ -106,6 +106,7 @@ function Register() {
                 <div className="mb-4 relative m-2">
                     <input
                         type="fullname"
+                        value={fullname}
                         placeholder=" "
                         onChange={(e)=>setFullName(e.target.value)}
                         className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm

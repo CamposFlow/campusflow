@@ -34,19 +34,15 @@ api.interceptors.response.use(
 
 export default api;
 
-export const loginUser = async (username, password) => {
+export const loginUser = async (email, password) => {
     const response = await api.post("/login", {
-        username,
+        email,
         password});
     return response.data;
 }
 
-export const registerUser = async (email, password, university) => {
-    const response = await api.post("/register", {
-        email,
-        password,
-        university,
-    });
+export const registerUser = async (fullname, email, password, university, role) => {
+    const response = await api.post("/register", { fullname, email, password, university, role });
     return response.data;
 }
 
