@@ -191,7 +191,7 @@ return res.status(403).json({...});
 
 ---
 
-Now here's the README endpoint documentation:
+
 
 ---
 
