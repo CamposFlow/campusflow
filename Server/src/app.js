@@ -16,7 +16,7 @@ const isDev = process.env.NODE_ENV === 'development';
 app.use(globalRateLimiter);
 
 app.use(cors({
-  origin: isDev ? '*' : 'https://campusflow-mmt9.onrender.com/',
+  origin: isDev ? '*' : 'https://campusflow-mmt9.onrender.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -39,8 +39,6 @@ app.use('/', authRoutes);
 app.use('/', adminRoutes);
 app.use('/universities', solanaRoutes);
 app.use('/api', mainAlerts);
-
-app.use('/api', mainAlerts)
 
 // 404 Handler
 app.use((req, res) => {
