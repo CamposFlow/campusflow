@@ -1,4 +1,4 @@
-import pool from '../configs/db';
+import pool from '../configs/db.js';
 
 class Certificate {
   static async create(hash, studentId, studentName, certificateType, institution, universityId, timestamp, isValid, txSignature, pdaAddress, createdAt, certificateUrl) {

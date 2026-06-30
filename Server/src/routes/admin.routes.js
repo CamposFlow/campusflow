@@ -1,7 +1,7 @@
 import express from 'express';
-import { uploadDocument } from '../configs/cloudinary';
-import { createCertificate } from '../controllers/admin.controller';
-import Admin from '../models/admin.model';
+import { uploadDocument } from '../configs/cloudinary.js';
+import { createCertificate } from '../controllers/admin.controller.js';
+import Admin from '../models/admin.model.js';
 
 const router = express.Router();
 

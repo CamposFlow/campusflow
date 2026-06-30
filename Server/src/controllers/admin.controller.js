@@ -1,5 +1,5 @@
-import CloudinaryModel from '../models/cloudinaryModel';
-import Certificate from '../models/certificate.model';
+import CloudinaryModel from '../models/cloudinaryModel.js';
+import Certificate from '../models/certificate.model.js';
 
 export const createCertificate = async (req, res) => {
   try {
