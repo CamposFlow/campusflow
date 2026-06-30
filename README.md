@@ -159,6 +159,264 @@ CREATE TABLE documents (
 
 ---
 
+
+Good, I have everything I need. A few quick bugs I spotted first before writing the README:
+
+**Bug 1 — `solana.routes.js`: revoke route has dot instead of slash**
+```js
+// Wrong
+routes.patch('/certificate.revoke', ...)
+
+// Correct
+routes.patch('/certificate/revoke', ...)
+```
+
+**Bug 2 — `solana.routes.js`: `getVerificationByHash` route has no `:hash` param**
+```js
+// Wrong
+routes.get('/records', authMiddleware, getVerificationByHash);
+
+// Correct
+routes.get('/records/:hash', authMiddleware, getVerificationByHash);
+```
+
+**Bug 3 — `solana.controllers.js`: `getVerificationByHash` missing `return` on 403**
+```js
+// Wrong - execution continues after 403
+res.status(403).json({...});
+
+// Correct
+return res.status(403).json({...});
+```
+
+---
+
+Now here's the README endpoint documentation:
+
+---
+
+# CampusFlow API — Blockchain Endpoints
+
+Base URL: `/api/solana`  
+All protected routes require a JWT token in the `Authorization` header.
+
+---
+
+## Universities
+
+### `POST /`
+Register a university on-chain and in the database.
+
+**Auth:** None  
+**Body:**
+```json
+{ "universityId": "FUTO_UNI", "name": "Federal University of Technology Owerri" }
+```
+**Returns:**
+```json
+{
+  "success": true,
+  "message": "University registered successfully.",
+  "data": { "tx": "...", "universityPDA": "..." },
+  "db": { "university_id": "FUTO_UNI", "name": "...", "admin": "...", "tx_signature": "...", "pda_address": "..." }
+}
+```
+
+---
+
+### `GET /`
+Fetch all universities from chain and database.
+
+**Auth:** None  
+**Returns:**
+```json
+{
+  "success": true,
+  "count": 1,
+  "data": [{ "universityPDA": "...", "universityId": "...", "name": "...", "isActive": true }],
+  "db": [{ "university_id": "...", "name": "...", "admin": "..." }]
+}
+```
+
+---
+
+## Certificates
+
+### `POST /certificate`
+Issue a certificate on-chain and save to database. Hash is auto-generated from student details.
+
+**Auth:** Required  
+**Body:**
+```json
+{
+  "studentId": "FUT/2021/001",
+  "studentName": "Ezichi Jenissi",
+  "certificateType": "B.Tech Software Engineering",
+  "institution": "FUTO"
+}
+```
+**Returns:**
+```json
+{
+  "success": true,
+  "message": "Certificate Issued Successfully.",
+  "database": { "hash": "...", "student_id": "...", "is_valid": true, "tx_signature": "...", "pda_address": "..." },
+  "chain": { "tx": "...", "certificatePDA": "..." }
+}
+```
+
+---
+
+### `GET /certificate`
+Fetch all certificates for the authenticated user's university (chain + DB).
+
+**Auth:** Required  
+**Returns:**
+```json
+{
+  "success": true,
+  "count": 5,
+  "db": [ { "hash": "...", "student_name": "...", "is_valid": true } ],
+  "chain": [ { "hash": "...", "studentName": "...", "certificateType": "..." } ]
+}
+```
+
+---
+
+### `GET /certificate/:id`
+Fetch a single certificate by its database UUID.
+
+**Auth:** Required  
+**Params:** `id` — certificate UUID  
+**Returns:**
+```json
+{
+  "success": true,
+  "db": { "id": "...", "hash": "...", "student_name": "...", "is_valid": true }
+}
+```
+
+---
+
+### `PATCH /certificate/revoke`
+Revoke a certificate on-chain and update database. University-restricted.
+
+**Auth:** Required  
+**Body:**
+```json
+{ "hash": "abc123..." }
+```
+**Returns:**
+```json
+{
+  "success": true,
+  "message": "Certificate was revoked successfully",
+  "data": { "hash": "...", "is_valid": false },
+  "chain": { "tx": "...", "certificatePDA": "..." }
+}
+```
+
+---
+
+## Certificate Verification
+
+### `POST /verify`
+Verify a certificate on-chain and log the verification record.
+
+**Auth:** Required  
+**Body:**
+```json
+{
+  "document_hash": "abc123...",
+  "verifier_org": "Federal Ministry of Education"
+}
+```
+**Returns:**
+```json
+{
+  "success": true,
+  "message": "Certificate verified successfully.",
+  "certificate": { "hash": "...", "student_name": "...", "is_valid": true },
+  "verification": { "document_hash": "...", "verifier_org": "...", "tx_signature": "..." },
+  "chain": { "tx": "...", "verificationPDA": "..." }
+}
+```
+
+---
+
+### `GET /record/verify`
+Fetch all verification records for the authenticated user's university.
+
+**Auth:** Required  
+**Returns:**
+```json
+{
+  "success": true,
+  "count": 3,
+  "db": [ { "document_hash": "...", "verifier_org": "...", "timestamp": 1234567890 } ],
+  "chaindb": [ { "verificationPDA": "...", "documentHash": "...", "verifierOrg": "..." } ]
+}
+```
+
+---
+
+### `GET /records/:hash`
+Fetch all verification records for a specific certificate hash. University-restricted.
+
+**Auth:** Required  
+**Params:** `hash` — certificate document hash  
+**Returns:**
+```json
+{
+  "success": true,
+  "count": 2,
+  "db": [ { "document_hash": "...", "verifier_org": "...", "verifier_id": "..." } ]
+}
+```
+
+---
+
+## Incidents
+
+### `POST /incidents`
+Report a campus incident. Saved to DB only (chain write commented out for now).
+
+**Auth:** Required  
+**Body:**
+```json
+{
+  "category": "suspicious",
+  "locationText": "Engineering Block, Gate 2",
+  "description": "A man was loitering around the parked bikes.",
+  "latitude": 5.392691,
+  "longitude": 6.986264
+}
+```
+**Returns:**
+```json
+{
+  "success": true,
+  "message": "Incident reported Successfully.",
+  "data": { "incident_id": "...", "student_id": "...", "category": "suspicious", "university_id": "..." }
+}
+```
+
+---
+
+### `GET /incidents`
+Fetch all incidents for the authenticated user's university (chain + DB, filtered by university).
+
+**Auth:** Required  
+**Returns:**
+```json
+{
+  "success": true,
+  "count": 4,
+  "chain": [ { "incidentPDA": "...", "studentName": "...", "description": "..." } ],
+  "database": [ { "incident_id": "...", "category": "...", "location_text": "..." } ]
+}
+```
+
 ## Authentication & Security API
 
 ### Auth Flow
