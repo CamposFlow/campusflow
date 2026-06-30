@@ -47,7 +47,7 @@ export const register = async (req, res, next) => {
     const token = generateToken(newUser);
 
     // send a welcome email to the newly registered user
-    await sendEmail(email, "welcome", fullname);
+    sendEmail(email, "welcome", fullname).catch(err => console.error("Welcome email failed:", err));
     res.status(201).json({
       message: 'User registered successfully',
       token: `Bearer ${token}`,
