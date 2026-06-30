@@ -285,7 +285,7 @@ export const getVerificationByHash  = async (req, res) => {
             return res.status(404).json({success: false, message: "No verification found"});
         }
         if(records[0].university_id !== universityId) {
-            res.status(403).json({success:false, message: "Unauthorized"});
+          return res.status(403).json({success:false, message: "Unauthorized"});
         }
         res.status(200).json({success:true, count:records.length, db:records});
 
