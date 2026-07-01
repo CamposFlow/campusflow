@@ -6,11 +6,13 @@ import Loaders from "@/components/Loaders.jsx";
 import {StaffRecord} from "@/pages/Staff/Panel/StaffRecord.jsx";
 import {StaffProfile} from "@/pages/Staff/Panel/StaffProfile.jsx"
 import SOSPanel from "@/pages/Staff/Panel/Security.jsx"
+import {useAuth} from "@/pages/AuthContext.jsx";
 
 export const StaffDashboard = () => {
 const [activeTab, setActiveTab] = useState('overview');
 const [loading, setLoading] = useState(true);
 
+    const { logout } = useAuth();
 const tabTitle={
     overview:'Overview',
     record:'Student Record',

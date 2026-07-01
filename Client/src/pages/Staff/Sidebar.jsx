@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, {useEffect, useState} from "react"
 import { Link, useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 import {useAuth} from "@/pages/AuthContext.jsx";
@@ -12,6 +12,7 @@ import {
     Menu,
     X, ChevronRight,
 } from "lucide-react"
+import Loaders from "@/components/Loaders.jsx";
 
 const studentLinks = [
     { icon: LayoutDashboard, label: "Dashboard", path: "overview" },
@@ -27,16 +28,26 @@ const bottomLinks = [
 
 export const Sidebar = ({activeTab ,setActiveTab}) => {
     const [mobileOpen, setMobileOpen] = useState(false)
+    const [loading1, setLoading1] = useState(true);
     const navigate = useNavigate()
-    // const {logout}= useAuth();
+    const {logout}= useAuth();
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading1(false);
+        }, 6000);
+    }, []);
 
     const handleLogout = () => {
-        // logout();
-        // toast.success("Successfully Logged Out!")
-        // setTimeout(() => {
-        //     navigate("/login")
-        // }, 1500)
+        logout();
+        toast.success("Successfully Logged Out!")
+        setTimeout(() => {
+            navigate("/login")
+        }, 800)
+        if (loading1){
+            return <Loaders/>
+        }
     }
+
 
 
     return (
