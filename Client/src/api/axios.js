@@ -53,4 +53,7 @@ export const forgotPassword = async (email) => {
     })
     return response.data;
 }
-
+export const completeProfile = async (role, university) => {
+    const response = await api.post("/complete-profile", { role, university });
+    return response.data;
+};

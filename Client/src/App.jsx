@@ -10,7 +10,7 @@ import {Toaster} from "react-hot-toast";
 import {AdminDashboard} from "@/pages/Admin/AdminDashboard.jsx";
 import {StaffDashboard} from "@/pages/Staff/StaffDashboard.jsx";
 import {GoogleSuccess} from "./components/Google";
-
+import Onboarding from "@/pages/Onboarding.jsx";
 function ProtectedRoute({allowedRoles}) {
 const {token,role} = useAuth();
 
@@ -53,6 +53,7 @@ function App() {
                 <Route path="/register" element={<PublicRoute><Register/></PublicRoute>} />
                 <Route path="/" element={<LandingPage/>}/>
                 <Route path="/verify" element={<Portal/>}/>
+                <Route path="/onboarding" element={<Onboarding/>}/>
                 <Route element={<ProtectedRoute allowedRoles={["student"]}/>}>
                     <Route path="/dashboard" element={<Dashboard/>}/>
                 </Route>

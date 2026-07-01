@@ -7,6 +7,7 @@ import {useAuth} from "./AuthContext.jsx";
 import {registerUser} from "../api/axios.js"
 import {CheckCircle, Eye, EyeOff, GraduationCap, XCircle} from "lucide-react"
 import toast from "react-hot-toast"
+import {FcGoogle} from "react-icons/fc";
 
 
 
@@ -48,7 +49,7 @@ function Register() {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
     const handleGoogleLogin1 = () => {
-        window.location.href = "https://campusflowserver.onrender.com/auth/google";
+        window.location.href = "https://campusflowserver-uc79.vercel.app/auth/google";
     };
 
     const handleRegister = async () => {
@@ -94,6 +95,16 @@ function Register() {
                 <h1 className="text-2xl font-bold text-blue-600 mb-1">Create Account</h1>
                 <p className="text-gray-500 text-sm mb-6">Fill in Your Credentials to Register</p>
 
+                <button
+                    type="button"
+                    onClick={handleGoogleLogin1}
+                    className="mb-4 w-full flex items-center justify-center gap-3 border
+                    border-gray-300 bg-white text-gray-700 font-semibold p-2 rounded-lg
+                    hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
+                >
+                    <FcGoogle className="w-5 h-5" />
+                    Continue with Google
+                </button>
                 {
                     error &&   <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3 mb-4">
                         {error}

@@ -45,7 +45,7 @@ export const Login = () => {
     })
 
     const handleGoogleLogin1 = () => {
-        window.location.href = "https://campusflowserver.onrender.com/auth/google";
+        window.location.href = "https://campusflowserver-uc79.vercel.app/auth/google";
     };
 
     const handleLogin = async ()=>{

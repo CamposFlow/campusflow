@@ -1,11 +1,18 @@
 import { CheckCircle, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 import Ring from "../components/Ring.jsx";
+import api from "@/api/axios.js";
 
 export const OverviewPanel = ({ student, stats, activities }) => {
   const [barReady, setBarReady] = useState(false);
   const [ringPct, setRingPct] = useState(0);
+  const [studentName, setStudentName] = useState("");
 
+    useEffect(() => {
+        api.get('/me')
+            .then(res => setStudentName(res.data.user.fullname))
+            .catch(err => console.error(err));
+    }, []);
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setBarReady(true);
@@ -66,7 +73,7 @@ export const OverviewPanel = ({ student, stats, activities }) => {
           <p className="text-blue-200 text-sm font-medium mb-1">
             Good evening,
           </p>
-          <h2 className="text-3xl font-bold mb-1">{student.name}</h2>
+          <h2 className="text-3xl font-bold mb-1">{studentName}</h2>
           <p className="text-blue-200 text-sm">
             {student.department} · {student.level} · {student.studentId}
           </p>
