@@ -44,12 +44,18 @@ function Register() {
                 ease: "power2.out"
             }, "-=0.3")
     })
-
+    const validateEmail = (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
     const handleGoogleLogin1 = () => {
         window.location.href = "https://campusflowserver.onrender.com/auth/google";
     };
 
     const handleRegister = async () => {
+        if (!validateEmail(email)) {
+            setError("Please enter a valid email address.");
+            return;
+        }
         try {
             setError(null);
             setLoading(true);

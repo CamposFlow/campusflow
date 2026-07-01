@@ -31,6 +31,7 @@ export const Sidebar = ({activeTab ,setActiveTab}) => {
     const [loading1, setLoading1] = useState(true);
     const navigate = useNavigate()
     const {logout}= useAuth();
+
     useEffect(() => {
         setTimeout(() => {
             setLoading1(false);
