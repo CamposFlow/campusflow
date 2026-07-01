@@ -39,9 +39,9 @@ export const Sidebar = ({activeTab ,setActiveTab}) => {
 
     const handleLogout = () => {
         logout();
-        toast.success("Successfully Logged Out!")
+        toast.success("Successfully Logged Out!");
         setTimeout(() => {
-            navigate("/login")
+            navigate("/login");
         }, 800)
         if (loading1){
             return <Loaders/>

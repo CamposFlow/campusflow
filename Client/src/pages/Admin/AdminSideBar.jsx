@@ -28,14 +28,15 @@ const AdminbottomLinks = [
 export const AdminSidebar = ({activeTab ,setActiveTab}) => {
     const [mobileOpen, setMobileOpen] = useState(false)
     const navigate = useNavigate()
-    // const {logout}= useAuth();
+
+    const {logout}= useAuth();
 
     const handleLogout = () => {
-        // logout();
-        // toast.success("Successfully Logged Out!")
-        // setTimeout(() => {
-        //     navigate("/login")
-        // }, 1500)
+        logout();
+        toast.success("Successfully Logged Out!")
+        setTimeout(() => {
+            navigate("/login")
+        }, 1500)
     }
 
 
