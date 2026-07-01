@@ -6,11 +6,16 @@ import api from "@/api/axios.js";
 export const OverviewPanel = ({ student, stats, activities }) => {
   const [barReady, setBarReady] = useState(false);
   const [ringPct, setRingPct] = useState(0);
+  const [department, setDepartment] = useState("");
   const [studentName, setStudentName] = useState("");
+  const [matric_number, setMatricNumber] = useState("");
 
     useEffect(() => {
         api.get('/me')
-            .then(res => setStudentName(res.data.user.fullname))
+            .then(res => {
+                setStudentName(res.data.user.fullname);
+                setDepartment(res.data.user.department);
+            })
             .catch(err => console.error(err));
     }, []);
   useEffect(() => {
@@ -73,9 +78,9 @@ export const OverviewPanel = ({ student, stats, activities }) => {
           <p className="text-blue-200 text-sm font-medium mb-1">
             Good evening,
           </p>
-          <h2 className="text-3xl font-bold mb-1">{studentName}</h2>
+          <h2 className="text-3xl font-bold mb-1 uppercase">{studentName}</h2>
           <p className="text-blue-200 text-sm">
-            {student.department} · {student.level} · {student.studentId}
+            {department} · {student.level} · {student.studentId}
           </p>
           <div className="flex gap-3 mt-5">
             <span className="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur border border-white/20 text-white text-xs font-medium px-3 py-1.5 rounded-full">
