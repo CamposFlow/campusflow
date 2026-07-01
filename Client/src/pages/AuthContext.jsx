@@ -20,6 +20,12 @@ function getStoredRole(){
 }
 
 export const AuthProvider = ({children}) => {
+    useEffect(() => {
+        const ping = () => fetch("https://campusflowserver-uc79.vercel.app/health");
+        ping();
+        const interval = setInterval(ping, 5 * 60 * 1000);
+        return () => clearInterval(interval);
+    }, []);
     const [token, setToken] = useState(getStoredToken());
     const [role, setRole] = useState(getStoredRole());
         const logoutTimer = useRef(null);
