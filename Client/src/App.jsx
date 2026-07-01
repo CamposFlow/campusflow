@@ -52,8 +52,9 @@ function App() {
                 <Route path="/reset" element={<PublicRoute><ForgotPassword/></PublicRoute>} />
                 <Route path="/register" element={<PublicRoute><Register/></PublicRoute>} />
                 <Route path="/" element={<LandingPage/>}/>
+                <Route path="/onboarding" element={<PublicRoute><Onboarding/></PublicRoute>} />
                 <Route path="/verify" element={<Portal/>}/>
-                <Route path="/onboarding" element={<Onboarding/>}/>
+
                 <Route element={<ProtectedRoute allowedRoles={["student"]}/>}>
                     <Route path="/dashboard" element={<Dashboard/>}/>
                 </Route>

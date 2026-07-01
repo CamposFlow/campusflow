@@ -45,7 +45,10 @@ export const registerUser = async (fullname, email, password, university, role) 
     const response = await api.post("/register", { fullname, email, password, university, role });
     return response.data;
 }
-
+export const completeProfile = async (role, university) => {
+    const response = await api.post("/complete-profile", { role, university });
+    return response.data;
+}
 
 export const forgotPassword = async (email) => {
     const response = await api.post("/forgot-password", {
@@ -53,7 +56,4 @@ export const forgotPassword = async (email) => {
     })
     return response.data;
 }
-export const completeProfile = async (role, university) => {
-    const response = await api.post("/complete-profile", { role, university });
-    return response.data;
-};
+

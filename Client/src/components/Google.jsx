@@ -30,5 +30,6 @@ export const GoogleSuccess = () => {
         }
     }, []);
 
+
     return <p className="text-center mt-20 text-gray-500">Signing you in...</p>;
 };
