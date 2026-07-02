@@ -4,7 +4,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Siren, AlertTriangle, Zap, ShieldAlert, HeartPulse } from 'lucide-react';
 import { RiskZoneMap } from "@/components/RiskZone";
-import {toast} from "react-hot-toast";
+import {toast} from "sonner";
 import api from "@/api/axios.js";
 
 function SOSPanel() {

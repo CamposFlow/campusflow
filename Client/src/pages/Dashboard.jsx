@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import {toast} from "sonner";
 import Loaders from "@/components/Loaders.jsx";
 import { SIDEBAR_LINKS } from "../constants/sidebarLinks.js";
 import { OverviewPanel } from "@/Panels/OverviewPanel.jsx";
@@ -8,6 +8,7 @@ import { ClearancePanel } from "@/Panels/ClearancePanel.jsx";
 import { CertificatePanel } from "@/Panels/CertificatePanel.jsx";
 import { ResultsPanel } from "@/Panels/Results.jsx";
 import { PaymentsPanel } from "@/Panels/PaymentPanel.jsx";
+import SOSPanel from "@/pages/Staff/Panel/Security.jsx"
 import {
   CheckCircle,
   Clock,
@@ -278,6 +279,7 @@ const StudentDashboard = () => {
     results: <ResultsPanel result={result} />,
     payments: <PaymentsPanel payment={payment} />,
     certificate: <CertificatePanel cert={cert} />,
+    security: <SOSPanel />,
   };
   const [loading1, setLoading1] = useState(true);
   useEffect(() => {

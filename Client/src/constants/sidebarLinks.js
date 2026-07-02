@@ -7,8 +7,10 @@ export const SIDEBAR_LINKS = [
     { id: 'overview',    label: 'Overview',    icon: LayoutDashboard },
     { id: 'clearance',  label: 'Clearance',   icon: ShieldCheck },
     { id: 'results',    label: 'Results',     icon: BookOpen },
+    {id:'security', label: 'Security', icon: ShieldCheck},
     { id: 'payments',   label: 'Payments',    icon: CreditCard },
-    { id: 'certificate',label: 'Certificate', icon: Award },
+    { id: 'certificate',label: 'Certificate', icon: Award }
+
 ];
 
 export const AdminLinks =[

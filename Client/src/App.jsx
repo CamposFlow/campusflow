@@ -6,12 +6,12 @@ import LandingPage from "./pages/LandingPage.jsx";
 import Portal from "./pages/Portal.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
-import {Toaster} from "react-hot-toast";
+import {Toaster} from "sonner";
 import {AdminDashboard} from "@/pages/Admin/AdminDashboard.jsx";
 import {StaffDashboard} from "@/pages/Staff/StaffDashboard.jsx";
 import {GoogleSuccess} from "./components/Google";
 import Onboarding from "@/pages/Onboarding.jsx";
-function ProtectedRoute({allowedRoles}) {
+function ProtectedRoute({allowedRoles}) {r
 const {token,role} = useAuth();
 
   if (!token) {
@@ -36,16 +36,31 @@ function App() {
 
     return (<AuthProvider>
             <Toaster
-                position="bottom-right"
-                toastOptions={{
-                    className:'',
-                    style: {
-                        border:'1px solid blue',
-                        color:'white',
-                        padding:'8px',
-                        backgroundColor:'navy',
+                position="top-right"
+                theme="dark"
+                className="rounded-2xl shadow-lg font-sans"
+                toastOptions={{ style: { background: '#fafafa' , border: '1px solid #e2e8f0', color: '#0f172a', borderRadius: '12px', fontSize: '14px', fontWeight: '500',
                     },
-                }}/>
+                    success: {
+                        style: {
+                            borderLeft: '4px solid #2563EB',
+                        },
+                        iconTheme: {
+                            primary: '#2563EB',
+                            secondary: '#ffffff',
+                        },
+                    },
+                    error: {
+                        style: {
+                            borderLeft: '4px solid #dc2626',
+                        },
+                        iconTheme: {
+                            primary: '#dc2626',
+                            secondary: '#ffffff',
+                        },
+                    },
+                }}
+            />
             <Routes>
                 <Route path="/login" element={<PublicRoute><Login/></PublicRoute>} />
                 <Route path="/google-success" element={<GoogleSuccess/>} />

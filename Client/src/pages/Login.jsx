@@ -3,7 +3,7 @@ import { useNavigate, Link} from 'react-router-dom'
 import {FcGoogle} from "react-icons/fc";
 import gsap from "gsap";
 import {GoogleLogin} from "@react-oauth/google";
-import {toast} from "react-hot-toast";
+import {toast} from "sonner";
 import {Button} from "@/components/ui/button.jsx";
 import {useGSAP} from "@gsap/react";
 import {loginUser} from "@/api/axios.js";
