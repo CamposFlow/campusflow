@@ -6,7 +6,7 @@ import {gsap} from "gsap";
 import {useAuth} from "./AuthContext.jsx";
 import {registerUser} from "../api/axios.js"
 import {CheckCircle, Eye, EyeOff, GraduationCap, XCircle} from "lucide-react"
-import toast from "react-hot-toast"
+import {toast} from "sonner"
 import {FcGoogle} from "react-icons/fc";
 
 

@@ -161,9 +161,16 @@
     @apply font-sans;
 
     }
+  .maplibregl-popup-content {
+    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+
+    }
+  .maplibregl-popup-tip {
+    @apply hidden!;
+
+    }
 
 }
-
 
 .leaflet-popup-content-wrapper {
     background: #0A1628;

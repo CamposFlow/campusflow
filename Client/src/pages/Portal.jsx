@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import toast from "react-hot-toast"
+import {toast} from "sonner";
 import { motion, AnimatePresence } from "framer-motion"
 import {Footer} from "@/components/Footer.jsx";
 import {

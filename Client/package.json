@@ -19,13 +19,20 @@
     "axios": "^1.17.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "driver.js": "^1.6.0",
     "ethers": "^6.16.0",
     "framer-motion": "^11.5.0",
     "gsap": "^3.15.0",
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
     "lucide-react": "^1.17.0",
+<<<<<<< HEAD
     "react": "^18.3.1",
+=======
+    "maplibre-gl": "^5.24.0",
+    "radix-ui": "^1.5.0",
+    "react": "^19.2.6",
+>>>>>>> 6551b7a86825f76ec24b240b45c0fc71341bb8e4
     "react-circular-progressbar": "^2.2.0",
     "react-dom": "^18.3.1",
     "react-dropzone": "^15.0.0",
