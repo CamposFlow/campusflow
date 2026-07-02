@@ -11,7 +11,7 @@ import {AdminDashboard} from "@/pages/Admin/AdminDashboard.jsx";
 import {StaffDashboard} from "@/pages/Staff/StaffDashboard.jsx";
 import {GoogleSuccess} from "./components/Google";
 import Onboarding from "@/pages/Onboarding.jsx";
-function ProtectedRoute({allowedRoles}) {r
+function ProtectedRoute({allowedRoles}) {
 const {token,role} = useAuth();
 
   if (!token) {

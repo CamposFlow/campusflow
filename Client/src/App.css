@@ -277,7 +277,7 @@ html {
   transition: width 0.9s ease-out 0.7s;
 }
 
-<<<<<<< Updated upstream
+
 .leaflet-popup-content-wrapper {
   background: #0A1628;
   color: white;
@@ -308,7 +308,7 @@ html {
 .leaflet-bottom {
   z-index: 1 !important;
 }
-=======
+
 @keyframes avatar-click {
   0% {
     transform: scale(1);
@@ -329,4 +329,3 @@ html {
   transform-origin: center;
   will-change: transform;
 }
->>>>>>> Stashed changes

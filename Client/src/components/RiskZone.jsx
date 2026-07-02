@@ -32,19 +32,60 @@ const Toggle3DButton = ({ is3D, onToggle }) => {
 const MapController = ({ is3D }) => {
     const { map } = useMap()
 
-    const animate = useCallback(() => {
+    useEffect(() => {
         if (!map) return
+
+        // animate camera
         map.easeTo({
             pitch: is3D ? 60 : 0,
             bearing: is3D ? -20 : 0,
             duration: 800,
-            easing: (t) => t * (2 - t)
         })
+
+
+        if (is3D && !map.getLayer('3d-buildings')) {
+            const layers = map.getStyle().layers
+            let labelLayerId
+            for (let i = 0; i < layers.length; i++) {
+                if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+                    labelLayerId = layers[i].id
+                    break
+                }
+            }
+
+            if (!map.getSource('openfreemap-3d')) {
+                map.addSource('openfreemap-3d', {
+                    url: 'https://tiles.openfreemap.org/planet',
+                    type: 'vector',
+                })
+            }
+
+            map.addLayer({
+                id: '3d-buildings',
+                source: 'openfreemap-3d',
+                'source-layer': 'building',
+                type: 'fill-extrusion',
+                minzoom: 15,
+                filter: ['!=', ['get', 'hide_3d'], true],
+                paint: {
+                    'fill-extrusion-color': [
+                        'interpolate', ['linear'], ['get', 'render_height'],
+                        0, '#e2e8f0',
+                        50, '#93c5fd',
+                        200, '#2563EB'
+                    ],
+                    'fill-extrusion-height': ['get', 'render_height'],
+                    'fill-extrusion-base': ['get', 'render_min_height'],
+                    'fill-extrusion-opacity': 0.8,
+                },
+            }, labelLayerId)
+
+        } else if (!is3D && map.getLayer('3d-buildings')) {
+            map.removeLayer('3d-buildings')
+        }
+
     }, [map, is3D])
 
-    useEffect(() => {
-        animate()
-    }, [animate]);
     return null
 }
 export const RiskZoneMap = () => {
@@ -62,11 +103,11 @@ export const RiskZoneMap = () => {
         pitch={0}
         bearing={0}
         styles={{
-            light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
-            dark: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
+            light: "https://tiles.openfreemap.org/styles/bright",
+            dark: "https://tiles.openfreemap.org/styles/bright"
         }}
     >
-                <MapControls />
+                <MapControls position="bottom-right" />
                 <MapController is3D={is3D} />
 
                 {riskZones.map((zone, i) => {
@@ -106,7 +147,7 @@ export const RiskZoneMap = () => {
                 })}
             </Map>
 </div>
-            {/* 3D toggle — overlays the map */}
+
             <div className="absolute top-3 left-3 z-10">
                 <Toggle3DButton is3D={is3D} onToggle={() => setIs3D(v => !v)} />
             </div>
