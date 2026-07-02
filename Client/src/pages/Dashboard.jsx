@@ -341,6 +341,18 @@ const StudentDashboard = () => {
             </button>
           );
         })}
+
+        <button
+          type="button"
+          onClick={() => {
+            navigate("/profile");
+            setSidebarOpen(false);
+          }}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-150"
+        >
+          <IdCard className="w-4 h-4 text-gray-400" />
+          Profile
+        </button>
       </nav>
 
       {/* Footer actions */}
@@ -419,7 +431,11 @@ const StudentDashboard = () => {
               <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
             </button>
             <div className="cursor-pointer">
-              <ProfileAvatar name={student.name} initials={student.avatar} />
+              <ProfileAvatar
+                name={student.name}
+                initials={student.avatar}
+                onClick={() => navigate("/profile")}
+              />
             </div>
           </div>
         </header>
