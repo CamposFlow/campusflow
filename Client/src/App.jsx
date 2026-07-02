@@ -1,7 +1,7 @@
-import {Routes, Route, Navigate, Outlet} from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
-import {AuthProvider, useAuth} from "./pages/AuthContext.jsx"
+import { AuthProvider, useAuth } from "./pages/AuthContext.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import Portal from "./pages/Portal.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
@@ -15,12 +15,12 @@ function ProtectedRoute({allowedRoles}) {
 const {token,role} = useAuth();
 
   if (!token) {
-    return <Navigate to={`/login`} replace/>
+    return <Navigate to={`/login`} replace />;
   }
-  if (allowedRoles && !allowedRoles.includes(role)){
-     return <Navigate to={`/login`} replace/>
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    return <Navigate to={`/login`} replace />;
   }
-  return <Outlet/>;
+  return <Outlet />;
 }
 
 function PublicRoute({children}) {
@@ -105,4 +105,3 @@ export default App;
 //     )
 // }
 // export default App;
-

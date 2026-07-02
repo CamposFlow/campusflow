@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Camera } from "lucide-react";
 
-export function ProfileAvatar({ name, initials, size = "default" }) {
+export function ProfileAvatar({ name, initials, size = "default", onClick }) {
   const [avatar, setAvatar] = useState(null);
   const [open, setOpen] = useState(false);
   const [preview, setPreview] = useState(null);
@@ -74,7 +74,17 @@ export function ProfileAvatar({ name, initials, size = "default" }) {
 
   return (
     <>
-      <div onClick={() => setOpen(true)} style={{ cursor: "pointer" }}>
+      <div
+        onClick={(event) => {
+          if (onClick) {
+            event.stopPropagation();
+            onClick();
+            return;
+          }
+          setOpen(true);
+        }}
+        style={{ cursor: "pointer" }}
+      >
         <Avatar size={size}>
           {avatar ? (
             <AvatarImage src={avatar} alt={name} />
