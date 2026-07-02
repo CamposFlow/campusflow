@@ -23,6 +23,9 @@ const certificateData = {
 }
 
 const AdminRecords = () => {
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState(null);
+
     const [isIssueOpen, setIsIssueOpen] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [activeYear, setActiveYear] = useState("2025")
@@ -235,7 +238,7 @@ onClick={() => setShowModal(true)}
                     </motion.div>
                 )}
             </AnimatePresence>
-s
+<IssueCertificateModal/>
         </div>
     )
 }

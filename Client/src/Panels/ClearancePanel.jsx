@@ -105,7 +105,7 @@ export const ClearancePanel = () => {
 
   return (
       <div className="panel-landing max-w-4xl mx-auto p-4 space-y-8">
-        {/* SECTION 1: Status Overview Dashboard */}
+
         <div>
           <SectionHeader
               title="Clearance Status"

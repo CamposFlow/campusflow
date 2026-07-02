@@ -152,6 +152,7 @@ const IssueCertificateModal = ({ isOpen, onClose }) => {
                     </motion.div>
                 </>
             )}
+
         </AnimatePresence>
     )
 }
