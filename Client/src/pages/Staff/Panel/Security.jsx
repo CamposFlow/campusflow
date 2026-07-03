@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { motion } from 'framer-motion';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
@@ -6,6 +6,8 @@ import { Siren, AlertTriangle, Zap, ShieldAlert, HeartPulse } from 'lucide-react
 import { RiskZoneMap } from "@/components/RiskZone";
 import {toast} from "sonner";
 import api from "@/api/axios.js";
+import {reverseGeocode} from '@/constants/geocode.js'
+
 
 function SOSPanel() {
  const [topic, setTopic] = useState('');
@@ -14,15 +16,21 @@ function SOSPanel() {
     const [photo, setPhoto] = useState(null);
     const [submitting, setSubmitting] = useState(false);
 
+
+
     const sendAlert = async () => {
         navigator.geolocation.getCurrentPosition(
             async (position) => {
                 const { longitude, latitude } = position.coords;
                 try {
+                    const geocoded = await reverseGeocode(latitude, longitude);
+                   setLocationText(geocoded);
                     const res = await api.post("/api/telegram/send", {
                         latitude,
                         longitude,
+                        locationText
                     });
+                    console.log(`Alert response:`, res.data);
                     toast.success("Alert sent! Help is on the way.");
                 } catch (err) {
                     console.error(err);
@@ -47,6 +55,37 @@ function SOSPanel() {
     const [intervalId, setIntervalId] = useState(null);
     const [activeReport, setActiveReport] = useState(null);
 
+    useEffect(() => {
+        // Ask on Security page mount, not just when form opens
+        if (!navigator.geolocation) return
+
+        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+            if (result.state === 'granted') {
+                // Already allowed — silently get location
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const { latitude, longitude } = position.coords
+                    const geocoded = await reverseGeocode(latitude, longitude)
+                    setLocationText(geocoded)
+                })
+            } else if (result.state === 'prompt') {
+                // Not asked yet — show a friendly toast first, then trigger browser dialog
+                toast("📍 Allow location access for faster incident reporting", {
+                    duration: 4000,
+                })
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords
+                        const geocoded = await reverseGeocode(latitude, longitude)
+                        setLocationText(geocoded)
+                        toast.success("Location detected!")
+                    },
+                    () => toast.error("Location denied. Enter manually.")
+                )
+            }
+            // result.state === 'denied' — do nothing, user already said no
+        })
+    }, []) // ← empty array = runs once on page mount
+
 
     const cards = [
             {icon: AlertTriangle, title: 'Suspicious Activity', desc: 'Report suspicious persons or behavior', color: 'text-amber-500', bg: 'bg-amber-50', border: 'border-amber-200', id: 'suspicious'},
@@ -67,6 +106,8 @@ function SOSPanel() {
             async (position) => {
                 const { longitude, latitude } = position.coords;
                 try {
+                    const geocoded = await reverseGeocode(latitude, longitude);
+                    setLocationText(geocoded);
                     await api.post("/api/telegram/report", {
                         category: activeReport,
                         locationText,
@@ -74,6 +115,7 @@ function SOSPanel() {
                         longitude,
                         latitude,
                     });
+                    console.log('pill response:')
                     toast.success("Report submitted!");
                     setLocationText("");
                     setDescription("");
