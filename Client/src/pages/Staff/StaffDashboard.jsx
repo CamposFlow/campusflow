@@ -20,7 +20,7 @@ const tabTitle={
     security:'Security, Lets Keep Our Society Safe',
 }
     const panels ={
-        overview:<StaffOverview/>,
+        overview: <StaffOverview setActiveTab={setActiveTab} />,
         record:<StaffRecord/>,
         profile:<StaffProfile/>,
         security:<SOSPanel/>,

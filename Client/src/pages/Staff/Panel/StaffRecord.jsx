@@ -1,16 +1,9 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {motion, AnimatePresence} from "framer-motion";
 import {Search, CheckCircle, XCircle, Clock, Eye, FileText } from "lucide-react";
 import {PieChart, Pie, Tooltip, ResponsiveContainer, Cell} from "recharts";
+import api from '@/api/axios.js'
 
-const records = [
-    {id: 1, studentId: 'STU/2021/1234', name: 'Chukwuemeka Obi', stage: 'Library', documents: 3, status: 'pending', time: '10 mins ago'},
-    {id: 2, studentId: 'STU/2021/5678', name: 'Adaeze Nwosu', stage: 'Medical', documents: 5, status: 'approved', time: '1 hr ago'},
-    {id: 3, studentId: 'STU/2021/9012', name: 'Emeka Eze', stage: 'Departmental', documents: 4, status: 'rejected', time: '2 hrs ago'},
-    {id: 4, studentId: 'STU/2021/3456', name: 'Chioma Ike', stage: 'Library', documents: 2, status: 'pending', time: '3 hrs ago'},
-    {id: 5, studentId: 'STU/2021/7890', name: 'Tunde Balogun', stage: 'Medical', documents: 3, status: 'approved', time: '5 hrs ago'},
-    {id: 5, studentId: 'STU/2021/7390', name: 'Tumola Balogun', stage: 'Medical', documents: 3, status: 'approved', time: '7 hrs ago'},
-]
 const tabs = [
     { label: 'Pending', key: 'pending', color: 'text-yellow-600', bg: 'bg-yellow-50', active: 'bg-yellow-500' },
     { label: 'Approved', key: 'approved', color: 'text-green-600', bg: 'bg-green-50', active: 'bg-green-500' },
@@ -23,45 +16,50 @@ const statusConfig = {
     approved: { icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-50', label: 'Approved' },
     rejected: { icon: XCircle, color: 'text-red-600', bg: 'bg-red-50', label: 'Rejected' },
 }
-const counts={
-    pending :records.filter(r=>r.status === 'pending').length,
-    approved :records.filter(r=>r.status === 'approved').length,
-    rejected:records.filter(r=>r.status === 'rejected').length,
-}
-const chartData =[
-    {name:'Pending', value:counts.pending, color: '#EAB308'},
-    {name:'Approved', value:counts.approved, color: '#22C55E'},
-    {name:'Rejected', value:counts.rejected, color: '#EF4444'},
-]
+
 
 export const StaffRecord = () => {
-    const [records, setRecords] = useState([
-        {id: 1, studentId: 'STU/2021/1234', name: 'Chukwuemeka Obi', stage: 'Library', documents: 3, status: 'pending', time: '10 mins ago'},
-        {id: 2, studentId: 'STU/2021/5678', name: 'Adaeze Nwosu', stage: 'Medical', documents: 5, status: 'approved', time: '1 hr ago'},
-        {id: 3, studentId: 'STU/2021/9012', name: 'Emeka Eze', stage: 'Departmental', documents: 4, status: 'rejected', time: '2 hrs ago'},
-        {id: 4, studentId: 'STU/2021/3456', name: 'Chioma Ike', stage: 'Library', documents: 2, status: 'pending', time: '3 hrs ago'},
-        {id: 5, studentId: 'STU/2021/7890', name: 'Tunde Balogun', stage: 'Medical', documents: 3, status: 'approved', time: '5 hrs ago'},
-        {id: 6, studentId: 'STU/2021/7390', name: 'Tumola Balogun', stage: 'Medical', documents: 3, status: 'approved', time: '7 hrs ago'},
-    ])
+    const [records, setRecords] = useState([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        api.get("/admin/clearance-upload")
+            .then(res => setRecords(res.data.data || []))
+            .catch(err => console.error(err))
+            .finally(() => setLoading(false))
+    }, [])
     const [activeTab, setActiveTab] = useState('pending')
     const [search, setSearch] = useState('')
     const [selectedRecord, setSelectedRecord] = useState(null)
     const [showModal, setShowModal] = useState(false)
 
+    const statusMap = { pending: null, approved: true, rejected: false }
+    const counts = {
+        pending: records.filter(r => r.is_approved === null).length,
+        approved: records.filter(r => r.is_approved === true).length,
+        rejected: records.filter(r => r.is_approved === false).length,
+    }
+
+    const chartData = [
+        { name: 'Pending', value: counts.pending, color: '#EAB308' },
+        { name: 'Approved', value: counts.approved, color: '#22C55E' },
+        { name: 'Rejected', value: counts.rejected, color: '#EF4444' },
+    ]
     const filteredRecords = records.filter(record => {
-        const matchesTab = record.status === activeTab
-        const matchesSearch = record.name.toLowerCase().includes(search.toLowerCase()) ||
-                            record.studentId.toLowerCase().includes(search.toLowerCase())
+        const matchesTab = record.is_approved === statusMap[activeTab]
+        const matchesSearch =
+            record.student_name.toLowerCase().includes(search.toLowerCase()) ||
+            record.matric_number.toLowerCase().includes(search.toLowerCase())
         return matchesTab && matchesSearch
     })
 
     const handleApprove = (id) => {
-        setRecords(records.map(r => r.id === id ? { ...r, status: 'approved' } : r))
+        setRecords(records.map(r => r.id === id ? { ...r, is_approved: true } : r))
         setShowModal(false)
     }
 
     const handleReject = (id) => {
-        setRecords(records.map(r => r.id === id ? { ...r, status: 'rejected' } : r))
+        setRecords(records.map(r => r.id === id ? { ...r, is_approved: false } : r))
         setShowModal(false)
     }
 
@@ -69,7 +67,11 @@ export const StaffRecord = () => {
         setSelectedRecord(record)
         setShowModal(true)
     }
-
+    const getStatusKey = (is_approved) => {
+        if (is_approved === null) return 'pending'
+        if (is_approved === true) return 'approved'
+        return 'rejected'
+    }
     return (
 
         <div className="space-y-6">
@@ -180,10 +182,10 @@ export const StaffRecord = () => {
 
                         <span className={`text-xs font-bold px-2 py-0.5 rounded-full 
                 ${activeTab === tab.key ? `${tab.active} text-white` : 'bg-gray-100 text-gray-400'}`}>
-                {records.filter(r => r.status === tab.key).length}
+                {records.filter(r => r.is_approved === statusMap[tab.key]).length}
             </span>
 
-                        {tab.key === 'pending' && records.filter(r => r.status === 'pending').length > 0 && activeTab !== 'pending' && (
+                        {tab.key === 'pending' && records.filter(r => r.is_approved === null).length > 0 && activeTab !== 'pending' && (
                             <span className="absolute top-2 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
                         )}
                     </button>
@@ -203,7 +205,6 @@ export const StaffRecord = () => {
                     />
                 </div>
             </div>
-
 
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
@@ -231,20 +232,20 @@ export const StaffRecord = () => {
                                         >
                                             <td className="px-6 py-4">
                                                 <div>
-                                                    <p className="font-semibold text-gray-900">{record.name}</p>
-                                                    <p className="text-xs text-gray-500">{record.studentId}</p>
+                                                    <p className="font-semibold text-gray-900">{record.student_name}</p>
+                                                    <p className="text-xs text-gray-500">{record.matric_number}</p>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="text-sm text-gray-600">{record.stage}</span>
+                                                <span className="text-sm text-gray-600">{record.stage_name}</span>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
                                                     <FileText className="w-4 h-4" />
-                                                    {record.documents}
+                                                    -
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-gray-500">{record.time}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-500">{new Date(record.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
                                             <td className="px-6 py-4">
                                                 <button
                                                     onClick={() => handleViewDetails(record)}
@@ -307,24 +308,24 @@ export const StaffRecord = () => {
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Name</p>
-                                            <p className="font-semibold text-gray-900">{selectedRecord.name}</p>
+                                            <p className="font-semibold text-gray-900">{selectedRecord.student_name}</p>
                                         </div>
                                         <div>
-                                            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Student ID</p>
-                                            <p className="font-semibold text-gray-900">{selectedRecord.studentId}</p>
+                                            <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Matric Number</p>
+                                            <p className="font-semibold text-gray-900">{selectedRecord.matric_number}</p>
                                         </div>
                                         <div>
                                             <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Stage</p>
-                                            <p className="font-semibold text-gray-900">{selectedRecord.stage}</p>
+                                            <p className="font-semibold text-gray-900">{selectedRecord.stage_name}</p>
                                         </div>
                                         <div>
                                             <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Status</p>
-                                            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-semibold text-sm ${statusConfig[selectedRecord.status].bg} ${statusConfig[selectedRecord.status].color}`}>
+                                            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full font-semibold text-sm ${statusConfig[getStatusKey(selectedRecord.is_approved)].bg} ${statusConfig[getStatusKey(selectedRecord.is_approved)].color}`}>
                                                 {(() => {
-                                                    const IconComponent = statusConfig[selectedRecord.status].icon
+                                                    const IconComponent = statusConfig[getStatusKey(selectedRecord.is_approved)].icon
                                                     return <IconComponent className="w-4 h-4" />
                                                 })()}
-                                                {statusConfig[selectedRecord.status].label}
+                                                {statusConfig[getStatusKey(selectedRecord.is_approved)].label}
                                             </div>
                                         </div>
                                     </div>
@@ -336,25 +337,16 @@ export const StaffRecord = () => {
                                 <div>
                                     <h4 className="text-sm font-semibold text-gray-700 mb-3">Documents Submitted</h4>
                                     <div className="space-y-2">
-                                        {Array.from({ length: selectedRecord.documents }).map((_, i) => (
-                                            <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                                                <FileText className="w-5 h-5 text-blue-600" />
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-semibold text-gray-900">Document {i + 1}</p>
-                                                    <p className="text-xs text-gray-500">PDF • 2.3 MB</p>
-                                                </div>
-                                                <button className="text-blue-600 hover:text-blue-700 font-semibold text-sm">
-                                                    View
-                                                </button>
-                                            </div>
-                                        ))}
+                                        <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 text-sm text-gray-500">
+                                            Document hash: <span className="font-mono text-xs break-all">{selectedRecord.document_hash || "—"}</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div className="border-t border-gray-100" />
 
 
-                                {selectedRecord.status === 'pending' && (
+                                {getStatusKey(selectedRecord.is_approved) === 'pending' && (
                                     <div className="flex gap-3">
                                         <motion.button
                                             whileHover={{ scale: 1.02 }}
@@ -378,7 +370,7 @@ export const StaffRecord = () => {
                                     </div>
                                 )}
 
-                                {selectedRecord.status === 'approved' && (
+                                {getStatusKey(selectedRecord.is_approved) === 'approved' && (
                                     <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                                         <p className="text-sm text-green-800 font-semibold flex items-center gap-2">
                                             <CheckCircle className="w-5 h-5" />
@@ -387,7 +379,7 @@ export const StaffRecord = () => {
                                     </div>
                                 )}
 
-                                {selectedRecord.status === 'rejected' && (
+                                {getStatusKey(selectedRecord.is_approved) === 'rejected' && (
                                     <div className="p-4 bg-red-50 rounded-lg border border-red-200">
                                         <p className="text-sm text-red-800 font-semibold flex items-center gap-2">
                                             <XCircle className="w-5 h-5" />

@@ -4,7 +4,7 @@ import {ClipboardCheck, CheckCircle, XCircle, Users, MessageSquare} from "lucide
 import api from '@/api/axios.js';
 import {useEffect, useState} from "react";
 
-export const StaffOverview = () => {
+export const StaffOverview = ({ setActiveTab }) => {
     const [stats, setStats] = useState({pending : 0, approved : 0,rejected: 0, total : 0 });
     const [activities, setActivities] = useState([]);
     const [staffName, setStaffName] = useState("");
@@ -17,7 +17,7 @@ export const StaffOverview = () => {
     useEffect(() => {
         const fetchData = async () => {
             try{
-                const clearanceRes = await api.get('/clearance');
+                const clearanceRes = await api.get('/admin/clearance-upload');
                 const records = clearanceRes.data.data || [];
                 console.log('data:',records);
                 setStats({
@@ -26,7 +26,7 @@ export const StaffOverview = () => {
                     rejected: records.filter(r => r.is_approved === false).length,
                     total: records.length,
                 });
-                setActivities(records.slice(0,5)); // last five activities
+                setActivities(records.slice(0,5));
                 console.log('activities:', records.slice(0,5));
             }catch (err){
                 console.log(err);
@@ -38,15 +38,9 @@ export const StaffOverview = () => {
         {label:'Pending Approval', value: stats.pending, icon: ClipboardCheck, color:"bg-yellow-100 text-yellow-600", text:"text-yellow-600"},
         {label: 'Approved Today', value: stats.approved, icon: CheckCircle, color:'bg-green-100 text-green-600', text:"text-green-600"},
         {label:'Rejected', value: stats.rejected, icon: XCircle, color: "bg-red-100 text-red-600", text:"text-red-600"},
-        {label:'Total Students', value: stats.total, icon: Users, color:"bg-blue-100 text-blue-600", text:"text-blue-600"},
+        {label:'Total Submission', value: stats.total, icon: Users, color:"bg-blue-100 text-blue-600", text:"text-blue-600"},
     ]
-//     const activities =[
-//         {id: 1, type: 'approved', text: 'Approved Library Clearance for 202414245', time:'5m ago'},
-//         {id:2, type: 'rejected', text:'Rejected Library Clearance for 29942723', time:'6m ago'},
-//         {id: 3, type: 'approved', text: 'Approved Library Clearance for 203414245', time:'7m ago'},
-//         {id: 4, type: 'approved', text: 'Approved Library Clearance for 2022214245', time:'9m ago'},
-//         {id: 5, type: 'rejected', text: 'Approved Library Clearance for 202414245', time:'10m ago'},
-//     ]
+
     const typeConfig = {
         approved: { icon: CheckCircle, color: 'bg-green-500', ring: 'ring-green-200' },
         rejected: { icon: XCircle, color: 'bg-red-500', ring: 'ring-red-200' },
@@ -92,7 +86,12 @@ export const StaffOverview = () => {
                <div className="mt-6">
     <div className="flex items-center justify-between mb-4">
     <h3 className="text-base font-semibold text-gray-800">Recent Activity</h3>
-    <span className="text-xs text-blue-600 cursor-pointer hover:underline">View all</span>
+        <span
+            onClick={() => setActiveTab('record')}
+            className="text-xs text-blue-600 cursor-pointer hover:underline"
+        >
+    View all
+</span>
     </div>
                    <div className="relative pl-2">
 
