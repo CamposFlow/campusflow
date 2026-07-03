@@ -197,9 +197,9 @@ const navigate = useNavigate();
 
                 <Button
                     onClick={handleSendCode}
-                    disabled={!email}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">
-                    Send Reset Code
+                    disabled={!email || loading}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold  disabled:bg-blue-400">
+                    {loading ? "Sending Code...." : "Send Reset Code"}
                 </Button>
             </div>
         )}
@@ -225,7 +225,7 @@ We sent a 6-digit code to {" "}
                 font-medium cursor-pointer hover:underline">Resend Code</span></p>
                 <div className="flex gap-3">
                     <Button onClick={goPrev} variant="outline" className="flex-1">Back</Button>
-<Button onClick={handleVerifyStep} disabled={otp.length<6} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">Verify Code</Button>
+<Button onClick={handleVerifyStep} disabled={otp.length<6} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">{loading ? "Verifying Code...." : "Verify Code"}</Button>
                 </div>
             </div>
         )}
@@ -234,7 +234,7 @@ We sent a 6-digit code to {" "}
             <div>
                 <h2 className="text-2xl font-bold text-blue-600 mb-1">New Password</h2>
            <p className="text-gray-500 text-sm mb-6">Set a strong new password for your account</p>
-
+                {error && <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3 mb-4">{error}</div>}
                 <div className="relative mb-3 ml-2 mr-2">
                     <input
                         className="peer w-full bg-white border  border-gray-200 rounded-lg px-4 pt-5 pb-2 text-sm outline-none
@@ -307,9 +307,9 @@ ${strengthConfig[score].color}`}
                     <Button onClick={goPrev} variant="outline" className="
             flex-1">Back
                     </Button>
-                    <Button onClick={handleResetPassword} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                            disabled={!password || password !== confirmPassword || score< 2}
-                    >Reset Password</Button>
+                    <Button onClick={handleResetPassword} className="flex-1  disabled:bg-blue-400 bg-blue-600 hover:bg-blue-700 text-white"
+                            disabled={!password || password !== confirmPassword || score< 2 || loading}
+                    >{loadinf ? "Updating Password...." :"Reset Password"}</Button>
 
                 </div>
             </div>

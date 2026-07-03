@@ -213,9 +213,9 @@ function Register() {
                 <div className="relative mb-4 ml-2 mr-2">
                     <input
                         id="password"
-                        type={confirmPassword ? "text" : "password"}
                         placeholder=" "
-                        onChange={(e)=>setConfirmPassword(e.target.value)}
+                        type={showConfirm ? "text" : "password"}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm
                 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                 transition-all duration-200 pl-4
