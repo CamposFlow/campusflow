@@ -232,10 +232,10 @@ function Register() {
                       Confirm Password
                     </label>
                     <button type="button"
-                            onClick={()=>setShowPassword(!showPassword)}
+                            onClick={()=>setShowConfirm(!showConfirm)}
                             className="absolute right-4 top-4 text-gray-400 hover:text-blue-600"
                     >
-                        {showPassword?<EyeOff className="w-4 h-4"/>: <Eye className="w-4 h-4"/> }
+                        {showConfirm?<EyeOff className="w-4 h-4"/>: <Eye className="w-4 h-4"/> }
                     </button>
                 </div>
                 {confirmPassword && (

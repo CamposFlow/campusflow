@@ -1,12 +1,18 @@
-import {Link} from "react-router-dom";
-import {useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {useState,} from "react";
 import {motion, AnimatePresence} from "framer-motion";
 import {Button} from "@/components/ui/button.jsx";
 import {Mail, ArrowLeft, CheckCircle, Eye, EyeOff, Check, XCircle} from "lucide-react";
 import OtpInput from 'react-otp-input';
 import zxcvbn from 'zxcvbn'
 import {useAuth} from "@/pages/AuthContext.jsx";
-import {forgotPassword as forgotPasswordRequest} from "@/api/axios.js";
+import {
+    forgotPassword as forgotPasswordRequest,
+    resetPassword as resetPasswordRequest,
+    verifyOtp
+} from "@/api/axios.js";
+import {toast} from "sonner";
+
 
 const steps = ["Find Account", "Verify OTP", "New Password"];
 
@@ -48,22 +54,59 @@ export const ForgotPassword = () => {
         4: { label: "Very Strong", color: "bg-blue-600", width: "100%" },
     }
 
-    const forgotPassword = async () => {
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleSendCode = async () => {
+        setError("");
+        setLoading(true);
+        try{
+            await forgotPasswordRequest(email);
+            setDirection(1);
+            setStep(1);
+        }catch (err){
+            setError(err.response?.data?.message ||`Couldn't send Reset Code`);
+        }finally {
+            setLoading(false);
+        }
+    };
+
+
+
+    const handleVerifyStep = async () =>{
+        setError("");
+        setLoading(true);
+        try {
+            await verifyOtp(email, otp);
+            setDirection(1);
+            setStep(2)
+        }catch (err){
+            setError(err.response?.data?.message ||`Invalid or Expired Otp`);
+        }finally {
+            setLoading(false);
+        }
+    };
+
+const navigate = useNavigate();
+    const handleResetPassword = async () => {
        try {
-           const response = await forgotPasswordRequest(email);
-           console.log(response);
+           await resetPasswordRequest(email, otp ,password);
+           toast.success('Password  Updated successfully!');
+           setTimeout(()=>{
+               navigate( "/login");
+           },2000)
        }catch(err) {
            console.log(err);
-           console.log(err.message || "Couldn't confirm Email");
+           console.log(err.message || "Password ResetError!");
 
        }
     }
 
-    const goNext = () => {
-        setDirection(1);
-        setStep((prev) => prev + 1);
-        forgotPassword();
-    }
+    // const goNext = () => {
+    //     setDirection(1);
+    //     setStep((prev) => prev + 1);
+    //     forgotPassword();
+    // }
 
     return (
         <div className="login min-h-screen bg-white flex items-center justify-center p-4">
@@ -153,7 +196,7 @@ export const ForgotPassword = () => {
                 </div>
 
                 <Button
-                    onClick={goNext}
+                    onClick={handleSendCode}
                     disabled={!email}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">
                     Send Reset Code
@@ -173,7 +216,7 @@ We sent a 6-digit code to {" "}
 <OtpInput onChange={setOtp} numInputs={6} value={otp} renderInput={(props)=>(
     <input
         {...props}
-        className="!w-10 !h-10 mx-1.5 text-center text-lg font-bold border-2 border-gray-200 rounded-lg outline-none focus:border-blue-600
+        className="w-10! h-10! mx-1.5 text-center text-lg font-bold border-2 border-gray-200 rounded-lg outline-none focus:border-blue-600
     bg-white transition-all duration-300"/>
 )}/>
                 </div>
@@ -182,7 +225,7 @@ We sent a 6-digit code to {" "}
                 font-medium cursor-pointer hover:underline">Resend Code</span></p>
                 <div className="flex gap-3">
                     <Button onClick={goPrev} variant="outline" className="flex-1">Back</Button>
-<Button onClick={goNext} disabled={otp.length<6} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">Verify Code</Button>
+<Button onClick={handleVerifyStep} disabled={otp.length<6} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">Verify Code</Button>
                 </div>
             </div>
         )}
@@ -233,7 +276,6 @@ ${strengthConfig[score].color}`}
                         className="peer w-full bg-white border  border-gray-200 rounded-lg px-4 pt-5 pb-2 text-sm outline-none
                         focus:ring-2 focus:ring-blue-500 transition-all duration-300"
                         id="password"
-                        value={confirmPassword}
                         placeholder=" "
                         type={showConfirm ? "text" : "password"}
                         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -265,7 +307,7 @@ ${strengthConfig[score].color}`}
                     <Button onClick={goPrev} variant="outline" className="
             flex-1">Back
                     </Button>
-                    <Button onClick={goNext} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                    <Button onClick={handleResetPassword} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                             disabled={!password || password !== confirmPassword || score< 2}
                     >Reset Password</Button>
 
