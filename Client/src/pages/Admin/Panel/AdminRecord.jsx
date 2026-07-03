@@ -1,10 +1,10 @@
-import React, { useState } from "react"
+import React, {useEffect, useState} from "react"
 import {Search, Plus, Eye, ShieldOff, ShieldCheck, Link2, ClipboardPaste, X} from "lucide-react"
 import {AnimatePresence, motion} from "framer-motion"
 import {Button} from "@/components/ui/button.jsx";
 import IssueCertificateModal from "@/pages/Admin/Panel/IssueCertificateModal.jsx";
+import api from '@/api/axios.js'
 
-const years = [ "2022","2023", "2024", "2025"]
 
 const mockCertificates = [
     { id: 1, studentName: "Chukwuemeka Obi", studentId: "FUT/SET/21/0001", type: "B.Tech", date: "2025-06-01", isValid: true },
@@ -25,17 +25,31 @@ const certificateData = {
 const AdminRecords = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
-
-    const [isIssueOpen, setIsIssueOpen] = useState(false)
+    const levels = ["100", "200", "300", "400", "500"]
+    const [activeLevel, setActiveLevel] = useState("100")
     const [showModal, setShowModal] = useState(false)
-    const [activeYear, setActiveYear] = useState("2025")
     const [search, setSearch] = useState("")
+    const [selectedCertificate, setSelectedCertificate] = useState(null);
 
-    const filtered = mockCertificates.filter((c) =>
-        c.studentName.toLowerCase().includes(search.toLowerCase()) ||
-        c.studentId.toLowerCase().includes(search.toLowerCase())
+    const [students, setStudents] = useState([]);
+
+    const fetchStudents = async (level) => {
+        try {
+            const { data } = await api.get(`/admin/students?level=${level}`);
+            setStudents(data.students);
+        } catch (error) {
+            console.error(error.response?.data || error.message);
+        }
+    };
+
+    useEffect(() => {
+        fetchStudents(activeLevel);
+    }, [activeLevel]);// fetches when tab changes
+
+    const filtered = students.filter((c) =>
+        c.fullname.toLowerCase().includes(search.toLowerCase()) ||
+        (c.matric_number || "").toLowerCase().includes(search.toLowerCase())
     )
-
     return (
         <div className="space-y-6">
 
@@ -45,13 +59,6 @@ const AdminRecords = () => {
                     <h1 className="text-2xl font-bold text-gray-900">Records</h1>
                     <p className="break-normal text-sm text-gray-400 mt-0.5 ">All certificates issued by your institution</p>
                 </div>
-                <Button
-                    onClick={() => setIsIssueOpen(true)}
-                    className="whitespace-nowrap flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm
-                 font-medium px-4 py-2.5 rounded-lg transition-colors">
-                    <Plus size={16} />
-                    Issue Certificate
-                </Button>
             </div>
 
 
@@ -69,18 +76,18 @@ const AdminRecords = () => {
             </div>
 
 
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-2 flex gap-2 relative">
-                {years.map((year) => (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-2 flex gap-2">
+                {levels.map((level) => (
                     <button
-                        key={year}
-                        onClick={() => setActiveYear(year)}
+                        key={level}
+                        onClick={() => setActiveLevel(level)}
                         className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                            activeYear === year
+                            activeLevel === level
                                 ? "bg-blue-600 text-white"
                                 : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                         }`}
                     >
-                        {year}
+                        {level}L
                     </button>
                 ))}
             </div>
@@ -92,53 +99,59 @@ const AdminRecords = () => {
                     <thead>
                     <tr className="border-b border-gray-100 bg-gray-50">
                         <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Student</th>
-                        <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Student ID</th>
-                        <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Type</th>
-                        <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Date Issued</th>
-                        <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Status</th>
+                        <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Matric Number</th>
+                        <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Department</th>
+                        <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Level</th>
                         <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <AnimatePresence>
                     {filtered.map((cert, index) => (
                         <motion.tr
                             key={cert.id}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
+                            transition={{ delay: index * 0.05, duration: 0.2 }}
                             className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
                         >
-                            <td className="px-5 py-3.5 font-medium text-gray-900">{cert.studentName}</td>
-                            <td className="px-5 py-3.5 text-gray-500">{cert.studentId}</td>
-                            <td className="px-5 py-3.5 text-gray-500">{cert.type}</td>
-                            <td className="px-5 py-3.5 text-gray-500">{cert.date}</td>
-                            <td className="px-5 py-3.5">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                      cert.isValid
-                          ? "bg-emerald-50 text-emerald-600"
-                          : "bg-red-50 text-red-500"
-                  }`}>
-                    {cert.isValid ? "Valid" : "Revoked"}
-                  </span>
-                            </td>
+                            <td className="px-5 py-3.5 font-medium text-gray-900">{cert.fullname}</td>
+                            <td className="px-5 py-3.5 text-gray-500">{cert.matric_number || "—"}</td>
+                            <td className="px-5 py-3.5 text-gray-500">{cert.department || "—"}</td>
+                            <td className="px-5 py-3.5 text-gray-500">{cert.academic_level || "—"}</td>
                             <td className="px-5 py-3.5">
                                 <div className="flex items-center gap-2">
-                                    <button
-onClick={() => setShowModal(true)}
-                                        className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium">
+                                    <Button
+                                        onClick={() => {
+                                            setSelectedStudent(cert);
+                                            setModalOpen(true);
+                                        }}
+                                        className="bg-transparent hover:bg-green-200 rounded-lg flex items-center gap-1 text-xs text-green-600 hover:text-green-700 font-medium"
+                                    >
+                                        <Plus size={13} /> Issue
+                                    </Button>
+                                    <Button
+                                        onClick={async () => {
+                                            try {
+                                                const { data } = await api.get(`admin/certificate/student/${cert.matric_number}`);
+                                                if (!data.certificates?.length) {
+                                                    alert("No certificate issued for this student yet.");
+                                                    return;
+                                                }
+                                                setSelectedCertificate(data.certificates[0]);
+                                                setShowModal(true);
+                                            } catch (err) {
+                                                console.error("No certificate found for this student");
+                                            }
+                                        }}
+                                        className="bg-transparent hover:bg-blue-200 rounded-lg flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 font-medium"
+                                    >
                                         <Eye size={13} /> View
-                                    </button>
-                                    {cert.isValid && (
-                                        <button className="flex items-center gap-1 text-xs text-red-500 hover:text-red-600 font-medium">
-                                            <ShieldOff size={13} /> Revoke
-                                        </button>
-                                    )}
+                                    </Button>
                                 </div>
                             </td>
                         </motion.tr>
                     ))}
-                    </AnimatePresence>
+
                     </tbody>
                 </table>
             </div>
@@ -180,7 +193,7 @@ onClick={() => setShowModal(true)}
 
 
                                 <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">
-                                    {certificateData.certificateType}
+                                    {selectedCertificate?.certificate_type}
                                 </h2>
 
                                 <p className="text-sm text-slate-500 mb-8">
@@ -190,7 +203,7 @@ onClick={() => setShowModal(true)}
 
                                 <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">This certifies that</p>
                                 <p className="text-2xl font-semibold text-slate-900 mb-8">
-                                    {certificateData.studentName}
+                                    {selectedCertificate?.student_name}
                                 </p>
 
                                 <p className="text-sm text-slate-500 leading-relaxed mb-8">
@@ -215,7 +228,7 @@ onClick={() => setShowModal(true)}
                                 <div className="flex flex-row whitespace-nowrap gap-1">
                                     <Link2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                                     <p className="text-[11px] text-slate-400 font-mono truncate">
-                                        {certificateData.hash}
+                                        {selectedCertificate?.hash}
                                     </p>
                                 </div>
                                 <div> <Button
@@ -238,7 +251,11 @@ onClick={() => setShowModal(true)}
                     </motion.div>
                 )}
             </AnimatePresence>
-<IssueCertificateModal/>
+<IssueCertificateModal
+    isOpen={modalOpen}
+    onClose={() => setModalOpen(false)}
+    student={selectedStudent}
+/>
         </div>
     )
 }
