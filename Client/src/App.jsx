@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from "./pages/AuthContext.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import Portal from "./pages/Portal.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import {Toaster} from "sonner";
 import {AdminDashboard} from "@/pages/Admin/AdminDashboard.jsx";
@@ -72,6 +73,7 @@ function App() {
 
                 <Route element={<ProtectedRoute allowedRoles={["student"]}/>}>
                     <Route path="/dashboard" element={<Dashboard/>}/>
+                    <Route path="/profile" element={<ProfilePage/>}/>
                 </Route>
                 <Route element={<ProtectedRoute allowedRoles={["staff"]}/>}>
                     <Route path="/staff" element={<StaffDashboard/>}/>

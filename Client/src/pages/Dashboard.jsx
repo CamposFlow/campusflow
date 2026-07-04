@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {toast} from "sonner";
 import Loaders from "@/components/Loaders.jsx";
 import { SIDEBAR_LINKS } from "../constants/sidebarLinks.js";
@@ -117,10 +117,19 @@ const Profile = ({ student, stats, activities }) => {
    Main Dashboard Component
 ───────────────────────────────────────────── */
 const StudentDashboard = () => {
-  const [activeTab, setActiveTab] = useState("overview");
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(() => {
+    return location.state?.activeTab || "overview";
+  });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
+
+  useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+    }
+  }, [location.state]);
 
   const student = {
     name: "John Doe",
