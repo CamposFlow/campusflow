@@ -2,13 +2,10 @@
   "name": "campusflow-root",
   "private": true,
   "workspaces": [
-    "Client",
-    "Server"
+    "Client"
   ],
   "scripts": {
-    "dev": "concurrently --kill-others \"npm run dev -w Server\" \"npm run dev -w Client\"",
     "build": "npm run build -w Client",
-    "server": "npm run dev -w Server",
     "client": "npm run dev -w Client"
   },
   "devDependencies": {

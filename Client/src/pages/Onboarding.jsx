@@ -24,14 +24,11 @@ function Onboarding() {
             setError("");
             const res = await completeProfile(role, university);
 
-            // Now store token properly with role
-            const token = sessionStorage.getItem("token");
-            login(token, role);
-            sessionStorage.removeItem("token"); // cleanup temp storage
+            login(res.token, res.user.role);
 
             toast.success("Profile setup complete!");
             const redirectMap = { admin: "/admin", staff: "/staff", student: "/dashboard" };
-            navigate(redirectMap[role] || "/dashboard");
+            navigate(redirectMap[res.user.role] || "/dashboard");
         } catch (err) {
             setError(err.response?.data?.message || "Something went wrong. Try again.");
         } finally {
