@@ -5,7 +5,7 @@ import {Button} from "@/components/ui/button.jsx";
 import {Mail, ArrowLeft, CheckCircle, Eye, EyeOff, Check, XCircle} from "lucide-react";
 import OtpInput from 'react-otp-input';
 import zxcvbn from 'zxcvbn'
-import {useAuth} from "@/pages/AuthContext.jsx";
+
 import {
     forgotPassword as forgotPasswordRequest,
     resetPassword as resetPasswordRequest,
@@ -309,7 +309,7 @@ ${strengthConfig[score].color}`}
                     </Button>
                     <Button onClick={handleResetPassword} className="flex-1  disabled:bg-blue-400 bg-blue-600 hover:bg-blue-700 text-white"
                             disabled={!password || password !== confirmPassword || score< 2 || loading}
-                    >{loadinf ? "Updating Password...." :"Reset Password"}</Button>
+                    >{loading ? "Updating Password...." :"Reset Password"}</Button>
 
                 </div>
             </div>

@@ -103,7 +103,7 @@ const ProfilePage = () => {
     }
   });
 
-  // Fetch real user data on mount to populate profile details dynamically
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -157,7 +157,7 @@ const ProfilePage = () => {
   const displayUrl =
     profileUrl.length > 24 ? profileUrl.slice(0, 24) + "..." : profileUrl;
 
-  /* ── Sidebar ── */
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-white">
       {/* Logo */}
@@ -321,10 +321,10 @@ const ProfilePage = () => {
                     <div className="relative w-28 h-28 rounded-full border-4 border-white shadow-lg bg-white overflow-visible flex items-center justify-center group">
                       <ProfileAvatar name={fullName} size="xl" />
                     </div>
-                    <h2 className="mt-4 text-base font-bold text-gray-900 text-center">
+                    <h2 className="mt-4 text-base font-bold text-gray-900 text-center uppercase">
                       {fullName}
                     </h2>
-                    <p className="text-xs text-gray-400 text-center mt-0.5 font-medium">
+                    <p className="uppercase text-xs text-gray-400 text-center mt-0.5 font-medium">
                       {profile.department}
                     </p>
                   </div>

@@ -3,7 +3,7 @@ import axios from "axios";
 
 
 const api = axios.create({
-    baseURL: "https://campusflowserver-uc79.vercel.app",  //https://campusflowserver-uc79.vercel.app
+    baseURL: "http://localhost:3000",  //https://campusflowserver-uc79.vercel.app
     headers: { 'Content-Type': 'application/json' }
 });
 
@@ -41,8 +41,8 @@ export const loginUser = async (email, password) => {
     return response.data;
 }
 
-export const registerUser = async (fullname, email, password, university, role) => {
-    const response = await api.post("/register", { fullname, email, password, university, role });
+export const registerUser = async (fullname, email, password, university, role, department, level, matric_number) => {
+    const response = await api.post("/register", { fullname, email, password, university, role, department, level, matric_number });
     return response.data;
 }
 export const completeProfile = async (role, university) => {

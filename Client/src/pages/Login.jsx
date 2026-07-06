@@ -67,6 +67,8 @@ export const Login = () => {
                 setError(error.response.data.error || "Invalid Email or password");
             else if (error.request)
                 setError("Cannot reach server, Check your Connection.")
+                else if (error.message)
+                    setError(error.message);
             else
                 setError("Something went wrong, Try again.");
         }

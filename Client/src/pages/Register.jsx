@@ -1,4 +1,3 @@
-
 import React, {useState} from "react";
 import { Link, useNavigate} from "react-router-dom";
 import {useGSAP} from "@gsap/react";
@@ -8,6 +7,8 @@ import {registerUser} from "../api/axios.js"
 import {CheckCircle, Eye, EyeOff, GraduationCap, XCircle} from "lucide-react"
 import {toast} from "sonner"
 import {FcGoogle} from "react-icons/fc";
+import zxcvbn from "zxcvbn";
+import {motion} from "framer-motion";
 
 
 
@@ -24,6 +25,9 @@ function Register() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showConfirm, setShowConfirm] = useState(false);
   const [university, setUniversity] = useState("");
+    const [department, setDepartment] = useState("");
+    const [level, setLevel] = useState("");
+    const [matric_number, setMatricNumber] = useState("");
     const [role] = useState("student");
       useGSAP(() => {
         const tl = gsap.timeline();
@@ -48,9 +52,9 @@ function Register() {
     const validateEmail = (email) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
-    const handleGoogleLogin1 = () => {
-        window.location.href = "https://campusflowserver-uc79.vercel.app/auth/google";
-    };
+    // const handleGoogleLogin1 = () => {
+    //     window.location.href = "https://campusflowserver-uc79.vercel.app/auth/google";
+    // };
 
     const handleRegister = async () => {
         if (!validateEmail(email)) {
@@ -60,7 +64,7 @@ function Register() {
         try {
             setError(null);
             setLoading(true);
-            const data = await registerUser(fullname, email, password, university, role);
+            const data = await registerUser(fullname, email, password, university, role, department, level, matric_number);
 
             register(data.token, data.user.role);
             setSuccess("Registration Successful! Redirecting.....");
@@ -71,17 +75,26 @@ function Register() {
             },2000)
         } catch (error) {
             if (error.response)
-                setError(error.response.data.error || "Registration failed");
+                setError(error.response.data.error || "Registration failed, Try again.");
             else if (error.request)
                 setError("Cannot reach server, Check your Connection.");
             else
                 setError("Something went wrong, Try again.");
+
         } finally {
             setLoading(false);
         }
     }
 
-
+    const strength = zxcvbn(password);
+    const score = strength.score
+    const strengthConfig = {
+        0: { label: "Very Weak", color: "bg-red-500", width: "25%" },
+        1: { label: "Weak", color: "bg-orange-500", width: "50%" },
+        2: { label: "Fair", color: "bg-yellow-500", width: "75%" },
+        3: { label: "Strong", color: "bg-green-500", width: "100%" },
+        4: { label: "Very Strong", color: "bg-blue-600", width: "100%" },
+    }
 
 
     return (
@@ -95,16 +108,16 @@ function Register() {
                 <h1 className="text-2xl font-bold text-blue-600 mb-1">Create Account</h1>
                 <p className="text-gray-500 text-sm mb-6">Fill in Your Credentials to Register</p>
 
-                <button
-                    type="button"
-                    onClick={handleGoogleLogin1}
-                    className="mb-4 w-full flex items-center justify-center gap-3 border
-                    border-gray-300 bg-white text-gray-700 font-semibold p-2 rounded-lg
-                    hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
-                >
-                    <FcGoogle className="w-5 h-5" />
-                    Continue with Google
-                </button>
+                {/*<button*/}
+                {/*    type="button"*/}
+                {/*    onClick={handleGoogleLogin1}*/}
+                {/*    className="mb-4 w-full flex items-center justify-center gap-3 border*/}
+                {/*    border-gray-300 bg-white text-gray-700 font-semibold p-2 rounded-lg*/}
+                {/*    hover:bg-gray-50 transition-colors duration-200 cursor-pointer"*/}
+                {/*>*/}
+                {/*    <FcGoogle className="w-5 h-5" />*/}
+                {/*    Continue with Google*/}
+                {/*</button>*/}
                 {
                     error &&   <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3 mb-4">
                         {error}
@@ -182,7 +195,45 @@ function Register() {
                         <option value="UNEC_UNI"> (University Of Nigeria Enugu)</option>
                     </select>
                 </div>
+    <div className="mb-4 relative m-2">
+        <input
+            type="text"
+            value={department}
+            placeholder=" "
+            onChange={(e) => setDepartment(e.target.value)}
+            className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+        />
+        <label className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200 peer-focus:top-0 peer-placeholder-shown:top-3.5 peer-focus:text-blue-600 peer-[&:not(:placeholder-shown)]:top-0 peer-[&:not(:placeholder-shown)]:text-blue-600">
+            Department
+        </label>
+    </div>
 
+    <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-3 py-3 mb-4 ml-2 mr-2">
+        <select
+            value={level}
+            onChange={(e) => setLevel(e.target.value)}
+            className="bg-transparent text-gray-600 text-sm outline-none flex-1 cursor-pointer"
+        >
+            <option value="">Select Level</option>
+            <option value="100">100 Level</option>
+            <option value="200">200 Level</option>
+            <option value="300">300 Level</option>
+            <option value="400">400 Level</option>
+            <option value="500">500 Level</option>
+        </select>
+    </div>
+                <div className="mb-4 relative m-2">
+                    <input
+                        type="text"
+                        value={matric_number}
+                        placeholder=" "
+                        onChange={(e) => setMatricNumber(e.target.value)}
+                        className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    />
+                    <label className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200 peer-focus:top-0 peer-placeholder-shown:top-3.5 peer-focus:text-blue-600 peer-[&:not(:placeholder-shown)]:top-0 peer-[&:not(:placeholder-shown)]:text-blue-600">
+                        Matric Number
+                    </label>
+                </div>
                 <div className="relative mb-4 ml-2 mr-2">
                     <input
                         type={showPassword ? "text" : "password"}
@@ -210,6 +261,21 @@ function Register() {
                         {showPassword?<EyeOff className="w-4 h-4"/>: <Eye className="w-4 h-4"/> }
                     </button>
                 </div>
+                {password && (
+                    <div className="mb-4 mr-2 ml-2">
+                        <div className="w-full bg-gray-200 rounded-full h-1.5">
+                            <motion.div className={`h-1.5 rounded-full 
+${strengthConfig[score].color}`}
+                                        initial={{width:"0%"}}
+                                        animate={{width:strengthConfig[score].width}}
+                                        transition={{duration:0.3}}
+                            />
+                        </div>
+                        <p className={`text-xs mt-1 font-medium ${score
+                        <=1 ?"text-red500" : score === 2 ? "text-yellow-500" :
+                            "text-green-500"}`}>{strengthConfig[score].label}</p>
+                    </div>
+                )}
                 <div className="relative mb-4 ml-2 mr-2">
                     <input
                         id="password"
@@ -254,7 +320,7 @@ function Register() {
 
                 <button
                     onClick={handleRegister}
-                    disabled={loading || !email || !password || !confirmPassword || !fullname || !university}
+                    disabled={score<2 ||!matric_number || !level || !department ||loading || !email || !password || !confirmPassword || !fullname || !university}
                         className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-primary-dark transition-colors
              disabled:bg-blue-400"
                 >
