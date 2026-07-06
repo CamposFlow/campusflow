@@ -12,6 +12,10 @@ import {AdminDashboard} from "@/pages/Admin/AdminDashboard.jsx";
 import {StaffDashboard} from "@/pages/Staff/StaffDashboard.jsx";
 import {GoogleSuccess} from "./components/Google";
 import Onboarding from "@/pages/Onboarding.jsx";
+import InstallBanner from "@/components/InstallBanner.jsx";
+
+
+
 function ProtectedRoute({allowedRoles}) {
 const {token,role} = useAuth();
 
@@ -36,6 +40,7 @@ function PublicRoute({children}) {
 function App() {
 
     return (<AuthProvider>
+            <InstallBanner/>
             <Toaster
                 position="top-right"
                 theme="dark"
