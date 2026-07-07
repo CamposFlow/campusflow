@@ -1,26 +1,12 @@
 import React, {useEffect, useState} from "react"
-import {Search, Plus, Eye, ShieldOff, ShieldCheck, Link2, ClipboardPaste, X} from "lucide-react"
+import {Search, Plus, Eye, ShieldOff, ShieldCheck, Link2, ClipboardPaste, ExternalLink, Copy, Check, X} from "lucide-react"
 import {AnimatePresence, motion} from "framer-motion"
 import {Button} from "@/components/ui/button.jsx";
 import IssueCertificateModal from "@/pages/Admin/Panel/IssueCertificateModal.jsx";
 import api from '@/api/axios.js'
 
 
-const mockCertificates = [
-    { id: 1, studentName: "Chukwuemeka Obi", studentId: "FUT/SET/21/0001", type: "B.Tech", date: "2025-06-01", isValid: true },
-    { id: 2, studentName: "Adaeze Nwosu", studentId: "FUT/SET/21/0002", type: "B.Tech", date: "2025-06-02", isValid: true },
-    { id: 3, studentName: "Emeka Eze", studentId: "FUT/SET/21/0003", type: "B.Tech", date: "2025-06-03", isValid: false },
-    { id: 4, studentName: "Ngozi Okonkwo", studentId: "FUT/SET/21/0004", type: "HND", date: "2025-06-04", isValid: true },
-    { id: 5, studentName: "Tunde Bakare", studentId: "FUT/SET/21/0005", type: "B.Tech", date: "2025-06-05", isValid: true },
-]
-const certificateData = {
-    studentName: "Eziokwubundu Jenissi Ezichi",
-    universityName: "Federal University of Technology, Owerri",
-    certificateType: "Bachelor of Engineering — Software Engineering",
-    issueDate: "June 15, 2026",
-    hash: "0x71c7656ec7ab88b098defb751b7401b5f6d8976",
-    verifiedAt: "June 26, 2026, 11:42 AM",
-}
+
 
 const AdminRecords = () => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -50,6 +36,16 @@ const AdminRecords = () => {
         c.fullname.toLowerCase().includes(search.toLowerCase()) ||
         (c.matric_number || "").toLowerCase().includes(search.toLowerCase())
     )
+
+
+    const [hashCopied, setHashCopied] = useState(false);
+
+    const handleCopyHash = () => {
+        if (!selectedCertificate?.hash) return;
+        navigator.clipboard.writeText(selectedCertificate.hash);
+        setHashCopied(true);
+        setTimeout(() => setHashCopied(false), 1500);
+    };
     return (
         <div className="space-y-6">
 
@@ -117,7 +113,7 @@ const AdminRecords = () => {
                             <td className="px-5 py-3.5 font-medium text-gray-900">{cert.fullname}</td>
                             <td className="px-5 py-3.5 text-gray-500">{cert.matric_number || "—"}</td>
                             <td className="px-5 py-3.5 text-gray-500">{cert.department || "—"}</td>
-                            <td className="px-5 py-3.5 text-gray-500">{cert.academic_level || "—"}</td>
+                            <td className="px-5 py-3.5 text-gray-500">{cert.level || "—"}</td>
                             <td className="px-5 py-3.5">
                                 <div className="flex items-center gap-2">
                                     <Button
@@ -197,7 +193,7 @@ const AdminRecords = () => {
                                 </h2>
 
                                 <p className="text-sm text-slate-500 mb-8">
-                                    Issued by <span className="font-medium text-slate-700">{certificateData.universityName}</span>
+                                    Issued by <span className="font-medium text-slate-700">{selectedCertificate?.institution}</span>
                                 </p>
 
 
@@ -215,29 +211,72 @@ const AdminRecords = () => {
                                 <div className="grid grid-cols-2 gap-4 pt-6 border-t border-blue-100">
                                     <div>
                                         <p className="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Issue Date</p>
-                                        <p className="text-sm font-medium text-slate-800">{certificateData.issueDate}</p>
+                                        <p className="text-sm font-medium text-slate-800">
+                                            {selectedCertificate?.timestamp
+                                                ? new Date(Number(selectedCertificate.timestamp) * 1000).toLocaleDateString("en-US", {
+                                                    year: "numeric",
+                                                    month: "long",
+                                                    day: "numeric",
+                                                })
+                                                : "—"}
+                                        </p>
                                     </div>
                                     <div>
-                                        <p className="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Verified At</p>
-                                        <p className="text-sm font-medium text-slate-800">{certificateData.verifiedAt}</p>
+                                        <p className="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Status</p>
+                                        <p className={`text-sm font-medium ${selectedCertificate?.is_valid ? "text-green-600" : "text-red-600"}`}>
+                                            {selectedCertificate?.is_valid ? "Valid" : "Revoked"}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="bg-slate-900 px-4 py-4 flex items-center justify-between gap-2">
-                                <div className="flex flex-row whitespace-nowrap gap-1">
+                            <div className="bg-slate-900 px-4 sm:px-6 py-4 space-y-3">
+                                <div className="flex items-center gap-2 bg-white/5 rounded-lg px-3 py-2">
                                     <Link2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                                    <p className="text-[11px] text-slate-400 font-mono truncate">
+                                    <p className="text-[11px] text-slate-400 font-mono truncate flex-1 min-w-0">
                                         {selectedCertificate?.hash}
                                     </p>
+                                    <button
+                                        onClick={handleCopyHash}
+                                        className="shrink-0 text-slate-400 hover:text-white transition-colors"
+                                        aria-label="Copy certificate hash"
+                                    >
+                                        {hashCopied ? (
+                                            <Check className="w-3.5 h-3.5 text-green-400" />
+                                        ) : (
+                                            <Copy className="w-3.5 h-3.5" />
+                                        )}
+                                    </button>
                                 </div>
-                                <div> <Button
-                                    onClick={() => console.log("download triggered - wire this up later")}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2.5 text-sm font-medium flex items-center justify-center gap-2"
-                                >
-                                    <ClipboardPaste className="w-4 h-4" />
-                                    Download Certificate
-                                </Button></div>
+
+                                <div className=" grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <Button
+                                        onClick={() => {
+                                            if (selectedCertificate?.tx_signature) {
+                                                window.open(
+                                                    `https://explorer.solana.com/tx/${selectedCertificate.tx_signature}?cluster=devnet`,
+                                                    "_blank",
+                                                    "noopener,noreferrer"
+                                                );
+                                            }
+                                        }}
+                                        className="w-full bg-white/10 hover:bg-white/20 text-white rounded-lg py-2.5 text-sm font-medium flex items-center justify-center gap-2"
+                                    >
+                                        <ExternalLink className="w-4 h-4" />
+                                        View on Explorer
+                                    </Button>
+
+                                    <Button
+                                        onClick={() => {
+                                            if (selectedCertificate?.certificate_url) {
+                                                window.open(selectedCertificate.certificate_url, "_blank", "noopener,noreferrer");
+                                            }
+                                        }}
+                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2.5 text-sm font-medium flex items-center justify-center gap-2"
+                                    >
+                                        <ClipboardPaste className="w-4 h-4" />
+                                        Download
+                                    </Button>
+                                </div>
                             </div>
 
 

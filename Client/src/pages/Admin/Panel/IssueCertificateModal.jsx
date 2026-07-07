@@ -18,7 +18,6 @@ const IssueCertificateModal = ({ isOpen, onClose, student }) => {
         setError("")
         setFile(null)
         setCertificateType("")
-        setInstitution("")
     }
 
     const handleClose = () => {
@@ -39,7 +38,7 @@ const IssueCertificateModal = ({ isOpen, onClose, student }) => {
             formData.append("studentName", student.fullname)
             formData.append("matricNumber", student.matric_number)
             formData.append("certificateType", certificateType)
-            formData.append("institution", institution)
+            formData.append("institution", student.university)
 
             await api.post("/admin/upload-certificate", formData, {
                 headers: { "Content-Type": "multipart/form-data" }
@@ -124,7 +123,7 @@ const IssueCertificateModal = ({ isOpen, onClose, student }) => {
                                         <div>
                                             <label className="text-xs font-medium text-gray-500 mb-1 block">Institution</label>
                                             <input
-                                                value={institution}
+                                                value={student.university}
                                                 onChange={(e) => setInstitution(e.target.value)}
                                                 placeholder="e.g. Federal University of Technology Owerri"
                                                 className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

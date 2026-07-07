@@ -2,6 +2,8 @@ import { CheckCircle, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 import Ring from "../components/Ring.jsx";
 import api from "@/api/axios.js";
+import {capitalizeWords} from "@/constants/Capitalize.js";
+import {capitalizeFirst} from "@/constants/Capitalize.js";
 
 export const OverviewPanel = ({ student, stats, activities }) => {
     const [barReady, setBarReady] = useState(false);
@@ -9,7 +11,9 @@ export const OverviewPanel = ({ student, stats, activities }) => {
     const [department, setDepartment] = useState("");
     const [studentName, setStudentName] = useState("");
     const [matricNumber, setMatricNumber] = useState('');
+    const [level, setLevel] = useState("");
     const [error, setError] = useState(null);
+    const [clearanceStages, setClearanceStages] = useState([]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -24,6 +28,7 @@ export const OverviewPanel = ({ student, stats, activities }) => {
                 setStudentName(user.fullname || '');
                 setDepartment(user.department || '');
                 setMatricNumber(user.matric_number || '');
+                setLevel(user.level || '');
                 setError(null);
             } catch (err) {
                 console.error('Failed to fetch user data:', err);
@@ -34,30 +39,58 @@ export const OverviewPanel = ({ student, stats, activities }) => {
         fetchUserData();
     }, []);
 
+
     useEffect(() => {
-        const timer = window.setTimeout(() => {
-            setBarReady(true);
-            const target = 67;
-            const duration = 900;
-            const interval = 20;
-            const steps = Math.ceil(duration / interval);
-            let current = 0;
-            const stepValue = target / steps;
+        const fetchClearanceStatus = async () => {
+            try {
+                const res = await api.get('/student/clearance-stats');
+                const records = res.data?.data || [];
 
-            const ticker = window.setInterval(() => {
-                current += stepValue;
-                if (current >= target) {
-                    setRingPct(target);
-                    window.clearInterval(ticker);
-                } else {
-                    setRingPct(Math.round(current));
-                }
-            }, interval);
+                const mapped = records.map((r) => {
+                    let status;
+                    if (r.is_approved === null) status = "Pending";
+                    else if (r.is_approved === true) status = "Done";
+                    else status = "Rejected";
 
-            return () => window.clearInterval(ticker);
-        }, 750);
+                    return {
+                        label: r.stage_name,
+                        pct: r.is_approved === true ? 100 : r.is_approved === false ? 0 : 50,
+                        color: r.is_approved === true ? "bg-green-500" : r.is_approved === false ? "bg-red-400" : "bg-orange-400",
+                        status,
+                    };
+                });
 
-        return () => window.clearTimeout(timer);
+                setClearanceStages(mapped);
+
+                const doneCount = mapped.filter((s) => s.status === "Done").length;
+                const overallPct = mapped.length
+                    ? Math.round((doneCount / mapped.length) * 100)
+                    : 0;
+
+                const timer = window.setTimeout(() => {
+                    setBarReady(true);
+                    const duration = 900;
+                    const interval = 20;
+                    const steps = Math.ceil(duration / interval);
+                    let current = 0;
+                    const stepValue = overallPct / steps;
+
+                    const ticker = window.setInterval(() => {
+                        current += stepValue;
+                        if (current >= overallPct) {
+                            setRingPct(overallPct);
+                            window.clearInterval(ticker);
+                        } else {
+                            setRingPct(Math.round(current));
+                        }
+                    }, interval);
+                }, 750);
+            } catch (err) {
+                console.error('Failed to fetch clearance status:', err);
+            }
+        };
+
+        fetchClearanceStatus();
     }, []);
 
     return (
@@ -99,7 +132,7 @@ export const OverviewPanel = ({ student, stats, activities }) => {
                     </p>
                     <h2 className="text-3xl font-bold mb-1 uppercase">{studentName || 'Student'}</h2>
                     <p className="text-blue-200 text-sm">
-                        {department} · {student.level} · {matricNumber}
+                        {capitalizeWords(department)} · {level} Level · {matricNumber}
                     </p>
                     {error && <p className="text-red-200 text-xs mt-2">{error}</p>}
                     <div className="flex gap-3 mt-5">
@@ -155,26 +188,7 @@ export const OverviewPanel = ({ student, stats, activities }) => {
                         </div>
                     </div>
                     <div className="space-y-3">
-                        {[
-                            {
-                                label: "Department",
-                                pct: 0,
-                                color: "bg-orange-400",
-                                status: "Pending",
-                            },
-                            {
-                                label: "Library",
-                                pct: 100,
-                                color: "bg-green-500",
-                                status: "Done",
-                            },
-                            {
-                                label: "Finance",
-                                pct: 100,
-                                color: "bg-green-500",
-                                status: "Done",
-                            },
-                        ].map((item, i) => (
+                        {clearanceStages.map((item, i) => (
                             <div key={i} className="flex items-center gap-3">
                 <span className="text-xs text-gray-500 w-24 shrink-0">
                   {item.label}
