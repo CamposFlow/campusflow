@@ -3,19 +3,17 @@ import { Button } from "@/components/ui/button"
 import {toast} from "sonner";
 import { motion, AnimatePresence } from "framer-motion"
 import {Footer} from "@/components/Footer.jsx";
+import api from '@/api/axios.js';
 import {
     Menu, X, ShieldCheck, Link2, ClipboardPaste,
     Lock, Network, Globe, FileSearch, Check
 } from "lucide-react"
-import { Disclosure, Transition } from "@headlessui/react"
-import { Link } from "react-router-dom"
-import { Link as ScrollLink } from "react-scroll"
-import Loaders from "@/components/Loaders.jsx"
-import Navbar from "@/components/Navbar.jsx";
+
+import VerifyNav from "@/components/VerifyNav.jsx";
 
 const Portal = () => {
     const STEPS = ["name", "privacy", "hash"]
-    // verification result state (unchanged behavior from before)
+
     const [hash, setHash] = useState("")
     const [result, setResult] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -30,9 +28,30 @@ const Portal = () => {
         hash: "0x71c7656ec7ab88b098defb751b7401b5f6d8976",
         verifiedAt: "June 26, 2026, 11:42 AM",
     }
-    const handleVerify = ()=>{
-        console.log(hash)
-    }
+    const handleVerify = async () => {
+        setLoading(true);
+        try {
+            const { data } = await api.post("/universities/verify", {
+                document_hash: hash.trim(),
+                verifier_org: verifierName.trim(),
+            });
+
+            setResult(data);
+
+            if (data.verified) {
+                setShowCertificate(true);
+                notify();
+            } else {
+                notifyError();
+            }
+        } catch (err) {
+            console.error("Verification request failed:", err);
+            setResult({ verified: false, message: "Something went wrong. Please try again." });
+            notifyError();
+        } finally {
+            setLoading(false);
+        }
+    };
     // stepper state
     const [currentStep, setCurrentStep] = useState("name")
     const [verifierName, setVerifierName] = useState("")
@@ -87,7 +106,7 @@ const Portal = () => {
 
     return (
         <div className="min-h-screen bg-[#EFF6FF]">
-          <Navbar/>
+          <VerifyNav/>
 
            <section>
                <div className="pt-20 pb-32 px-6 relative overflow-hidden">
@@ -119,7 +138,7 @@ const Portal = () => {
                                >
 
 
-                                   {/* Headline block */}
+
                                    <div className="max-w-xl">
                                        <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-medium px-4 py-1.5 rounded-full mb-6">
                                            <ShieldCheck className="w-3.5 h-3.5" />
@@ -136,11 +155,15 @@ const Portal = () => {
                                            Confirm who you are, accept the terms, then check a document's
                                            authenticity directly against the blockchain record.
                                        </p>
-                                       <Button
+
+                                       <button
                                            onClick={()=> setVerifying(true)}
-                                           className="mt-8 bg-blue-600 hover:bg-blue-700 text-white text-xl px-8 py-4 font-medium">
+                                           className="mt-8 flex items-center gap-2 bg-blue-600
+                hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl
+                font-semibold transition-all hover:scale-105
+                hover:shadow-lg hover:shadow-blue-200">
                                            Click to verify
-                                       </Button>
+                                       </button>
                                    </div>
                                    <motion.div
                                        initial={{ opacity: 0, x: 50 }}
@@ -374,7 +397,7 @@ const Portal = () => {
                                                                Back
                                                            </Button>
                                                            <Button
-                                                               onClick={() => setShowCertificate(true)}
+                                                               onClick={handleVerify}
                                                                disabled={!hash.trim() || loading}
                                                                className={`flex-1 rounded-lg py-2.5 text-sm font-medium text-white ${
                                                                    hash.trim() && !loading ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-300 cursor-not-allowed"
@@ -383,8 +406,11 @@ const Portal = () => {
                                                                {loading ? "Verifying..." : "Verify"}
                                                            </Button>
                                                        </div>
+
                                                    </motion.div>
+
                                                )}
+
                                            </AnimatePresence>
                                        </div>
                                    </div>
@@ -400,15 +426,24 @@ const Portal = () => {
                 Verified on-chain
             </span>
                                    </div>
+                                   <p className="text-slate-700 text-center text-sm leading-relaxed mt-4 border-l-2 border-blue-200 pl-4">
+                                       Every CampusFlow certificate is hashed and recorded on the Solana
+                                       blockchain the moment it's issued. When you verify a document, we check
+                                       that exact hash against the permanent on-chain record — no institution
+                                       can alter it afterward, and no login is required.
+                                   </p>
                                </motion.div>
                            )}
+
                        </AnimatePresence>
 
                    </div>
+
                </div>
+
            </section>
 
-            <section id="works" className="bg-gray-100 py-20 px-8">
+            <section id="works1" className="bg-gray-100 py-20 px-8">
                 <div className="text-center mb-14">
                     <span className="text-blue-600 text-xl tracking-widest font-semibold uppercase">Simple Process</span>
                     <h2 className="text-3xl font-bold mt-2">
@@ -450,7 +485,7 @@ const Portal = () => {
 
 
             </section>
-            <section id="features" className="bg-white py-20 px-8">
+            <section id="features1" className="bg-white py-20 px-8">
                 <div className="text-center mb-14">
                     <span className="text-blue-600 text-2xl tracking-widest font-semibold uppercase">Features</span>
 

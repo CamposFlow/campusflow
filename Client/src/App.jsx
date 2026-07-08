@@ -13,7 +13,7 @@ import {StaffDashboard} from "@/pages/Staff/StaffDashboard.jsx";
 import {GoogleSuccess} from "./components/Google";
 import Onboarding from "@/pages/Onboarding.jsx";
 import InstallBanner from "@/components/InstallBanner.jsx";
-
+import {NotFound} from '@/components/NotFound.jsx'
 
 
 function ProtectedRoute({allowedRoles}) {
@@ -75,6 +75,7 @@ function App() {
                 <Route path="/" element={<LandingPage/>}/>
                 <Route path="/onboarding" element={<PublicRoute><Onboarding/></PublicRoute>} />
                 <Route path="/verify" element={<Portal/>}/>
+                    <Route path="*" element={<NotFound />}/>
 
                 <Route element={<ProtectedRoute allowedRoles={["student"]}/>}>
                     <Route path="/dashboard" element={<Dashboard/>}/>

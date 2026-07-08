@@ -191,8 +191,8 @@ function Register() {
                         className="bg-transparent text-gray-600 text-sm
             outline-none flex-1 cursor-pointer overflow-wrap:break-word">
                         <option value="">Select University</option>
-                        <option value="FUTO_UNI">FUTO</option>
-                        <option value="UNEC_UNI"> (University Of Nigeria Enugu)</option>
+                        <option value="FUTO">FUTO</option>
+                        <option value="UNEC"> (University Of Nigeria Enugu)</option>
                     </select>
                 </div>
     <div className="mb-4 relative m-2">

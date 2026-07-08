@@ -49,10 +49,10 @@ rounded-full shadow-sm w-[92%] justify-between md:w-auto md:justify-start`}>
                 </ScrollLink>
             ))}
             <Link 
-        to="/dashboard" 
+        to="/verify"
         className="text-sm px-4 py-2 whitespace-nowrap rounded-full cursor-pointer transition-all duration-300 text-gray-600 hover:text-blue-600 hover:bg-blue-50"
     >
-        Dashboard
+        Verify
     </Link>
 
         </div>
@@ -90,7 +90,12 @@ rounded-full shadow-sm w-[92%] justify-between md:w-auto md:justify-start`}>
                       {link.label}
                   </ScrollLink>
               ))}
-
+              <Link
+                  to="/verify"
+                  className="text-sm px-4 py-2 whitespace-nowrap rounded-full cursor-pointer transition-all duration-300 text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+              >
+                  Verify
+              </Link>
               <div className="h-px bg-gray-200 my-2"/>
               <button
                   onClick={()=> {
@@ -115,4 +120,4 @@ rounded-full shadow-sm w-[92%] justify-between md:w-auto md:justify-start`}>
 };
 
 export default Navbar;
-2
+
