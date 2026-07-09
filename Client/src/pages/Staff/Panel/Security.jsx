@@ -28,7 +28,7 @@ function SOSPanel() {
                     const res = await api.post("/api/telegram/send", {
                         latitude,
                         longitude,
-                        locationText
+                        locationText:geocoded
                     });
                     console.log(`Alert response:`, res.data);
                     toast.success("Alert sent! Help is on the way.");
@@ -110,7 +110,7 @@ function SOSPanel() {
                     setLocationText(geocoded);
                     await api.post("/api/telegram/report", {
                         category: activeReport,
-                        locationText,
+                        locationText:geocoded,
                         description,
                         longitude,
                         latitude,
