@@ -27,7 +27,7 @@ export const AdminDashboard = () => {
     }
 
     return (
-        <div className=" flex min-h-screen ">
+        <div className=" flex min-h-screen w-[90]">
             <AdminSidebar activeTab={activeTab}
                           setActiveTab={setActiveTab} />
 

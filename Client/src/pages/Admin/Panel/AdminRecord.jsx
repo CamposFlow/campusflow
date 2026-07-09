@@ -198,7 +198,7 @@ const AdminRecords = () => {
 
 
                                 <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">This certifies that</p>
-                                <p className="text-2xl font-semibold text-slate-900 mb-8">
+                                <p className="text-2xl font-semibold text-slate-900 mb-8 uppercase">
                                     {selectedCertificate?.student_name}
                                 </p>
 
