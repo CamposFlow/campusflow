@@ -118,30 +118,32 @@ export const Login = () => {
                    }
                </div>
 
-                <div className="relative mb-4 ml-2 mr-2">
-                    {emailTouched && username.length > 0 && emailError && (
-                        <p className="text-xs text-red-500 mb-1">Enter a valid email address</p>
-                    )}
-                    <input
-                        type="email"
-                        placeholder=" "
-                        onChange={(e)=>{ setEmail(e.target.value); if (!emailTouched) setEmailTouched(true); }}
-                        className="peer w-full bg-white border border-gray-200 rounded-lg px-4 pt-5 pb-2 text-sm
+                <div className="mb-4 ml-2 mr-2">
+                    <div className="relative">
+                        <input
+                            type="email"
+                            placeholder=" "
+                            onChange={(e)=>{ setEmail(e.target.value); if (!emailTouched) setEmailTouched(true); }}
+                            className="peer w-full bg-white border border-gray-200 rounded-lg px-4 pt-5 pb-2 text-sm
 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
 transition-all duration-200
 "/>
-                    <label
-                        htmlFor="email"
-                        className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
-     peer-focus:top-0
-    peer-placeholder-shown:top-3.5
-    peer-focus:text-blue-600
-    peer-[&:not(:placeholder-shown)]:top-0
-    peer-[&:not(:placeholder-shown)]:text-blue-600"
-                    >
-                        Email
-                    </label>
+                        <label
+                            htmlFor="email"
+                            className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
+ peer-focus:top-0
+peer-placeholder-shown:top-3.5
+peer-focus:text-blue-600
+peer-[&:not(:placeholder-shown)]:top-0
+peer-[&:not(:placeholder-shown)]:text-blue-600"
+                        >
+                            Email
+                        </label>
+                    </div>
 
+                    {emailTouched && username.length > 0 && emailError && (
+                        <p className="text-xs text-red-500 mt-1">Enter a valid email address</p>
+                    )}
                 </div>
 
                 <div className="relative mb-4 ml-2 mr-2">

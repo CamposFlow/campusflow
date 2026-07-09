@@ -15,6 +15,7 @@ import {motion} from "framer-motion";
 function Register() {
     const {register} = useAuth();
     const [email, setEmail] = useState("");
+    const [emailTouched, setEmailTouched] = useState(false);
     const [password, setPassword] = useState("");
     const [fullname, setFullName] = useState("");
     const [error, setError] = useState("");
@@ -96,6 +97,12 @@ function Register() {
         4: { label: "Very Strong", color: "bg-blue-600", width: "100%" },
     }
 
+    const passwordChecks = [
+        { label: "8–20 characters", passed: password.length >= 8 && password.length <= 20 },
+        { label: "One uppercase letter", passed: /[A-Z]/.test(password) },
+        { label: "One number", passed: /[0-9]/.test(password) },
+        { label: "One special character", passed: /[^A-Za-z0-9]/.test(password) },
+    ];
 
     return (
         <div className="login min-h-screen bg-surface flex items-center justify-center p-4">
@@ -155,28 +162,34 @@ function Register() {
                 </div>
 
 
-                <div className="mb-4 relative m-2">
-
-                    <input
-                        type="email"
-                        value={email}
-                    placeholder=" "
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm
-                outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                transition-all duration-200
-                "/>
-                    <label
-                        htmlFor="email"
-                        className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
+                <div className="mb-4 m-2">
+                    <div className="relative">
+                        <input
+                            id="email"
+                            type="email"
+                            value={email}
+                            placeholder=" "
+                            onChange={(e) => setEmail(e.target.value)}
+                            onBlur={() => setEmailTouched(true)}
+                            className="peer w-full bg-white border border-gray-200 rounded-lg px-2 pt-3 pb-2 text-sm
+                    outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                    transition-all duration-200
+                    "/>
+                        <label
+                            htmlFor="email"
+                            className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
      peer-focus:top-0
     peer-placeholder-shown:top-3.5
     peer-focus:text-blue-600
     peer-[&:not(:placeholder-shown)]:top-0
     peer-[&:not(:placeholder-shown)]:text-blue-600"
-                    >
-                       Email
-                    </label>
+                        >
+                            Email
+                        </label>
+                    </div>
+                    {emailTouched && email.length > 0 && !validateEmail(email) && (
+                        <p className="text-xs text-red-500 mt-1">Enter a valid email address</p>
+                    )}
                 </div>
 
                 <div
@@ -235,7 +248,8 @@ function Register() {
                     </label>
                 </div>
                 <div className="relative mb-4 ml-2 mr-2">
-                    <input
+                     <input
+                        id="password"
                         type={showPassword ? "text" : "password"}
                         placeholder=""
                         onChange={(e)=>setPassword(e.target.value)}
@@ -272,13 +286,31 @@ ${strengthConfig[score].color}`}
                             />
                         </div>
                         <p className={`text-xs mt-1 font-medium ${score
-                        <=1 ?"text-red500" : score === 2 ? "text-yellow-500" :
+                        <=1 ?"text-red-500" : score === 2 ? "text-yellow-500" :
                             "text-green-500"}`}>{strengthConfig[score].label}</p>
+
+                        <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5">
+                            {passwordChecks.map((check) => (
+                                <div
+                                    key={check.label}
+                                    className={`flex items-center gap-1.5 text-xs font-medium ${
+                                        check.passed ? "text-green-600" : "text-gray-400"
+                                    }`}
+                                >
+                                    {check.passed ? (
+                                        <CheckCircle className="w-3.5 h-3.5 shrink-0" />
+                                    ) : (
+                                        <XCircle className="w-3.5 h-3.5 shrink-0" />
+                                    )}
+                                    <span>{check.label}</span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
                 <div className="relative mb-4 ml-2 mr-2">
                     <input
-                        id="password"
+                        id="confirm"
                         placeholder=" "
                         type={showConfirm ? "text" : "password"}
                         onChange={(e) => setConfirmPassword(e.target.value)}
