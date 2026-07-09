@@ -14,18 +14,23 @@ import {GoogleSuccess} from "./components/Google";
 import Onboarding from "@/pages/Onboarding.jsx";
 import InstallBanner from "@/components/InstallBanner.jsx";
 import {NotFound} from '@/components/NotFound.jsx'
-
+import {FloatingSOSButton} from "./components/FloatingSOSButton.jsx";
 
 function ProtectedRoute({allowedRoles}) {
-const {token,role} = useAuth();
+    const {token,role} = useAuth();
 
-  if (!token) {
-    return <Navigate to={`/login`} replace />;
-  }
-  if (allowedRoles && !allowedRoles.includes(role)) {
-    return <Navigate to={`/login`} replace />;
-  }
-  return <Outlet />;
+    if (!token) {
+        return <Navigate to={`/login`} replace />;
+    }
+    if (allowedRoles && !allowedRoles.includes(role)) {
+        return <Navigate to={`/login`} replace />;
+    }
+    return (
+        <>
+            <Outlet />
+            <FloatingSOSButton/>
+        </>
+    );
 }
 
 function PublicRoute({children}) {
