@@ -89,17 +89,19 @@ export const ForgotPassword = () => {
 
 const navigate = useNavigate();
     const handleResetPassword = async () => {
-       try {
-           await resetPasswordRequest(email, otp ,password);
-           toast.success('Password  Updated successfully!');
-           setTimeout(()=>{
-               navigate( "/login");
-           },2000)
-       }catch(err) {
-           console.log(err);
-           console.log(err.message || "Password ResetError!");
-
-       }
+        setError("");
+        setLoading(true);
+        try {
+            await resetPasswordRequest(email, otp, password);
+            toast.success('Password Updated successfully!');
+            setTimeout(() => {
+                navigate("/login");
+            }, 2000);
+        } catch (err) {
+            setError(err.response?.data?.message || "Password reset failed. Try again.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     // const goNext = () => {
@@ -309,7 +311,7 @@ ${strengthConfig[score].color}`}
                     </Button>
                     <Button onClick={handleResetPassword} className="flex-1  disabled:bg-blue-400 bg-blue-600 hover:bg-blue-700 text-white"
                             disabled={!password || password !== confirmPassword || score< 2 || loading}
-                    >{loading ? "Updating Password...." :"Reset Password"}</Button>
+                    >{ loading ? "Updating Password...." :"Reset Password"}</Button>
 
                 </div>
             </div>
