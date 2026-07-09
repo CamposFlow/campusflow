@@ -2,6 +2,7 @@ import {useState, useRef} from 'react'
 import { useNavigate, Link} from 'react-router-dom'
 import {FcGoogle} from "react-icons/fc";
 import gsap from "gsap";
+import Joi from "joi";
 import {GoogleLogin} from "@react-oauth/google";
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button.jsx";
@@ -22,6 +23,9 @@ export const Login = () => {
     const [success, setSuccess] = useState("");
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false);
+    const [emailTouched, setEmailTouched] = useState(false);
+    const emailSchema = Joi.string().email({ tlds: false }).required();
+    const emailError = emailSchema.validate(username).error;
 
     useGSAP(() => {
         const tl = gsap.timeline();
@@ -88,43 +92,44 @@ export const Login = () => {
 
                 <h2 className="text-2xl font-bold text-blue-400 mb-1">Welcome Back</h2>
                 <p className="text-gray-500 text-sm mb-6">Please sign in into your account</p>
+                {/*<button*/}
+                {/*    type="button"*/}
+                {/*    onClick={handleGoogleLogin1}*/}
+                {/*    className="mb-4 w-full flex items-center justify-center gap-3 border*/}
+                {/*    border-gray-300 bg-white text-gray-700 font-semibold p-2 rounded-lg*/}
+                {/*    hover:bg-gray-50 transition-colors duration-200 cursor-pointer"*/}
+                {/*>*/}
 
-                <button
-                    type="button"
-                    onClick={handleGoogleLogin1}
-                    className="mb-4 w-full flex items-center justify-center gap-3 border
-                    border-gray-300 bg-white text-gray-700 font-semibold p-2 rounded-lg
-                    hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
-                >
-                    <FcGoogle className="w-5 h-5" />
-                    Continue with Google
-                </button>
-
-
-                {
-                    error && (
-                        <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3 mb-4">
-                            {error}
-                        </div>
-                    )
-                }
-                {
-                    success && (
-                        <div className="bg-red-50 border border-green-200 text-green-600 text-sm rounded-lg p-3 mb-4">
-                            {success}
-                        </div>
-                    )
-                }
+                {/*</button>*/}
+               <div className="mb-4">
+                   {
+                       error && (
+                           <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3 mb-6">
+                               {error}
+                           </div>
+                       )
+                   }
+                   {
+                       success && (
+                           <div className="bg-green-50 border border-green-200 text-green-600 text-sm rounded-lg p-3 mb-6">
+                               {success}
+                           </div>
+                       )
+                   }
+               </div>
 
                 <div className="relative mb-4 ml-2 mr-2">
+                    {emailTouched && username.length > 0 && emailError && (
+                        <p className="text-xs text-red-500 mb-1">Enter a valid email address</p>
+                    )}
                     <input
-                        type="username"
+                        type="email"
                         placeholder=" "
-                        onChange={(e)=>setEmail(e.target.value)}
+                        onChange={(e)=>{ setEmail(e.target.value); if (!emailTouched) setEmailTouched(true); }}
                         className="peer w-full bg-white border border-gray-200 rounded-lg px-4 pt-5 pb-2 text-sm
-                outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                transition-all duration-200
-                "/>
+outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+transition-all duration-200
+"/>
                     <label
                         htmlFor="email"
                         className="absolute left-4 top-4 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-all duration-200
