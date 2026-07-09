@@ -366,6 +366,13 @@ const Portal = () => {
                                                         <p className="text-[11px] font-semibold text-blue-600 uppercase tracking-wide mb-2">
                                                             Step 3 of {STEPS.length}
                                                         </p>
+
+                                                        {result && !result.success && (
+                                                            <p className="mt-3 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                                                                {result.message}
+                                                            </p>
+                                                        )}
+
                                                         <h3 className="text-lg font-semibold text-slate-900 mb-1">
                                                             Paste the document hash
                                                         </h3>

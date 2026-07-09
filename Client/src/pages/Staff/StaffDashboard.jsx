@@ -29,7 +29,7 @@ const tabTitle={
     useEffect(() => {
         setTimeout(() => {
             setLoading(false);
-        },6000)
+        },2000)
     },[]);
     if (loading){
 

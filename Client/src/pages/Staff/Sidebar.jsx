@@ -35,7 +35,7 @@ export const Sidebar = ({activeTab ,setActiveTab}) => {
     useEffect(() => {
         setTimeout(() => {
             setLoading1(false);
-        }, 6000);
+        }, 2000);
     }, []);
 
     const handleLogout = () => {
