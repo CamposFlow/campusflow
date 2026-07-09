@@ -48,27 +48,18 @@ function App() {
             <InstallBanner/>
             <Toaster
                 position="top-right"
-                theme="dark"
-                className="rounded-2xl shadow-lg font-sans"
-                toastOptions={{ style: { background: '#fafafa' , border: '1px solid #e2e8f0', color: '#0f172a', borderRadius: '12px', fontSize: '14px', fontWeight: '500',
-                    },
-                    success: {
-                        style: {
-                            borderLeft: '4px solid #2563EB',
-                        },
-                        iconTheme: {
-                            primary: '#2563EB',
-                            secondary: '#ffffff',
-                        },
-                    },
-                    error: {
-                        style: {
-                            borderLeft: '4px solid #dc2626',
-                        },
-                        iconTheme: {
-                            primary: '#dc2626',
-                            secondary: '#ffffff',
-                        },
+                closeButton
+                expand={false}
+                toastOptions={{
+                    classNames: {
+                        toast: 'rounded-[10px] shadow-[0_4px_16px_rgba(0,0,0,0.10)] !min-w-[420px] !p-4 !text-[15px] !font-medium border',
+                        title: '!text-base !font-semibold',
+                        success: '!bg-blue-600 !text-white !border-blue-600',
+                        error: '!bg-red-50 !text-red-600 !border-red-200',
+                        warning: '!bg-yellow-50 !text-yellow-700 !border-yellow-200',
+                        info: '!bg-blue-50 !text-blue-700 !border-blue-200',
+                        closeButton: '!bg-white/20 !border-none !text-white/80 hover:!text-white',
+                        icon: '!w-5 !h-5',
                     },
                 }}
             />
