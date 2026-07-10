@@ -47,6 +47,7 @@ export const Login = () => {
             }, "-=0.3") // Overlap with container animation
     })
     const handleGoogleLogin = () => {
+
         window.location.href = `https://campusflowserver-uc79.vercel.app/auth/google`;
     };
 

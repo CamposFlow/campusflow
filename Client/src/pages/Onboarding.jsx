@@ -10,6 +10,7 @@ function Onboarding() {
     const navigate = useNavigate();
     const [role] = useState("student");
     const [university, setUniversity] = useState("");
+
     const [department, setDepartment] = useState("");
     const [level, setLevel] = useState("");
     const [matricNumber, setMatricNumber] = useState("");

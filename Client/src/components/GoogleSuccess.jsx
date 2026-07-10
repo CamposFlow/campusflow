@@ -8,6 +8,7 @@ export const GoogleSuccess = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
 
+
     useEffect(() => {
         const token = searchParams.get("token");
         if (!token) return navigate("/login");
