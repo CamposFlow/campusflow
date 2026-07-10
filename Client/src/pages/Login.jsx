@@ -3,7 +3,6 @@ import { useNavigate, Link} from 'react-router-dom'
 import {FcGoogle} from "react-icons/fc";
 import gsap from "gsap";
 import Joi from "joi";
-import {GoogleLogin} from "@react-oauth/google";
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button.jsx";
 import {useGSAP} from "@gsap/react";
@@ -47,9 +46,8 @@ export const Login = () => {
                 ease: "power2.out"
             }, "-=0.3") // Overlap with container animation
     })
-
-    const handleGoogleLogin1 = () => {
-        window.location.href = "https://campusflowserver-uc79.vercel.app/auth/google";
+    const handleGoogleLogin = () => {
+        window.location.href = `https://campusflowserver-uc79.vercel.app/auth/google`;
     };
 
     const handleLogin = async ()=>{
@@ -92,15 +90,16 @@ export const Login = () => {
 
                 <h2 className="text-2xl font-bold text-blue-400 mb-1">Welcome Back</h2>
                 <p className="text-gray-500 text-sm mb-6">Please sign in into your account</p>
-                {/*<button*/}
-                {/*    type="button"*/}
-                {/*    onClick={handleGoogleLogin1}*/}
-                {/*    className="mb-4 w-full flex items-center justify-center gap-3 border*/}
-                {/*    border-gray-300 bg-white text-gray-700 font-semibold p-2 rounded-lg*/}
-                {/*    hover:bg-gray-50 transition-colors duration-200 cursor-pointer"*/}
-                {/*>*/}
-
-                {/*</button>*/}
+                <button
+                    type="button"
+                    onClick={handleGoogleLogin}
+                    className="mb-4 w-full flex items-center justify-center gap-3 border
+    border-gray-300 bg-white text-gray-700 font-semibold p-2 rounded-lg
+    hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
+                >
+                    <FcGoogle className="w-5 h-5" />
+                    Continue with Google
+                </button>
                <div className="mb-4">
                    {
                        error && (

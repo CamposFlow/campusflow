@@ -45,8 +45,8 @@ export const registerUser = async (fullname, email, password, university, role, 
     const response = await api.post("/register", { fullname, email, password, university, role, department, level, matric_number });
     return response.data;
 }
-export const completeProfile = async (role, university) => {
-    const response = await api.post("/complete-profile", { role, university });
+export const completeProfile = async (role, university, department, level, matric_number) => {
+    const response = await api.post("/complete-profile", { role, university, department, level, matric_number });
     return response.data;
 }
 

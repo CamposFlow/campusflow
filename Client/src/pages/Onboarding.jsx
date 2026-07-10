@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext.jsx";
-import { GraduationCap } from "lucide-react";
-import {completeProfile} from "@/api/axios.js";
+import { GraduationCap, Hash, BookOpen, Layers } from "lucide-react";
+import { completeProfile } from "@/api/axios.js";
 import toast from "react-hot-toast";
 
 function Onboarding() {
@@ -10,19 +10,24 @@ function Onboarding() {
     const navigate = useNavigate();
     const [role] = useState("student");
     const [university, setUniversity] = useState("");
+    const [department, setDepartment] = useState("");
+    const [level, setLevel] = useState("");
+    const [matricNumber, setMatricNumber] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
+    const isValid = university && department && level && matricNumber;
+
     const handleComplete = async () => {
-        if (!role || !university) {
-            setError("Please select both your role and university.");
+        if (!isValid) {
+            setError("Please fill in all fields.");
             return;
         }
 
         try {
             setLoading(true);
             setError("");
-            const res = await completeProfile(role, university);
+            const res = await completeProfile(role, university, department, level, matricNumber);
 
             login(res.token, res.user.role);
 
@@ -53,8 +58,7 @@ function Onboarding() {
                     </div>
                 )}
 
-                {/* University Selector */}
-                <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-3 py-3 mb-6">
+                <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-3 py-3 mb-4">
                     <GraduationCap className="text-gray-400 shrink-0" size={18} />
                     <select
                         value={university}
@@ -67,9 +71,45 @@ function Onboarding() {
                     </select>
                 </div>
 
+                <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-3 py-3 mb-4">
+                    <BookOpen className="text-gray-400 shrink-0" size={18} />
+                    <input
+                        type="text"
+                        placeholder="Department (e.g. Software Engineering)"
+                        value={department}
+                        onChange={(e) => setDepartment(e.target.value)}
+                        className="bg-transparent text-gray-600 text-sm outline-none flex-1"
+                    />
+                </div>
+
+                <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-3 py-3 mb-4">
+                    <Layers className="text-gray-400 shrink-0" size={18} />
+                    <select
+                        value={level}
+                        onChange={(e) => setLevel(e.target.value)}
+                        className="bg-transparent text-gray-600 text-sm outline-none flex-1 cursor-pointer"
+                    >
+                        <option value="">Select Level</option>
+                        {["100", "200", "300", "400", "500"].map(l => (
+                            <option key={l} value={l}>{l} Level</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-3 py-3 mb-6">
+                    <Hash className="text-gray-400 shrink-0" size={18} />
+                    <input
+                        type="text"
+                        placeholder="Matric Number"
+                        value={matricNumber}
+                        onChange={(e) => setMatricNumber(e.target.value)}
+                        className="bg-transparent text-gray-600 text-sm outline-none flex-1"
+                    />
+                </div>
+
                 <button
                     onClick={handleComplete}
-                    disabled={loading || !role || !university}
+                    disabled={loading || !isValid}
                     className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-400"
                 >
                     {loading ? "Saving..." : "Continue"}
