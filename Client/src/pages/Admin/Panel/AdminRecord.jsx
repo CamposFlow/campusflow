@@ -72,20 +72,22 @@ const AdminRecords = () => {
             </div>
 
 
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-2 flex gap-2">
-                {levels.map((level) => (
-                    <button
-                        key={level}
-                        onClick={() => setActiveLevel(level)}
-                        className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                            activeLevel === level
-                                ? "bg-blue-600 text-white"
-                                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                        }`}
-                    >
-                        {level}L
-                    </button>
-                ))}
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-2">
+                <div className="flex gap-2 overflow-x-auto">
+                    {levels.map((level) => (
+                        <button
+                            key={level}
+                            onClick={() => setActiveLevel(level)}
+                            className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                                activeLevel === level
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                            }`}
+                        >
+                            {level}L
+                        </button>
+                    ))}
+                </div>
             </div>
 
 
