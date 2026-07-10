@@ -134,6 +134,7 @@ export const StaffOverview = ({ setActiveTab }) => {
                                            <p className="text-xs text-gray-400">{new Date(activity.created_at).toLocaleString()}</p>
                                        </div>
                                    </motion.div>
+
                                </motion.div>
                            )
                        })}

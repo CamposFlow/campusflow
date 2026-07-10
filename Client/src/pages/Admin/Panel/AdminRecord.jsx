@@ -95,6 +95,7 @@ const AdminRecords = () => {
           <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                     <thead>
+
                     <tr className="border-b border-gray-100 bg-gray-50">
                         <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Student</th>
                         <th className="text-left px-5 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Matric Number</th>

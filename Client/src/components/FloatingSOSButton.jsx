@@ -24,6 +24,7 @@ export const FloatingSOSButton = () =>{
                         latitude,
                         longitude,
                         locationText: geocoded,
+
                     });
                     toast.success("Alert sent! Help is on the way.");
                 } catch (err) {

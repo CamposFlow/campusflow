@@ -245,6 +245,7 @@ function SOSPanel() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
     >
+
         <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
         <span className="text-xs font-medium text-slate-700">2 active incidents nearby</span>
     </motion.div>

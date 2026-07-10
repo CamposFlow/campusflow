@@ -8,6 +8,7 @@ export const usePolling = (callback, intervalMs = 15000) => {
     // without needing to restart the interval when it changes
     useEffect(() => {
         savedCallback.current = callback;
+
     });
 
     useEffect(() => {

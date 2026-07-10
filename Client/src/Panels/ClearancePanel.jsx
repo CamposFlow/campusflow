@@ -47,6 +47,7 @@ const StepBar = ({ current, selectedStage }) => {
 
 export const ClearancePanel = () => {
   const [step, setStep] = useState(1);
+
   const [stages, setStages] = useState([]);
   const [selectedStage, setSelectedStage] = useState(null);
   const [clearanceStatus, setClearanceStatus] = useState([]);

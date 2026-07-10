@@ -451,6 +451,7 @@ export const StaffRecord = () => {
                                         </p>
                                     </div>
                                 )}
+
                             </div>
                         </motion.div>
 

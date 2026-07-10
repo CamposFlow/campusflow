@@ -12,6 +12,7 @@ const VerifyNav = ()=>{
     const links1=[
 
         {to : 'works1', label:'How it Works'},
+
         {to: 'features1', label:'Features'},
     ]
     const navigate1 = useNavigate();

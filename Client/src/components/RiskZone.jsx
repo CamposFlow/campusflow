@@ -8,6 +8,7 @@ const MAP_STYLES = {
     dark: "https://tiles.openfreemap.org/styles/bright"
 }
 
+
 const FUTO_FALLBACK = [6.986264, 5.392691]
 
 const getSeverity = (count) => {
