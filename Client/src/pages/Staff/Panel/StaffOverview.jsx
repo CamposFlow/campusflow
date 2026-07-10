@@ -3,6 +3,7 @@ import { motion} from "framer-motion";
 import {ClipboardCheck, CheckCircle, XCircle, Users, MessageSquare} from "lucide-react";
 import api from '@/api/axios.js';
 import {useEffect, useState} from "react";
+import {usePolling} from '@/hooks/usePolling.js';
 
 export const StaffOverview = ({ setActiveTab }) => {
     const [stats, setStats] = useState({pending : 0, approved : 0,rejected: 0, total : 0 });
@@ -14,12 +15,10 @@ export const StaffOverview = ({ setActiveTab }) => {
             .catch(err => console.error(err));
     }, []);
 
-    useEffect(() => {
         const fetchData = async () => {
             try{
                 const clearanceRes = await api.get('/admin/clearance-upload');
                 const records = clearanceRes.data.data || [];
-                console.log('data:',records);
                 setStats({
                     pending: records.filter(r => r.is_approved === null).length,
                     approved: records.filter(r => r.is_approved === true).length,
@@ -27,13 +26,13 @@ export const StaffOverview = ({ setActiveTab }) => {
                     total: records.length,
                 });
                 setActivities(records.slice(0,5));
-                console.log('activities:', records.slice(0,5));
             }catch (err){
                 console.log(err);
             }
         };
-        fetchData();
-    }, [])
+
+        usePolling(fetchData, 15000); // Poll every 10 seconds
+
     const statsDisplay = [
         {label:'Pending Approval', value: stats.pending, icon: ClipboardCheck, color:"bg-yellow-100 text-yellow-600", text:"text-yellow-600"},
         {label: 'Approved Today', value: stats.approved, icon: CheckCircle, color:'bg-green-100 text-green-600', text:"text-green-600"},

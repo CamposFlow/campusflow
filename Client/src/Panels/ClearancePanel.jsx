@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import SectionHeader from "../components/SectionHeader.jsx";
 import { AlertCircle, ChevronRight, ChevronLeft, Loader2, FileText, CheckCircle2, Upload, Trash2 } from "lucide-react";
 import api from "@/api/axios.js";
+import {usePolling} from '@/hooks/usePolling.js';
 
 const StepBar = ({ current, selectedStage }) => {
   const docSteps = selectedStage?.required_documents || [];
@@ -48,6 +49,7 @@ export const ClearancePanel = () => {
   const [step, setStep] = useState(1);
   const [stages, setStages] = useState([]);
   const [selectedStage, setSelectedStage] = useState(null);
+  const [clearanceStatus, setClearanceStatus] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -55,23 +57,48 @@ export const ClearancePanel = () => {
   const fileInputRef = useRef(null);
   const [filesByDoc, setFilesByDoc] = useState({});
 
-  // Mock static status cards for the top view (Replaces original crash source)
-  const clearanceStatusSummary = [
-    { label: "Departmental", status: "Pending Action", pct: 40, bg: "bg-amber-50", color: "text-amber-600", border: "border-amber-100", icon: FileText },
-    { label: "ICT", status: "Completed", pct: 100, bg: "bg-green-50", color: "text-green-600", border: "border-green-100", icon: CheckCircle2 },
-    { label: "Library", status: "Not Started", pct: 0, bg: "bg-gray-50", color: "text-gray-400", border: "border-gray-100", icon: FileText },
-  ];
+  const getStageStatus = (stageName) => {
+    const record = clearanceStatus.find(r => r.stage_name === stageName);
+    if (!record) return { key: 'not_submitted', label: 'Not Submitted', is_approved: undefined, created_at: null };
+    if (record.is_approved === true) return { key: 'approved', label: 'Approved', ...record };
+    if (record.is_approved === false) return { key: 'rejected', label: 'Rejected', ...record };
+    return { key: 'pending', label: 'Pending Review', ...record };
+  };
 
-  useEffect(() => {
+
+
+  const clearanceStatusSummary = stages.map(stage => {
+    const status = getStageStatus(stage.stage_name);
+    const pct = status.key === 'approved' ? 100 : status.key === 'pending' ? 50 : 0;
+    const config = {
+      approved: { color: "text-green-600", bg: "bg-green-50", border: "border-green-100", icon: CheckCircle2 },
+      pending: { color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-100", icon: FileText },
+      rejected: { color: "text-red-600", bg: "bg-red-50", border: "border-red-100", icon: AlertCircle },
+      not_submitted: { color: "text-gray-400", bg: "bg-gray-50", border: "border-gray-100", icon: FileText },
+    }[status.key];
+    return { label: stage.stage_name, status: status.label, pct, ...config };
+  });
+
+
+
+  usePolling(() => {
     api.get("/student/clearance-stages")
         .then(res => setStages(res.data.data || []))
         .catch(() => setError("Failed to load clearance stages."))
         .finally(() => setLoading(false));
 
+    api.get("/student/clearance-stats")
+        .then(res => setClearanceStatus(res.data.data || []))
+        .catch(err => console.error(err));
+  }, 15000);
+
+  useEffect(() => {
     const timer = window.setTimeout(() => setBarLoaded(true), 750);
     return () => window.clearTimeout(timer);
   }, []);
-  // Step 2 to (2 + docs.length - 1) are the upload steps
+
+
+
   const docSteps = selectedStage?.required_documents || [];
   const totalSteps = 1 + docSteps.length + 2; // select + docs + review + done
   const currentDocIndex = step - 2; // step 2 = doc[0], step 3 = doc[1], etc
@@ -111,7 +138,7 @@ export const ClearancePanel = () => {
               title="Clearance Status"
               sub="Track your departmental clearance in real time"
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 mt-6">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-5 mt-6">
             {clearanceStatusSummary.map((c, i) => (
                 <div
                     key={i}
@@ -165,25 +192,44 @@ export const ClearancePanel = () => {
                     <p className="text-sm text-red-500 py-2">{error}</p>
                 ) : (
                     <div className="space-y-3">
-                      {stages.map((stage) => (
-                          <div
-                              key={stage.id}
-                              onClick={() => setSelectedStage(stage)}
-                              className={`flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all duration-200
-                      ${selectedStage?.id === stage.id ? "border-blue-500 bg-blue-50" : "border-gray-100 hover:border-blue-200 hover:bg-gray-50"}`}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${selectedStage?.id === stage.id ? "bg-blue-100" : "bg-gray-100"}`}>
-                                <FileText className={`w-4 h-4 ${selectedStage?.id === stage.id ? "text-blue-600" : "text-gray-400"}`} />
+                      {stages.map((stage) => {
+                        const status = getStageStatus(stage.stage_name);
+                        const locked = status.key === 'pending' || status.key === 'approved';
+                        const badgeStyle = {
+                          approved: "bg-green-50 text-green-600 border-green-200",
+                          pending: "bg-amber-50 text-amber-600 border-amber-200",
+                          rejected: "bg-red-50 text-red-600 border-red-200",
+                          not_submitted: "bg-gray-50 text-gray-400 border-gray-200",
+                        }[status.key];
+
+                        return (
+                            <div
+                                key={stage.id}
+                                onClick={() => !locked && setSelectedStage(stage)}
+                                className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200
+                ${locked ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}
+                ${selectedStage?.id === stage.id ? "border-blue-500 bg-blue-50" : "border-gray-100 hover:border-blue-200 hover:bg-gray-50"}`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${selectedStage?.id === stage.id ? "bg-blue-100" : "bg-gray-100"}`}>
+                                  <FileText className={`w-4 h-4 ${selectedStage?.id === stage.id ? "text-blue-600" : "text-gray-400"}`} />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-semibold text-gray-800">{stage.stage_name}</p>
+                                  <p className="text-xs text-gray-400">{stage.required_documents?.length || 0} document(s) required</p>
+                                  {status.created_at && (
+                                      <p className="text-[10px] text-gray-400 mt-0.5">
+                                        Submitted {new Date(status.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                      </p>
+                                  )}
+                                </div>
                               </div>
-                              <div>
-                                <p className="text-sm font-semibold text-gray-800">{stage.stage_name}</p>
-                                <p className="text-xs text-gray-400">{stage.required_documents?.length || 0} document(s) required</p>
-                              </div>
+                              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${badgeStyle}`}>
+                {status.label}
+            </span>
                             </div>
-                            <div className={`w-4 h-4 rounded-full border-2 ${selectedStage?.id === stage.id ? "border-blue-500 bg-blue-500" : "border-gray-300"}`} />
-                          </div>
-                      ))}
+                        );
+                      })}
                     </div>
                 )}
 

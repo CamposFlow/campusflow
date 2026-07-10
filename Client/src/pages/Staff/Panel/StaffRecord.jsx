@@ -3,6 +3,7 @@ import {motion, AnimatePresence} from "framer-motion";
 import {Search, CheckCircle, XCircle, Clock, Eye, FileText } from "lucide-react";
 import {PieChart, Pie, Tooltip, ResponsiveContainer, Cell} from "recharts";
 import api from '@/api/axios.js'
+import {usePolling} from '@/hooks/usePolling.js';
 
 const tabs = [
     { label: 'Pending', key: 'pending', color: 'text-yellow-600', bg: 'bg-yellow-50', active: 'bg-yellow-500' },
@@ -22,12 +23,13 @@ export const StaffRecord = () => {
     const [records, setRecords] = useState([])
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
+    usePolling(() => {
         api.get("/admin/clearance-upload")
             .then(res => setRecords(res.data.data || []))
             .catch(err => console.error(err))
             .finally(() => setLoading(false))
-    }, [])
+    }, 15000);
+
     const [activeTab, setActiveTab] = useState('pending')
     const [search, setSearch] = useState('')
     const [selectedRecord, setSelectedRecord] = useState(null)
@@ -52,15 +54,34 @@ export const StaffRecord = () => {
             record.matric_number.toLowerCase().includes(search.toLowerCase())
         return matchesTab && matchesSearch
     })
+    const [actionLoading, setActionLoading] = useState({ id: null, action: null })
 
-    const handleApprove = (id) => {
-        setRecords(records.map(r => r.id === id ? { ...r, is_approved: true } : r))
-        setShowModal(false)
+    const handleApprove = async (id) => {
+        setActionLoading({ id, action: 'approve' })
+        try {
+            const res = await api.patch(`/admin/clearance/${id}/approve`)
+            setRecords(records.map(r => r.id === id ? res.data.data : r))
+            setShowModal(false)
+        } catch (err) {
+            console.error(err)
+            alert(err.response?.data?.message || "Failed to approve clearance")
+        } finally {
+            setActionLoading({ id: null, action: null })
+        }
     }
 
-    const handleReject = (id) => {
-        setRecords(records.map(r => r.id === id ? { ...r, is_approved: false } : r))
-        setShowModal(false)
+    const handleReject = async (id) => {
+        setActionLoading({ id, action: 'reject' })
+        try {
+            const res = await api.patch(`/admin/clearance/${id}/reject`)
+            setRecords(records.map(r => r.id === id ? res.data.data : r))
+            setShowModal(false)
+        } catch (err) {
+            console.error(err)
+            alert(err.response?.data?.message || "Failed to reject clearance")
+        } finally {
+            setActionLoading({ id: null, action: null })
+        }
     }
 
     const handleViewDetails = (record) => {
@@ -75,10 +96,10 @@ export const StaffRecord = () => {
     return (
 
         <div className="space-y-6">
-<div>
-    <h2 className="text-xl font-bold text-gray-800">Physical Clearance</h2>
-    <p className="text-sm text-gray-500 mt-1">Review and Manage student Clearance</p>
-</div>
+            <div>
+                <h2 className="text-xl font-bold text-gray-800">Physical Clearance</h2>
+                <p className="text-sm text-gray-500 mt-1">Review and Manage student Clearance</p>
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {[
                     { label: 'Pending', count: counts.pending, color: 'text-yellow-600', bg: 'from-yellow-50 to-yellow-100', border: 'border-yellow-200', icon: Clock },
@@ -210,61 +231,65 @@ export const StaffRecord = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead>
-                            <tr className="border-b border-gray-100 bg-gray-50">
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Stage</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Documents</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time</th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
-                            </tr>
+                        <tr className="border-b border-gray-100 bg-gray-50">
+                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Student</th>
+                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Stage</th>
+                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Documents</th>
+                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Time</th>
+                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <AnimatePresence>
-                                {filteredRecords.length > 0 ? (
-                                    filteredRecords.map((record, index) => (
-                                        <motion.tr
-                                            key={record.id}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -10 }}
-                                            transition={{ delay: index * 0.05 }}
-                                            className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
-                                        >
-                                            <td className="px-6 py-4">
-                                                <div>
-                                                    <p className="font-semibold text-gray-900">{record.student_name}</p>
-                                                    <p className="text-xs text-gray-500">{record.matric_number}</p>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className="text-sm text-gray-600">{record.stage_name}</span>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
-                                                    <FileText className="w-4 h-4" />
-                                                    -
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-gray-500">{new Date(record.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                                            <td className="px-6 py-4">
-                                                <button
-                                                    onClick={() => handleViewDetails(record)}
-                                                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors"
-                                                >
-                                                    <Eye className="w-4 h-4" />
-                                                    View Details
-                                                </button>
-                                            </td>
-                                        </motion.tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="5" className="px-6 py-8 text-center">
-                                            <p className="text-gray-500 text-sm">No records found for this status.</p>
+                        <AnimatePresence>
+                            {filteredRecords.length > 0 ? (
+                                filteredRecords.map((record, index) => (
+                                    <motion.tr
+                                        key={record.id}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ delay: index * 0.05 }}
+                                        className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                                    >
+                                        <td className="px-6 py-4">
+                                            <div>
+                                                <p className="font-semibold text-gray-900">{record.student_name}</p>
+                                                <p className="text-xs text-gray-500">{record.matric_number}</p>
+                                            </div>
                                         </td>
-                                    </tr>
-                                )}
-                            </AnimatePresence>
+                                        <td className="px-6 py-4">
+                                            <span className="text-sm text-gray-600">{record.stage_name}</span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {record.documents?.length > 0 ? (
+                                                <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+            <FileText className="w-4 h-4" />
+                                                    {record.documents.length} file{record.documents.length > 1 ? 's' : ''}
+        </span>
+                                            ) : (
+                                                <span className="text-xs text-gray-400">No documents</span>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">{new Date(record.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                                        <td className="px-6 py-4">
+                                            <button
+                                                onClick={() => handleViewDetails(record)}
+                                                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </motion.tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="px-6 py-8 text-center">
+                                        <p className="text-gray-500 text-sm">No records found for this status.</p>
+                                    </td>
+                                </tr>
+                            )}
+                        </AnimatePresence>
                         </tbody>
                     </table>
                 </div>
@@ -337,6 +362,25 @@ export const StaffRecord = () => {
                                 <div>
                                     <h4 className="text-sm font-semibold text-gray-700 mb-3">Documents Submitted</h4>
                                     <div className="space-y-2">
+                                        {selectedRecord.documents?.length > 0 ? (
+                                            selectedRecord.documents.map((doc, i) => (
+                                                <a
+                                                    key={i}
+                                                    href={doc.file_url}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+                                                >
+                                                        <span className="flex items-center gap-2 text-sm text-gray-700 group-hover:text-blue-700 truncate">
+                                                            <FileText className="w-4 h-4 shrink-0" />
+                                                            {doc.file_name}
+                                                        </span>
+                                                    <Eye className="w-4 h-4 text-gray-400 group-hover:text-blue-600 shrink-0" />
+                                                </a>
+                                            ))
+                                        ) : (
+                                            <p className="text-sm text-gray-400">No documents uploaded for this stage.</p>
+                                        )}
                                         <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 text-sm text-gray-500">
                                             Document hash: <span className="font-mono text-xs break-all">{selectedRecord.document_hash || "—"}</span>
                                         </div>
@@ -349,23 +393,43 @@ export const StaffRecord = () => {
                                 {getStatusKey(selectedRecord.is_approved) === 'pending' && (
                                     <div className="flex gap-3">
                                         <motion.button
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
+                                            whileHover={{ scale: actionLoading ? 1 : 1.02 }}
+                                            whileTap={{ scale: actionLoading ? 1 : 0.98 }}
                                             onClick={() => handleApprove(selectedRecord.id)}
-                                            className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg
-                                             font-semibold transition-colors flex items-center justify-center gap-2"
+                                            disabled={actionLoading.id === selectedRecord.id}
+                                            className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white rounded-lg
+             font-semibold transition-colors flex items-center justify-center gap-2"
                                         >
-                                            <CheckCircle className="w-5 h-5" />
-                                            Approve
+                                            {actionLoading.id === selectedRecord.id && actionLoading.action === 'approve' ? (
+                                                <>
+                                                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                                                    Approving...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <CheckCircle className="w-5 h-5" />
+                                                    Approve
+                                                </>
+                                            )}
                                         </motion.button>
                                         <motion.button
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
+                                            whileHover={{ scale: actionLoading ? 1 : 1.02 }}
+                                            whileTap={{ scale: actionLoading ? 1 : 0.98 }}
                                             onClick={() => handleReject(selectedRecord.id)}
-                                            className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                                            disabled={actionLoading.id === selectedRecord.id}
+                                            className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
                                         >
-                                            <XCircle className="w-5 h-5" />
-                                            Reject
+                                            {actionLoading.id === selectedRecord.id && actionLoading.action === 'reject' ? (
+                                                <>
+                                                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                                                    Rejecting...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <XCircle className="w-5 h-5" />
+                                                    Reject
+                                                </>
+                                            )}
                                         </motion.button>
                                     </div>
                                 )}
