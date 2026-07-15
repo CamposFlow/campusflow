@@ -15,6 +15,7 @@ import Onboarding from "@/pages/Onboarding.jsx";
 import InstallBanner from "@/components/InstallBanner.jsx";
 import {NotFound} from '@/components/NotFound.jsx'
 import {FloatingSOSButton} from "./components/FloatingSOSButton.jsx";
+import SuperAdmin from "./pages/SuperAdmin.jsx"
 
 function ProtectedRoute({allowedRoles}) {
     const {token,role} = useAuth();
@@ -65,6 +66,7 @@ function App() {
                 }}
             />
             <Routes>
+                <Route path="/super" element={<PublicRoute><SuperAdmin/></PublicRoute>}/>
                 <Route path="/login" element={<PublicRoute><Login/></PublicRoute>} />
                 <Route path="/google-success" element={<GoogleSuccess/>} />
                 <Route path="/reset" element={<PublicRoute><ForgotPassword/></PublicRoute>} />

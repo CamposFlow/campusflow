@@ -18,6 +18,7 @@ import { useRef } from "react";
 import {Disclosure, Transition} from "@headlessui/react";
 import {Footer} from "@/components/Footer.jsx";
 import Hero from "@/components/Hero.jsx";
+import {BuildersCarousel} from "@/components/BuildersCarousel.jsx";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -337,6 +338,7 @@ const LandingPage = () => {
                     </div>
                 </div>
             </section>
+
             <section  className="faqs-section bg-gradient-to-b from-white to-gray-50 py-16 sm:py-20 px-4 sm:px-8">
                 <div className="max-w-3xl mx-auto px-6 space-y-3">
                     <div className="text-center mb-12 sm:mb-14">
@@ -379,7 +381,18 @@ const LandingPage = () => {
                         ))}
                 </div>
             </section>
-
+           <section className="faqs-section bg-gradient-to-b from-white to-gray-50 py-16 sm:py-20 px-4 sm:px-8">
+                   <div className="text-center mb-12 sm:mb-14">
+                        <span className="text-blue-600 text-sm sm:text-lg tracking-widest font-semibold uppercase">
+                           Builders
+                        </span>
+                       <h2 className="text-3xl sm:text-4xl font-bold mt-3 text-gray-900 mb-3">
+                           Meet Our Builders
+                       </h2>
+                       <p className="text-gray-600 max-w-2xl mx-auto">Get to know the talented individuals behind CampusFlow</p>
+                   </div>
+               <BuildersCarousel/>
+           </section>
             <Footer/>
         </div>
     );
