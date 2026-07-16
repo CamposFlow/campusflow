@@ -7,6 +7,7 @@ import {
     ShieldCheck,
     Bell, ChevronDown,
 } from "lucide-react";
+
 import {Cookies} from "@/components/Cookies.jsx";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";

@@ -17,6 +17,7 @@ const features = [
             "Every certificate anchored on Solana, tamper-proof and instantly verifiable",
     },
     {
+
         icon: ClipboardCheck,
         title: "Real-Time Clearance Tracking",
         description:
