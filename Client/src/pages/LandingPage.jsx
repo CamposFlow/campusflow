@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {FeaturesShowcase} from '@/components/FeaturesShowcase.jsx'
 import { useRef } from "react";
 import {Disclosure, Transition} from "@headlessui/react";
 import {Footer} from "@/components/Footer.jsx";
@@ -269,29 +270,30 @@ const LandingPage = () => {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-                        {features.map((feature, index) => (
-                            <div
-                                key={index}
-                                className="feature-card bg-white rounded-2xl p-7 sm:p-8 border border-gray-200 hover:shadow-2xl hover:border-blue-300 transition-all duration-300 group hover:bg-gradient-to-br hover:from-blue-50/80 hover:to-blue-100/40 relative overflow-hidden"
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 to-blue-600/0 group-hover:from-blue-600/5 group-hover:to-blue-600/10 transition-all duration-300 pointer-events-none" />
-                                <div className="relative z-10">
-                                    <div className="bg-blue-50 w-14 h-14 flex items-center justify-center rounded-xl shrink-0 group-hover:bg-blue-100 transition-all duration-300 group-hover:shadow-lg group-hover:scale-110">
-                                        {feature.icon}
-                                    </div>
+                {/*    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">*/}
+                {/*        {features.map((feature, index) => (*/}
+                {/*            <div*/}
+                {/*                key={index}*/}
+                {/*                className="feature-card bg-white rounded-2xl p-7 sm:p-8 border border-gray-200 hover:shadow-2xl hover:border-blue-300 transition-all duration-300 group hover:bg-gradient-to-br hover:from-blue-50/80 hover:to-blue-100/40 relative overflow-hidden"*/}
+                {/*            >*/}
+                {/*                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 to-blue-600/0 group-hover:from-blue-600/5 group-hover:to-blue-600/10 transition-all duration-300 pointer-events-none" />*/}
+                {/*                <div className="relative z-10">*/}
+                {/*                    <div className="bg-blue-50 w-14 h-14 flex items-center justify-center rounded-xl shrink-0 group-hover:bg-blue-100 transition-all duration-300 group-hover:shadow-lg group-hover:scale-110">*/}
+                {/*                        {feature.icon}*/}
+                {/*                    </div>*/}
 
-                                    <h3 className="font-bold text-gray-900 text-lg mt-5 mb-2 group-hover:text-blue-900 transition-colors duration-300">
-                                        {feature.title}
-                                    </h3>
-                                    <p className="text-gray-600 text-sm leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
-                                        {feature.description}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                {/*                    <h3 className="font-bold text-gray-900 text-lg mt-5 mb-2 group-hover:text-blue-900 transition-colors duration-300">*/}
+                {/*                        {feature.title}*/}
+                {/*                    </h3>*/}
+                {/*                    <p className="text-gray-600 text-sm leading-relaxed group-hover:text-gray-800 transition-colors duration-300">*/}
+                {/*                        {feature.description}*/}
+                {/*                    </p>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        ))}*/}
+                {/*    </div>*/}
                 </div>
+                <FeaturesShowcase/>
             </section>
 
             <section id="works" className="steps-section bg-white py-16 sm:py-20 px-4 sm:px-8">

@@ -37,7 +37,7 @@ function ProtectedRoute({allowedRoles}) {
 function PublicRoute({children}) {
     const {token, role} = useAuth();
     if (token) {
-        const redirectMap = { admin: "/admin", staff: "/staff", student: "/dashboard" };
+        const redirectMap = { admin: "/admin", staff: "/staff", student: "/dashboard", super: "/super" };
         return <Navigate to={redirectMap[role] || "/dashboard"} replace/>
     }
     return children;
@@ -66,7 +66,7 @@ function App() {
                 }}
             />
             <Routes>
-                <Route path="/super" element={<PublicRoute><SuperAdmin/></PublicRoute>}/>
+
                 <Route path="/login" element={<PublicRoute><Login/></PublicRoute>} />
                 <Route path="/google-success" element={<GoogleSuccess/>} />
                 <Route path="/reset" element={<PublicRoute><ForgotPassword/></PublicRoute>} />
@@ -87,6 +87,10 @@ function App() {
 
                 <Route element={<ProtectedRoute allowedRoles={["admin"]}/>}>
                     <Route path="/admin" element={<AdminDashboard/>}/>
+                </Route>
+
+                <Route element={<ProtectedRoute allowedRoles={["super"]}/> }>
+                    <Route path="/super" element={<SuperAdmin/>}/>
                 </Route>
 
             </Routes>

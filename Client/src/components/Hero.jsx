@@ -144,80 +144,83 @@ export default function Hero() {
 
             <motion.div
                 initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0, y: [0, -6, 0] }}
-                transition={{
-                    duration: 0.7,
-                    delay: 1,
-                    y: { repeat: Infinity, duration: 3, ease: "easeInOut" }
-                }}
-                className="hidden lg:block absolute left-16 top-1/4
-        bg-white rounded-2xl shadow-lg border border-gray-100 p-4 w-52"
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.7, delay: 1 }}
+                className="hidden lg:block absolute left-16 top-1/4 w-52"
             >
-                <p className="text-xs text-gray-400 mb-2">Clearance Status</p>
-                <div className="flex flex-col gap-2">
-                    {['Library', 'Medical', 'Departmental'].map((stage, i) => (
-                        <div key={i} className="flex items-center justify-between">
-                            <span className="text-xs text-gray-600">{stage}</span>
-                            <span className={`text-xs px-2 py-0.5 rounded-full
-                    ${i === 0 ? 'bg-green-50 text-green-600'
-                                : i === 1 ? 'bg-yellow-50 text-yellow-600'
-                                    : 'bg-gray-50 text-gray-400'}`}>
-                    {i === 0 ? 'Approved' : i === 1 ? 'Pending' : 'Not Started'}
-                </span>
-                        </div>
-                    ))}
-                </div>
+                <motion.div
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{ delay: 1.7, duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4"
+                >
+                    <p className="text-xs text-gray-400 mb-2">Clearance Status</p>
+                    <div className="flex flex-col gap-2">
+                        {['Library', 'Medical', 'Departmental'].map((stage, i) => (
+                            <div key={i} className="flex items-center justify-between">
+                                <span className="text-xs text-gray-600">{stage}</span>
+                                <span className={`text-xs px-2 py-0.5 rounded-full
+                        ${i === 0 ? 'bg-green-50 text-green-600'
+                                    : i === 1 ? 'bg-yellow-50 text-yellow-600'
+                                        : 'bg-gray-50 text-gray-400'}`}>
+                        {i === 0 ? 'Approved' : i === 1 ? 'Pending' : 'Not Started'}
+                    </span>
+                            </div>
+                        ))}
+                    </div>
+                </motion.div>
             </motion.div>
 
             {/* Top right card — Verification */}
             <motion.div
                 initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0, y: [0, -6, 0] }}
-                transition={{
-                    duration: 0.7,
-                    delay: 1,
-                    y: { repeat: Infinity, duration: 3, ease: "easeInOut" }
-                }}
-                className="hidden lg:block absolute right-24 top-1/4
-        bg-white rounded-2xl shadow-lg border border-gray-100 p-4 w-48"
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.7, delay: 1 }}
+                className="hidden lg:block absolute right-24 top-1/4 w-48"
             >
-                <div className="flex items-center gap-2 mb-3">
-                    <div className="w-8 h-8 rounded-full bg-green-50
-            flex items-center justify-center">
-                        <CheckCircle className="w-4 h-4 text-green-600" />
+                <motion.div
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{ delay: 1.7, duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4"
+                >
+                    <div className="flex items-center gap-2 mb-3">
+                        <div className="w-8 h-8 rounded-full bg-green-50
+                flex items-center justify-center">
+                            <CheckCircle className="w-4 h-4 text-green-600" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-semibold text-gray-700">Certificate Valid</p>
+                            <p className="text-xs text-gray-400">FUTO • 2024</p>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-xs font-semibold text-gray-700">Certificate Valid</p>
-                        <p className="text-xs text-gray-400">FUTO • 2024</p>
-                    </div>
-                </div>
-                <p className="text-xs text-gray-400 font-mono truncate">
-                    0x71C7656EC7ab88...
-                </p>
+                    <p className="text-xs text-gray-400 font-mono truncate">
+                        0x71C7656EC7ab88...
+                    </p>
+                </motion.div>
             </motion.div>
 
             {/* Bottom right card — SOS */}
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, x: 0, y: [0, -6, 0] }}
-                transition={{
-                    duration: 0.7,
-                    delay: 1,
-                    y: { repeat: Infinity, duration: 3, ease: "easeInOut" }
-                }}
-                className="hidden lg:block absolute right-24 bottom-1/3
-        bg-white rounded-2xl shadow-lg border border-red-100 p-4 w-44"
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 1 }}
+                className="hidden lg:block absolute right-24 bottom-1/3 w-44"
             >
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-red-50
-            flex items-center justify-center animate-pulse">
-                        <AlertTriangle className="w-4 h-4 text-red-500" />
+                <motion.div
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{ delay: 1.7, duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    className="bg-white rounded-2xl shadow-lg border border-red-100 p-4"
+                >
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-red-50
+                flex items-center justify-center animate-pulse">
+                            <AlertTriangle className="w-4 h-4 text-red-500" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-semibold text-red-600">SOS Triggered</p>
+                            <p className="text-xs text-gray-400">Security notified</p>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-xs font-semibold text-red-600">SOS Triggered</p>
-                        <p className="text-xs text-gray-400">Security notified</p>
-                    </div>
-                </div>
+                </motion.div>
             </motion.div>
         </section>
     )

@@ -4,89 +4,14 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import Loaders from "@/components/Loaders.jsx";
 import { useAuth } from "@/pages/AuthContext.jsx";
+import {capitalizeWords} from "@/constants/Capitalize.js";
 import {
-  LayoutDashboard,
-  School,
-  Users,
-  Activity,
-  Plus,
-  Search,
-  Power,
-  Trash2,
-  Bell,
-  LogOut,
-  ChevronRight,
-  Menu,
-  X,
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle,
-  Database,
-  Cpu,
-  Globe,
-  Terminal,
-  Layers,
-  Clock,
-  ExternalLink,
-  ShieldAlert,
-  Award,
+  LayoutDashboard, School, Users, Activity, Plus, Search, Power, Trash2, Bell, LogOut, ChevronRight, Menu, X, TrendingUp, AlertTriangle, CheckCircle, Database, Cpu, Globe, Terminal, Layers, Clock, ExternalLink, ShieldAlert, Award,
 } from "lucide-react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
+import {AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,} from "recharts";
+import api from '@/api/axios.js'
+import {usePolling} from '@/hooks/usePolling.js';
 
-/* ─────────────────────────────────────────────────────────────
-   Mock / Initial State Data
-───────────────────────────────────────────────────────────── */
-
-const initialUniversities = [
-  {
-    id: 1,
-    name: "Federal University of Technology, Owerri",
-    code: "FUTO",
-    domain: "futo.edu.ng",
-    students: 12450,
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "University of Lagos",
-    code: "UNILAG",
-    domain: "unilag.edu.ng",
-    students: 28120,
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "University of Ibadan",
-    code: "UI",
-    domain: "ui.edu.ng",
-    students: 18900,
-    status: "Active",
-  },
-  {
-    id: 4,
-    name: "Obafemi Awolowo University",
-    code: "OAU",
-    domain: "oauife.edu.ng",
-    students: 22300,
-    status: "Suspended",
-  },
-  {
-    id: 5,
-    name: "University of Nigeria, Nsukka",
-    code: "UNN",
-    domain: "unn.edu.ng",
-    students: 24100,
-    status: "Active",
-  },
-];
 
 const initialAdmins = [
   {
@@ -185,8 +110,10 @@ const SuperAdmin = () => {
   const [loading, setLoading] = useState(false);
 
   // Core Entity States
-  const [universities, setUniversities] = useState(initialUniversities);
-  const [admins, setAdmins] = useState(initialAdmins);
+  const [universities, setUniversities] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [admins, setAdmins] = useState([]);
+  const [documents, setDocuments] = useState([]);
   const [activities, setActivities] = useState(initialActivities);
   const [sosAlerts, setSosAlerts] = useState(initialSOSAlerts);
 
@@ -214,10 +141,82 @@ const SuperAdmin = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  usePolling(() => {
+    api.get('/superadmin/getallstudents')
+        .then(res => {
+          const mapped = (res.data.users || []).map(u => ({
+            id: u.id,
+            name: u.fullname.trim(),
+            email: u.email,
+            university: u.university,
+            department: u.department,
+            matricNumber: u.matric_number,
+            level: u.level,
+            status: "Active",
+          }));
+          setStudents(mapped);
+        })
+        .catch(err => {
+          console.error(err);
+          toast.error("Failed to load students");
+        });
+  }, 15000);
+
+  usePolling(() => {
+    api.get('/superadmin/getalladmins')
+        .then(res => {
+          const mapped = (res.data.admins || []).map(a => ({
+            id: a.id,
+            name: a.fullname.trim(),
+            email: a.email,
+            university: a.university,
+            status: "Active", // no active/suspended concept for admins in your schema either
+          }));
+          setAdmins(mapped);
+        })
+        .catch(err => {
+          console.error(err);
+          toast.error("Failed to load admins");
+        });
+  }, 15000);
+
+  usePolling(() => {
+    api.get('/superadmin/documents')
+        .then(res => setDocuments(res.data.documents || []))
+        .catch(err => {
+          console.error(err);
+          toast.error("Failed to load documents");
+        });
+  }, 15000);
+
+  const [health, setHealth] = useState(null);
+
+  usePolling(() => {
+    api.get('/superadmin/health')
+        .then(res => setHealth(res.data.health))
+        .catch(err => console.error(err));
+  }, 15000);
+  usePolling(() => {
+    api.get('/superadmin/universities')
+        .then(res => {
+          const mapped = (res.data.db || []).map(u => ({
+            id: u.id,
+            name: u.name,
+            code: u.university_id,
+            domain: "—",
+            students: null,
+            status: u.is_active ? "Active" : "Suspended",
+            pdaAddress: u.pda_address,
+            txSignature: u.tx_signature,
+          }));
+          setUniversities(mapped);
+        })
+        .catch(err => {
+          console.error(err);
+          toast.error("Failed to load universities");
+        })
+        .finally(() => setLoading(false));
+  }, 15000);
 
   const handleLogout = () => {
     logout();
@@ -519,13 +518,15 @@ const SuperAdmin = () => {
               transition={{ duration: 0.25 }}
             >
               {activeTab === "overview" && (
-                <SuperAdminOverview
-                  universities={universities}
-                  admins={admins}
-                  activities={activities}
-                  sosAlerts={sosAlerts}
-                  setSosAlerts={setSosAlerts}
-                />
+                  <SuperAdminOverview
+                      universities={universities}
+                      admins={admins}
+                      activities={activities}
+                      sosAlerts={sosAlerts}
+                      setSosAlerts={setSosAlerts}
+                      students={students}
+                      documents={documents}
+                  />
               )}
               {activeTab === "universities" && (
                 <SuperAdminUniversities
@@ -540,6 +541,7 @@ const SuperAdmin = () => {
                   deleteUniversity={deleteUniversity}
                   toggleUniversityStatus={toggleUniversityStatus}
                   admins={admins}
+                  students={students}
                 />
               )}
               {activeTab === "admins" && (
@@ -557,7 +559,7 @@ const SuperAdmin = () => {
                   universities={universities}
                 />
               )}
-              {activeTab === "health" && <SuperAdminSystemHealth />}
+              {activeTab === "health" && <SuperAdminSystemHealth health={health} activities={activities} />}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -571,114 +573,19 @@ const SuperAdmin = () => {
 ───────────────────────────────────────────────────────────── */
 
 const SuperAdminOverview = ({
-  universities,
-  admins,
-  activities,
-  sosAlerts,
-  setSosAlerts,
-}) => {
+                              universities,
+                              admins,
+                              activities,
+                              sosAlerts,
+                              setSosAlerts,
+                              students,
+                              documents,
+                            }) => {
+  const uploadedDocuments = documents.filter(d => d.is_approved !== false);
+  const rejectedDocuments = documents.filter(d => d.is_approved === false);
   // Mock data for monitoring lists
-  const studentsList = [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@futo.edu.ng",
-      university: "FUTO",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@unilag.edu.ng",
-      university: "UNILAG",
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Ahmed Hassan",
-      email: "ahmed@ui.edu.ng",
-      university: "UI",
-      status: "Active",
-    },
-    {
-      id: 4,
-      name: "Chioma Okafor",
-      email: "chioma@oau.edu.ng",
-      university: "OAU",
-      status: "Inactive",
-    },
-    {
-      id: 5,
-      name: "Bola Adeyemi",
-      email: "bola@unn.edu.ng",
-      university: "UNN",
-      status: "Active",
-    },
-  ];
 
   const schoolsList = universities;
-
-  const uploadedDocuments = [
-    {
-      id: 1,
-      student: "John Doe",
-      document: "WAEC Certificate",
-      university: "FUTO",
-      uploadDate: "2025-01-15",
-      status: "Verified",
-    },
-    {
-      id: 2,
-      student: "Jane Smith",
-      document: "Birth Certificate",
-      university: "UNILAG",
-      uploadDate: "2025-01-14",
-      status: "Verified",
-    },
-    {
-      id: 3,
-      student: "Ahmed Hassan",
-      document: "UTME Admit",
-      university: "UI",
-      uploadDate: "2025-01-13",
-      status: "Pending",
-    },
-    {
-      id: 4,
-      student: "Chioma Okafor",
-      document: "ID Card",
-      university: "OAU",
-      uploadDate: "2025-01-12",
-      status: "Verified",
-    },
-  ];
-
-  const rejectedDocuments = [
-    {
-      id: 1,
-      student: "Tunde Obi",
-      document: "Passport",
-      university: "FUTO",
-      rejectionReason: "Image too blurry",
-      rejectedDate: "2025-01-10",
-    },
-    {
-      id: 2,
-      student: "Grace Eze",
-      document: "Driver's License",
-      university: "UNILAG",
-      rejectionReason: "Expired",
-      rejectedDate: "2025-01-08",
-    },
-    {
-      id: 3,
-      student: "David Mensah",
-      document: "WAEC Certificate",
-      university: "UI",
-      rejectionReason: "Invalid format",
-      rejectedDate: "2025-01-06",
-    },
-  ];
 
   return (
     <motion.div
@@ -728,18 +635,18 @@ const SuperAdminOverview = ({
               Students
             </h3>
             <span className="text-xs font-semibold text-gray-400">
-              {studentsList.length} total
+              {students.length} total
             </span>
           </div>
           <div className="space-y-2 max-h-96 overflow-y-auto">
-            {studentsList.map((student) => (
+            {students.map((student) => (
               <div
                 key={student.id}
                 className="flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-800/50"
               >
                 <div className="flex-1">
                   <p className="text-xs font-semibold text-gray-900 dark:text-white">
-                    {student.name}
+                    {capitalizeWords(student.name)}
                   </p>
                   <p className="text-[10px] text-gray-500 dark:text-gray-400">
                     {student.university}
@@ -827,21 +734,21 @@ const SuperAdminOverview = ({
               >
                 <div className="flex-1">
                   <p className="text-xs font-semibold text-gray-900 dark:text-white">
-                    {doc.document}
+                    {doc.file_name}
                   </p>
                   <p className="text-[10px] text-gray-500 dark:text-gray-400">
-                    {doc.student} • {doc.university}
+                    {capitalizeWords(doc.student_name)} • {doc.university_id}
                   </p>
                 </div>
                 <span
-                  className={`text-[10px] font-bold px-2 py-1 rounded-full ${
-                    doc.status === "Verified"
-                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                      : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-                  }`}
+                    className={`text-[10px] font-bold px-2 py-1 rounded-full ${
+                        doc.is_approved === true
+                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                            : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                    }`}
                 >
-                  {doc.status}
-                </span>
+  {doc.is_approved === true ? "Verified" : "Pending"}
+</span>
               </div>
             ))}
           </div>
@@ -872,18 +779,21 @@ const SuperAdminOverview = ({
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <p className="text-xs font-semibold text-gray-900 dark:text-white">
-                      {doc.document}
+                      {doc.file_name}
                     </p>
                     <p className="text-[10px] text-gray-600 dark:text-gray-400">
-                      {doc.student}
+                      {capitalizeWords(doc.student_name)}
                     </p>
                   </div>
                   <span className="text-[10px] font-bold text-red-600 dark:text-red-400">
                     Rejected
                   </span>
                 </div>
+                {/*<p className="mt-2 text-[10px] text-red-600 dark:text-red-400 font-medium">*/}
+                {/*  Reason: {doc.rejectionReason}*/}
+                {/*</p>*/}
                 <p className="mt-2 text-[10px] text-red-600 dark:text-red-400 font-medium">
-                  Reason: {doc.rejectionReason}
+                  Stage: {doc.stage_name}
                 </p>
               </div>
             ))}
@@ -905,7 +815,7 @@ const SuperAdminUniversities = ({
   uniModalOpen,
   setUniModalOpen,
   newUni,
-  setNewUni,
+  setNewUni, students,
   addUniversity,
   deleteUniversity,
   toggleUniversityStatus,
@@ -944,7 +854,7 @@ const SuperAdminUniversities = ({
         </button>
       </div>
 
-      {/* Universities Table */}
+
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm border-collapse">
@@ -954,7 +864,7 @@ const SuperAdminUniversities = ({
                   Institution
                 </th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">
-                  Code
+                  ID
                 </th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">
                   Academic Domain
@@ -1003,10 +913,10 @@ const SuperAdminUniversities = ({
                         </span>
                       </td>
                       <td className="px-6 py-4.5 font-medium text-gray-500 dark:text-gray-400">
-                        {uni.domain}
+                        -
                       </td>
-                      <td className="px-6 py-4.5 font-bold text-gray-700 dark:text-gray-300">
-                        {uni.students.toLocaleString()}
+                      <td className="px-6 py-4.5 font-medium text-gray-500 dark:text-gray-400">
+                        {students.filter(s => s.university === uni.code).length}
                       </td>
                       <td className="px-6 py-4.5 text-xs font-semibold text-gray-500 dark:text-gray-400">
                         {assignedAdmin ? (
@@ -1443,164 +1353,177 @@ const SuperAdminAdmins = ({
    PANEL: System Health
 ───────────────────────────────────────────────────────────── */
 
-const SuperAdminSystemHealth = () => {
-  const [latency, setLatency] = useState(12);
+const SuperAdminSystemHealth = ({ health, activities }) => {
   const [logs, setLogs] = useState([
-    "CFS-01: [INFO] System Health initialized successfully.",
-    "CFS-02: [INFO] Mainnet Blockchain syncing node initialized.",
-    "CFS-03: [INFO] API Gateway listener active on port 443.",
-    "CFS-04: [INFO] Synced block #1,204,912.",
+    "CFS-01: [INFO] System Health monitor initialized.",
   ]);
 
   useEffect(() => {
-    const logInterval = setInterval(() => {
-      const isOk = Math.random() > 0.15;
-      const ms = Math.floor(Math.random() * 15) + 6;
-      setLatency(ms);
+    if (!health) return;
 
-      const codes = ["FUTO", "UNILAG", "UI", "OAU", "UNN"];
-      const campus = codes[Math.floor(Math.random() * codes.length)];
-      const block = 1204912 + Math.floor(Math.random() * 200);
+    const dbLine = health.database.status === "healthy"
+        ? `CFS-DB: [SUCCESS] Database check OK - ${health.database.latencyMs}ms.`
+        : `CFS-DB: [ERROR] Database check failed - ${health.database.error}`;
 
-      const possibleLogs = [
-        `CFS-NODE: [INFO] Sync block #${block} successful.`,
-        `CFS-API: [INFO] GET /api/v1/clearance/status from ${campus} admin - 200 OK (${ms}ms).`,
-        `CFS-DB: [INFO] Write certificate signature block to database - Success.`,
-        `CFS-BLOCKCHAIN: [SUCCESS] Transaction mined on Block #${block}.`,
-        isOk
-          ? `CFS-HEALTH: [INFO] Pulse checked - all components nominal.`
-          : `CFS-WARN: [WARN] Temporary database IO spike detected - resolving.`,
-      ];
+    const solanaLine = health.solana.status === "healthy"
+        ? `CFS-NODE: [SUCCESS] Solana devnet RPC OK - ${health.solana.latencyMs}ms - slot #${health.solana.slot?.toLocaleString()}.`
+        : `CFS-NODE: [WARN] Solana devnet RPC unreachable - ${health.solana.error}`;
 
-      setLogs((prev) => [
-        ...prev.slice(-15),
-        possibleLogs[Math.floor(Math.random() * possibleLogs.length)],
-      ]);
-    }, 3000);
+    const memPct = Math.round((health.memory.heapUsed / health.memory.heapTotal) * 100);
+    const memLine = memPct < 85
+        ? `CFS-MEM: [INFO] Heap usage nominal - ${memPct}%.`
+        : `CFS-MEM: [WARN] Heap usage elevated - ${memPct}%.`;
 
-    return () => clearInterval(logInterval);
-  }, []);
+    setLogs((prev) => [...prev.slice(-30), dbLine, solanaLine, memLine]);
+  }, [health]);
+
+
+  if (!health) {
+    return <div className="text-center py-20 text-gray-400 text-sm">Loading system health…</div>;
+  }
+
+  const memPct = Math.round((health.memory.heapUsed / health.memory.heapTotal) * 100);
+  const formatUptime = (s) => {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    return `${h}h ${m}m`;
+  };
 
   const healthMetrics = [
     {
-      name: "Main API Gateway",
-      status: "Nominal",
-      value: `${latency}ms`,
-      desc: "Vercel Server Latency",
-      icon: Globe,
-      color: "text-emerald-500",
-      pct: 98,
-    },
-    {
-      name: "Blockchain Node Verification",
-      status: "Active",
-      value: "Syncing",
-      desc: "10 Mainnet Peers",
-      icon: Layers,
-      color: "text-blue-500",
-      pct: 100,
-    },
-    {
-      name: "System Cluster Load",
-      status: "Nominal",
-      value: "8.4%",
-      desc: "Cloud CPU Capacity",
-      icon: Cpu,
-      color: "text-purple-500",
-      pct: 8,
-    },
-    {
-      name: "On-Chain Database IO",
-      status: "Nominal",
-      value: "99.98%",
-      desc: "Write Availability",
+      name: "Database",
+      status: health.database.status === "healthy" ? "Nominal" : "Down",
+      value: health.database.latencyMs != null ? `${health.database.latencyMs}ms` : "—",
+      desc: "Postgres query latency",
+      explain: "How fast the app can read and write student, clearance, and certificate records.",
       icon: Database,
+      color: health.database.status === "healthy" ? "text-emerald-500" : "text-red-500",
+      pct: health.database.status === "healthy" ? 98 : 0,
+    },
+    {
+      name: "Solana Devnet RPC",
+      status: health.solana.status === "healthy" ? "Nominal" : "Down",
+      value: health.solana.latencyMs != null ? `${health.solana.latencyMs}ms` : "—",
+      desc: health.solana.slot ? `Slot #${health.solana.slot.toLocaleString()}` : "No slot data",
+      explain: "Connection speed to the Solana blockchain, where certificates and clearances get their tamper-proof record.",
+      icon: Layers,
+      color: health.solana.status === "healthy" ? "text-blue-500" : "text-red-500",
+      pct: health.solana.status === "healthy" ? 100 : 0,
+    },
+    {
+      name: "Server Memory",
+      status: memPct < 85 ? "Nominal" : "High",
+      value: `${memPct}%`,
+      desc: `${Math.round(health.memory.heapUsed / 1024 / 1024)}MB / ${Math.round(health.memory.heapTotal / 1024 / 1024)}MB`,
+      explain: "How much of the backend server's working memory is currently in use.",
+      icon: Cpu,
+      color: memPct < 85 ? "text-purple-500" : "text-amber-500",
+      pct: memPct,
+    },
+    {
+      name: "Server Uptime",
+      status: "Running",
+      value: formatUptime(health.uptimeSeconds),
+      desc: "Since last restart",
+      explain: "How long the backend has been running continuously without crashing or restarting.",
+      icon: Globe,
       color: "text-teal-500",
-      pct: 99,
+      pct: 100,
     },
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {healthMetrics.map((met, idx) => (
-          <div
-            key={idx}
-            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-xs"
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider">
-                  {met.name}
-                </p>
-                <h4 className="text-2xl font-black text-gray-900 dark:text-white mt-1">
-                  {met.value}
-                </h4>
-              </div>
-              <met.icon className={`w-5 h-5 ${met.color}`} />
-            </div>
-
-            <div className="mt-4.5 space-y-1">
-              <div className="flex justify-between text-[10px] text-gray-450 font-bold">
-                <span>{met.desc}</span>
-                <span className={met.color}>{met.status}</span>
-              </div>
-              <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full ${
-                    met.color.includes("emerald")
-                      ? "bg-emerald-500"
-                      : met.color.includes("blue")
-                        ? "bg-blue-500"
-                        : met.color.includes("purple")
-                          ? "bg-purple-500"
-                          : "bg-teal-500"
-                  }`}
-                  style={{ width: `${met.pct}%` }}
-                />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Terminal Simulator Logs */}
-      <div className="bg-gray-950 border border-gray-800 rounded-2xl p-5 shadow-lg flex flex-col font-mono text-xs text-gray-200">
-        <div className="flex items-center justify-between border-b border-gray-800 pb-3 mb-3 text-gray-400">
-          <div className="flex items-center gap-2">
-            <Terminal className="w-4.5 h-4.5 text-blue-500" />
-            <span className="font-semibold text-gray-300">
-              Global Node Cluster Console Log
-            </span>
-          </div>
-          <div className="flex gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-            <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-            <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
-          </div>
-        </div>
-
-        <div className="flex-1 space-y-2 max-h-[300px] overflow-y-auto pr-1">
-          {logs.map((log, idx) => {
-            let textColor = "text-gray-305";
-            if (log.includes("[SUCCESS]")) textColor = "text-emerald-400";
-            if (log.includes("[WARN]"))
-              textColor = "text-amber-400 font-semibold";
-            if (log.includes("[ERROR]")) textColor = "text-red-400 font-bold";
-
-            return (
-              <p
-                key={idx}
-                className={`leading-relaxed whitespace-pre-wrap ${textColor}`}
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {healthMetrics.map((met, idx) => (
+              <div
+                  key={idx}
+                  className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-xs"
               >
-                {log}
-              </p>
-            );
-          })}
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider">
+                      {met.name}
+                    </p>
+                    <h4 className="text-2xl font-black text-gray-900 dark:text-white mt-1">
+                      {met.value}
+                    </h4>
+                  </div>
+                  <met.icon className={`w-5 h-5 ${met.color}`} />
+                </div>
+                <div className="mt-4.5 space-y-1">
+                  <div className="flex justify-between text-[10px] text-gray-450 font-bold">
+                    <span>{met.desc}</span>
+                    <span className={met.color}>{met.status}</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                    <div
+                        className={`h-full rounded-full ${
+                            met.color.includes("emerald") ? "bg-emerald-500"
+                                : met.color.includes("blue") ? "bg-blue-500"
+                                    : met.color.includes("purple") ? "bg-purple-500"
+                                        : met.color.includes("amber") ? "bg-amber-500"
+                                            : met.color.includes("teal") ? "bg-teal-500"
+                                                : "bg-red-500"
+                        }`}
+                        style={{ width: `${met.pct}%` }}
+                    />
+
+                  </div>
+                  <p className="mt-2 text-[10px] text-gray-400 leading-relaxed">
+                    {met.explain}
+                  </p>
+                </div>
+              </div>
+          ))}
+        </div>
+
+        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-xs">
+          <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-3">Recent Activity</h3>
+          <div className="space-y-2 max-h-96 overflow-y-auto">
+            {activities.length === 0 ? (
+                <p className="text-xs text-gray-400">No recent activity.</p>
+            ) : (
+                activities.map((a) => (
+                    <div key={a.id} className="flex items-center justify-between rounded-lg bg-gray-50 dark:bg-gray-800/50 p-3">
+                      <span className="text-xs text-gray-700 dark:text-gray-300">{a.text}</span>
+                      <span className="text-[10px] text-gray-400 shrink-0 ml-3">{a.time}</span>
+                    </div>
+                ))
+            )}
+          </div>
+        </div>
+        <div className="bg-gray-950 border border-gray-800 rounded-2xl p-5 shadow-lg flex flex-col font-mono text-xs text-gray-200">
+          <div className="flex items-center justify-between border-b border-gray-800 pb-3 mb-3 text-gray-400">
+            <div className="flex items-center gap-2">
+              <Terminal className="w-4.5 h-4.5 text-blue-500" />
+              <span className="font-semibold text-gray-300">
+                Global Node Cluster Console Log
+            </span>
+            </div>
+            <div className="flex gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+              <span className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+              <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
+            </div>
+          </div>
+
+          <div className="flex-1 space-y-2 max-h-[300px] overflow-y-auto pr-1">
+            {logs.map((log, idx) => {
+              let textColor = "text-gray-305";
+              if (log.includes("[SUCCESS]")) textColor = "text-emerald-400";
+              if (log.includes("[WARN]")) textColor = "text-amber-400 font-semibold";
+              if (log.includes("[ERROR]")) textColor = "text-red-400 font-bold";
+
+              return (
+                  <p key={idx} className={`leading-relaxed whitespace-pre-wrap ${textColor}`}>
+                    {log}
+                  </p>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 

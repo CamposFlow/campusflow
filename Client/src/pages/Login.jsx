@@ -61,7 +61,7 @@ export const Login = () => {
             setSuccess("Login Successful! Redirecting.....");
             toast.success('LoggedIn Successfully!');
             setTimeout(()=>{
-                const redirectMap = { admin: "/admin", staff: "/staff", student: "/dashboard" };
+                const redirectMap = { admin: "/admin", staff: "/staff", student: "/dashboard", super: "/super" };
                 navigate(redirectMap[data.user.role] || "/dashboard");
             },2000)
         }

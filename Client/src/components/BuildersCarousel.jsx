@@ -27,7 +27,7 @@ const builders = [
         profileUrl: "https",
         github: "https://github.com/Lucky-Daniel-Dunamis",
         twitter: "https://x.com/lucans_codes",
-        photo: "/builders/3.jfif",
+        photo: "/builders/lucan.jpg",
     }
 ];
 
@@ -119,7 +119,7 @@ const BuilderCard = ({ builder, isActive, onClick, gradient }) => {
                         <p className="text-blue-200 text-xs mt-1 leading-snug line-clamp-1">
                             {builder.role}
                         </p>
-                        <p className="text-blue-300/70 text-[11px] mt-0.5 leading-snug line-clamp-1">
+                        <p className="font-bold text-blue-300/70 text-[11px] mt-0.5 leading-snug line-clamp-1">
                             {builder.department}
                         </p>
 
