@@ -9,7 +9,7 @@ import { CertificatePanel } from "@/Panels/CertificatePanel.jsx";
 import { ResultsPanel } from "@/Panels/Results.jsx";
 import { PaymentsPanel } from "@/Panels/PaymentPanel.jsx";
 import SOSPanel from "@/pages/Staff/Panel/Security.jsx"
-import ProfilePage from './ProfilePage.jsx'
+import ProfilePage from './ProfilePage.jsx';
 import {
   CheckCircle,
   Clock,
