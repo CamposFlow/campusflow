@@ -9,6 +9,7 @@ import { CertificatePanel } from "@/Panels/CertificatePanel.jsx";
 import { ResultsPanel } from "@/Panels/Results.jsx";
 import { PaymentsPanel } from "@/Panels/PaymentPanel.jsx";
 import SOSPanel from "@/pages/Staff/Panel/Security.jsx"
+import ProfilePage from './ProfilePage.jsx'
 import {
   CheckCircle,
   Clock,
@@ -289,6 +290,7 @@ const StudentDashboard = () => {
     payments: <PaymentsPanel payment={payment} />,
     certificate: <CertificatePanel cert={cert} />,
     security: <SOSPanel />,
+    profile: <ProfilePage />,
   };
   const [loading1, setLoading1] = useState(true);
   useEffect(() => {
@@ -351,17 +353,7 @@ const StudentDashboard = () => {
           );
         })}
 
-        <button
-          type="button"
-          onClick={() => {
-            navigate("/profile");
-            setSidebarOpen(false);
-          }}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-150"
-        >
-          <IdCard className="w-4 h-4 text-gray-400" />
-          Profile
-        </button>
+
       </nav>
 
       {/* Footer actions */}

@@ -4,48 +4,21 @@ import Ring from "../components/Ring.jsx";
 import api from "@/api/axios.js";
 import {capitalizeWords} from "@/constants/Capitalize.js";
 import {capitalizeFirst} from "@/constants/Capitalize.js";
+import {useAuth} from "@/pages/AuthContext.jsx";
+import {usePolling} from "@/hooks/usePolling.js";
 
 export const OverviewPanel = ({ student, stats, activities }) => {
+    const {user} = useAuth();
     const [barReady, setBarReady] = useState(false);
     const [ringPct, setRingPct] = useState(0);
-    const [department, setDepartment] = useState("");
-    const [studentName, setStudentName] = useState("");
-    const [matricNumber, setMatricNumber] = useState('');
-    const [level, setLevel] = useState("");
     const [error, setError] = useState(null);
     const [clearanceStages, setClearanceStages] = useState([]);
+    const [overallPct, setOverallPct] = useState(0);
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const res = await api.get('/me');
-                const user = res.data?.user;
-
-                if (!user) {
-                    throw new Error('User data not found');
-                }
-
-                setStudentName(user.fullname || '');
-                setDepartment(user.department || '');
-                setMatricNumber(user.matric_number || '');
-                setLevel(user.level || '');
-                setError(null);
-            } catch (err) {
-                console.error('Failed to fetch user data:', err);
-                setError(err.message || 'Failed to load user information');
-            }
-        };
-
-        fetchUserData();
-    }, []);
-
-
-    useEffect(() => {
-        const fetchClearanceStatus = async () => {
-            try {
-                const res = await api.get('/student/clearance-stats');
+    usePolling(() => {
+        api.get('/student/clearance-stats')
+            .then(res => {
                 const records = res.data?.data || [];
-
                 const mapped = records.map((r) => {
                     let status;
                     if (r.is_approved === null) status = "Pending";
@@ -63,35 +36,38 @@ export const OverviewPanel = ({ student, stats, activities }) => {
                 setClearanceStages(mapped);
 
                 const doneCount = mapped.filter((s) => s.status === "Done").length;
-                const overallPct = mapped.length
-                    ? Math.round((doneCount / mapped.length) * 100)
-                    : 0;
+                const pct = mapped.length ? Math.round((doneCount / mapped.length) * 100) : 0;
+                setOverallPct(pct);
+            })
+            .catch(err => console.error('Failed to fetch clearance status:', err));
+    }, 30000);
 
-                const timer = window.setTimeout(() => {
-                    setBarReady(true);
-                    const duration = 900;
-                    const interval = 20;
-                    const steps = Math.ceil(duration / interval);
-                    let current = 0;
-                    const stepValue = overallPct / steps;
-
-                    const ticker = window.setInterval(() => {
-                        current += stepValue;
-                        if (current >= overallPct) {
-                            setRingPct(overallPct);
-                            window.clearInterval(ticker);
-                        } else {
-                            setRingPct(Math.round(current));
-                        }
-                    }, interval);
-                }, 750);
-            } catch (err) {
-                console.error('Failed to fetch clearance status:', err);
-            }
-        };
-
-        fetchClearanceStatus();
+    useEffect(() => {
+        const timer = window.setTimeout(() => setBarReady(true), 750);
+        return () => window.clearTimeout(timer);
     }, []);
+
+
+    useEffect(() => {
+        const duration = 900;
+        const interval = 20;
+        const steps = Math.ceil(duration / interval);
+        let current = ringPct;
+        const stepValue = (overallPct - current) / steps;
+
+        const ticker = window.setInterval(() => {
+            current += stepValue;
+            const reached = stepValue >= 0 ? current >= overallPct : current <= overallPct;
+            if (reached) {
+                setRingPct(overallPct);
+                window.clearInterval(ticker);
+            } else {
+                setRingPct(Math.round(current));
+            }
+        }, interval);
+
+        return () => window.clearInterval(ticker);
+    }, [overallPct]);
 
     return (
         <div className="panel-landing">
@@ -130,9 +106,9 @@ export const OverviewPanel = ({ student, stats, activities }) => {
                     <p className="text-blue-200 text-sm font-medium mb-1">
                         Good evening,
                     </p>
-                    <h2 className="text-3xl font-bold mb-1 uppercase">{studentName || 'Student'}</h2>
+                    <h2 className="text-3xl font-bold mb-1 uppercase">{user?.fullname || 'Student'}</h2>
                     <p className="text-blue-200 text-sm">
-                        {capitalizeWords(department)} · {level} Level · {matricNumber}
+                        {capitalizeWords(user?.department)} · {user?.level} Level · {user?.matric_number}
                     </p>
                     {error && <p className="text-red-200 text-xs mt-2">{error}</p>}
                     <div className="flex gap-3 mt-5">

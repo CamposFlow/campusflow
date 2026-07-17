@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/pages/AuthContext.jsx";
 import { SIDEBAR_LINKS } from "@/constants/sidebarLinks.js";
 import api from "@/api/axios.js";
+import {capitalizeWords} from "@/constants/Capitalize.js";
+
 import {
   Bell,
   Menu,
@@ -87,10 +89,13 @@ const bannerVariants = {
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
-  const [copied, setCopied] = useState(false);
+
+  const [email1, setEmail1] = useState("");
+
+  const [error1, setError1] = useState(null);
 
   const [profile, setProfile] = useState(() => {
     if (typeof window === "undefined") return defaultProfile;
@@ -104,31 +109,6 @@ const ProfilePage = () => {
   });
 
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await api.get("/me");
-        const user = res.data?.user;
-        if (user) {
-          const names = (user.fullname || "").split(" ");
-          setProfile((prev) => ({
-            ...prev,
-            firstName: names[0] || prev.firstName,
-            lastName: names.slice(1).join(" ") || prev.lastName,
-            email: user.email || prev.email,
-            phone: user.phone || prev.phone,
-            department: user.department || prev.department,
-            matricNumber: user.matric_number || prev.matricNumber,
-            city: user.city || prev.city,
-            state: user.state || prev.state,
-          }));
-        }
-      } catch (err) {
-        console.error("Failed to load backend profile details:", err);
-      }
-    };
-    fetchUserData();
-  }, []);
 
   const updateField = (field, value) =>
     setProfile((prev) => ({ ...prev, [field]: value }));
@@ -144,18 +124,8 @@ const ProfilePage = () => {
     setTimeout(() => navigate("/login"), 800);
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(
-      `https://campusflow.edu/student/${profile.matricNumber}`
-    );
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
-  const fullName = `${profile.firstName} ${profile.lastName}`;
-  const profileUrl = `https://campusflow.edu/student/${profile.matricNumber}`;
-  const displayUrl =
-    profileUrl.length > 24 ? profileUrl.slice(0, 24) + "..." : profileUrl;
+
 
 
   const SidebarContent = () => (
@@ -217,66 +187,17 @@ const ProfilePage = () => {
 
   return (
     <div className="flex min-h-screen bg-slate-50/50">
-      {/* ── Desktop Sidebar ── */}
-      <aside className="hidden lg:flex w-60 flex-col bg-white border-r border-gray-100 shrink-0 fixed top-0 left-0 h-full z-30">
-        <SidebarContent />
-      </aside>
 
-      {/* ── Mobile Sidebar ── */}
-      {sidebarOpen && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/30 z-40 lg:hidden"
-            onClick={() => setSidebarOpen(false)}
-          />
-          <aside className="fixed top-0 left-0 h-full w-64 bg-white z-50 shadow-2xl lg:hidden">
-            <div className="absolute top-4 right-4">
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <SidebarContent />
-          </aside>
-        </>
-      )}
 
-      {/* ── Main Content ── */}
-      <main className="flex-1 lg:ml-60 flex flex-col min-h-screen">
-        {/* ── Top Header ── */}
-        <header className="sticky top-0 z-20 h-20 bg-white border-b border-gray-100 px-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-500"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-            <h1 className="text-xl font-bold text-gray-900">Profile</h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="relative p-2.5 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
-            </button>
-            <div className="flex items-center gap-2">
-              <ProfileAvatar name={fullName} size="sm" />
-              <span className="hidden sm:block text-sm font-semibold text-gray-700">
-                {fullName}
-              </span>
-            </div>
-          </div>
-        </header>
 
-        {/* ── Page Body ── */}
+
+
         <div className="flex-1 p-6 sm:p-8">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="max-w-[1140px] mx-auto"
+            className="w-full mx-auto"
           >
             {/* ── Cover Banner (Slide Down & Scale) ── */}
             <motion.div
@@ -307,29 +228,29 @@ const ProfilePage = () => {
               </svg>
             </motion.div>
 
-            {/* ── Two-column layout: Intercepting the Blue Cover background ── */}
+
             <div className="relative z-10 -mt-16 px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
 
-              {/* ── Left Profile Card (Fades & Slides Up) ── */}
+
               <motion.div
                 variants={itemVariants}
                 className="w-full shrink-0"
               >
                 <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-visible relative pt-0 hover:shadow-md transition-shadow duration-300">
-                  {/* Avatar — shifted up to intercept card container */}
+
                   <div className="flex flex-col items-center -mt-14 px-6 pb-5">
                     <div className="relative w-28 h-28 rounded-full border-4 border-white shadow-lg bg-white overflow-visible flex items-center justify-center group">
-                      <ProfileAvatar name={fullName} size="xl" />
+                      <ProfileAvatar name={user?.fullname} size="xl" />
                     </div>
                     <h2 className="mt-4 text-base font-bold text-gray-900 text-center uppercase">
-                      {fullName}
+                      {capitalizeWords(user?.fullname)}
                     </h2>
                     <p className="uppercase text-xs text-gray-400 text-center mt-0.5 font-medium">
-                      {profile.department}
+                      {capitalizeWords(user?.department)}
                     </p>
                   </div>
 
-                  {/* Stats rows matching picture layout */}
+
                   <div className="border-t border-gray-100 px-6 py-4 space-y-4">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-500 font-medium">Opportunities applied</span>
@@ -345,75 +266,59 @@ const ProfilePage = () => {
                     </div>
                   </div>
 
-                  {/* View Public Profile */}
+
                   <div className="px-6 pb-5 pt-4 border-t border-gray-100 space-y-3">
                     <button
                       onClick={() => navigate("/dashboard")}
                       className="w-full text-sm font-semibold text-gray-700 border border-gray-200 rounded-lg py-2.5 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 hover:border-gray-300"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
-                      View Public Profile
+                     Go to Dashboard
                     </button>
 
-                    {/* URL copy row */}
-                    <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 bg-gray-50/50 hover:bg-gray-50 transition-colors">
-                      <span className="text-xs text-gray-400 flex-1 truncate font-mono">
-                        {displayUrl}
-                      </span>
-                      <button
-                        onClick={handleCopy}
-                        className="shrink-0 text-gray-400 hover:text-blue-600 transition-colors"
-                        title="Copy link"
-                      >
-                        <Copy className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                    {copied && (
-                      <p className="text-xs text-green-600 text-center font-medium">
-                        Copied!
-                      </p>
-                    )}
+
+
                   </div>
                 </div>
               </motion.div>
 
-              {/* ── Right Form Card (Fades & Slides Up) ── */}
+
               <motion.div
                 variants={itemVariants}
                 className="flex-1 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300"
               >
                 {/* Tabs */}
-                <div className="border-b border-gray-100 px-6 overflow-x-auto">
-                  <div className="flex gap-6 min-w-max">
-                    {TABS.map((tab) => (
-                      <button
-                        key={tab.key}
-                        onClick={() => {
-                          if (tab.key === "profile") {
-                            setActiveTab("profile");
-                          } else {
-                            navigate("/dashboard", { state: { activeTab: tab.key } });
-                          }
-                        }}
-                        className={`py-5 text-sm font-semibold border-b-2 transition-all relative ${
-                          activeTab === tab.key
-                            ? "text-blue-600 border-blue-600"
-                            : "border-transparent text-gray-400 hover:text-gray-600"
-                        }`}
-                      >
-                        {tab.label}
-                        {activeTab === tab.key && (
-                          <motion.div
-                            layoutId="activeTabUnderline"
-                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"
-                          />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                {/*<div className="border-b border-gray-100 px-6 overflow-x-auto">*/}
+                {/*  <div className="flex gap-6 min-w-max">*/}
+                {/*    {TABS.map((tab) => (*/}
+                {/*      <button*/}
+                {/*        key={tab.key}*/}
+                {/*        onClick={() => {*/}
+                {/*          if (tab.key === "profile") {*/}
+                {/*            setActiveTab("profile");*/}
+                {/*          } else {*/}
+                {/*            navigate("/dashboard", { state: { activeTab: tab.key } });*/}
+                {/*          }*/}
+                {/*        }}*/}
+                {/*        className={`py-5 text-sm font-semibold border-b-2 transition-all relative ${*/}
+                {/*          activeTab === tab.key*/}
+                {/*            ? "text-blue-600 border-blue-600"*/}
+                {/*            : "border-transparent text-gray-400 hover:text-gray-600"*/}
+                {/*        }`}*/}
+                {/*      >*/}
+                {/*        {tab.label}*/}
+                {/*        {activeTab === tab.key && (*/}
+                {/*          <motion.div*/}
+                {/*            layoutId="activeTabUnderline"*/}
+                {/*            className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"*/}
+                {/*          />*/}
+                {/*        )}*/}
+                {/*      </button>*/}
+                {/*    ))}*/}
+                {/*  </div>*/}
+                {/*</div>*/}
 
-                {/* Form body */}
+
                 <div className="p-6 sm:p-8">
                   {activeTab === "profile" && (
                     <div className="space-y-6">
@@ -421,45 +326,33 @@ const ProfilePage = () => {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                            First Name
+                            FullName
                           </label>
                           <Input
-                            value={profile.firstName}
+                            value={capitalizeWords(user?.fullname)}
                             onChange={(e) =>
                               updateField("firstName", e.target.value)
                             }
                             placeholder="First name"
-                            className="rounded-lg border-gray-200 focus:border-blue-500 py-5 bg-white"
+                            className="disabled rounded-lg border-gray-200 focus:border-blue-500 py-5 bg-white"
                           />
                         </div>
-                        <div>
-                          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                            Last Name
-                          </label>
-                          <Input
-                            value={profile.lastName}
-                            onChange={(e) =>
-                              updateField("lastName", e.target.value)
-                            }
-                            placeholder="Last name"
-                            className="rounded-lg border-gray-200 focus:border-blue-500 py-5 bg-white"
-                          />
-                        </div>
+
                       </div>
 
-                      {/* Row 2 */}
+
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                           <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                             Phone Number
                           </label>
                           <Input
-                            value={profile.phone}
+                            value={""}
                             onChange={(e) =>
                               updateField("phone", e.target.value)
                             }
-                            placeholder="+1800-000"
-                            className="rounded-lg border-gray-200 focus:border-blue-500 py-5 bg-white"
+                            placeholder="+234 706 679 5444"
+                            className="placeholder:text-slate-300 rounded-lg border-gray-200 focus:border-blue-500 py-5 bg-white"
                           />
                         </div>
                         <div>
@@ -467,7 +360,7 @@ const ProfilePage = () => {
                             Email address
                           </label>
                           <Input
-                            value={profile.email}
+                            value={user?.email}
                             type="email"
                             onChange={(e) =>
                               updateField("email", e.target.value)
@@ -478,67 +371,32 @@ const ProfilePage = () => {
                         </div>
                       </div>
 
-                      {/* Row 3 */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
                         <div>
                           <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                            City
+                            Matric Number
                           </label>
                           <Input
-                            value={profile.city}
-                            onChange={(e) =>
-                              updateField("city", e.target.value)
-                            }
-                            placeholder="City"
-                            className="rounded-lg border-gray-200 focus:border-blue-500 py-5 bg-white"
+                              value={user?.matric_number}
+                              type="text"
+                              placeholder="johnyboy@gmail.com"
+                              className="disabled rounded-lg border-gray-200 focus:border-blue-500 py-5 bg-white"
                           />
                         </div>
                         <div>
                           <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                            State/County
+                            LEVEL
                           </label>
                           <Input
-                            value={profile.state}
-                            onChange={(e) =>
-                              updateField("state", e.target.value)
-                            }
-                            placeholder="State"
-                            className="rounded-lg border-gray-200 focus:border-blue-500 py-5 bg-white"
+                              value={user?.level}
+                              type="text"
+                              placeholder="johnyboy@gmail.com"
+                              className="disabled rounded-lg border-gray-200 focus:border-blue-500 py-5 bg-white"
                           />
                         </div>
                       </div>
 
-                      {/* Row 4 */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div>
-                          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                            Postcode
-                          </label>
-                          <Input
-                            value={profile.postcode}
-                            onChange={(e) =>
-                              updateField("postcode", e.target.value)
-                            }
-                            placeholder="Postcode"
-                            className="rounded-lg border-gray-200 focus:border-blue-500 py-5 bg-white"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                            Country
-                          </label>
-                          <Input
-                            value={profile.country}
-                            onChange={(e) =>
-                              updateField("country", e.target.value)
-                            }
-                            placeholder="Country"
-                            className="rounded-lg border-gray-200 focus:border-blue-500 py-5 bg-white"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Update button */}
                       <div className="pt-2 flex justify-center">
                         <Button
                           onClick={saveProfile}
@@ -566,7 +424,6 @@ const ProfilePage = () => {
             </div>
           </motion.div>
         </div>
-      </main>
     </div>
   );
 };

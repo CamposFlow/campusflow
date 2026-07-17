@@ -7,12 +7,13 @@ import {StaffRecord} from "@/pages/Staff/Panel/StaffRecord.jsx";
 import {StaffProfile} from "@/pages/Staff/Panel/StaffProfile.jsx"
 import SOSPanel from "@/pages/Staff/Panel/Security.jsx"
 import {useAuth} from "@/pages/AuthContext.jsx";
+import ProfilePage from '../ProfilePage.jsx'
 
 export const StaffDashboard = () => {
 const [activeTab, setActiveTab] = useState('overview');
 const [loading, setLoading] = useState(true);
 
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
 const tabTitle={
     overview:'Overview',
     record:'Student Record',
@@ -22,7 +23,7 @@ const tabTitle={
     const panels ={
         overview: <StaffOverview setActiveTab={setActiveTab} />,
         record:<StaffRecord/>,
-        profile:<StaffProfile/>,
+        profile:<ProfilePage/>,
         security:<SOSPanel/>,
 
     }
@@ -56,10 +57,11 @@ const tabTitle={
                             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
                         </button>
                         <div
+                            onClick={() => setActiveTab('profile')}
                             className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer"
                             style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)' }}
                         >
-                            AG
+                            {user?.fullname?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                         </div>
                     </div>
                 </header>

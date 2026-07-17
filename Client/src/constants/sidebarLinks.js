@@ -1,6 +1,6 @@
 import {
     LayoutDashboard, ShieldCheck,
-    BookOpen, CreditCard, Award, User, UserCog, FileBarChart, Settings, HelpCircle
+    BookOpen, CreditCard, Award, User, UserCog, FileBarChart, Settings, HelpCircle, IdCard
 } from "lucide-react";
 
 export const SIDEBAR_LINKS = [
@@ -9,7 +9,8 @@ export const SIDEBAR_LINKS = [
     { id: 'results',    label: 'Results',     icon: BookOpen },
     {id:'security', label: 'Security', icon: ShieldCheck},
     { id: 'payments',   label: 'Payments',    icon: CreditCard },
-    { id: 'certificate',label: 'Certificate', icon: Award }
+    { id: 'certificate',label: 'Certificate', icon: Award },
+    { icon: IdCard, label: "Profile", id: "profile" },
 
 ];
 

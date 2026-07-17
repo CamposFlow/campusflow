@@ -4,16 +4,14 @@ import {ClipboardCheck, CheckCircle, XCircle, Users, MessageSquare} from "lucide
 import api from '@/api/axios.js';
 import {useEffect, useState} from "react";
 import {usePolling} from '@/hooks/usePolling.js';
+import {useAuth} from "@/pages/AuthContext.jsx";
 
 export const StaffOverview = ({ setActiveTab }) => {
+    const {user} = useAuth();
     const [stats, setStats] = useState({pending : 0, approved : 0,rejected: 0, total : 0 });
     const [activities, setActivities] = useState([]);
-    const [staffName, setStaffName] = useState("");
-    useEffect(() => {
-        api.get('/me')
-            .then(res => setStaffName(res.data.user.fullname))
-            .catch(err => console.error(err));
-    }, []);
+
+
 
         const fetchData = async () => {
             try{
@@ -61,7 +59,7 @@ export const StaffOverview = ({ setActiveTab }) => {
                 background: 'rgba(255,255,255,0.05)'
             }}/>
             <p className="text-blue-200 text-sm font-medium mb-1">Welcome Back</p>
-            <h2 className="text-3xl font-bold mb-1 text-white uppercase">{staffName}</h2>
+            <h2 className="text-3xl font-bold mb-1 text-white uppercase">{user?.fullname}</h2>
             <p className="text-blue-200 text-sm">Manage student records and verify activities</p>
         </div>
 

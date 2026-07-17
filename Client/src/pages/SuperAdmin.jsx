@@ -459,7 +459,7 @@ const SuperAdmin = () => {
       </AnimatePresence>
 
       {/* Main Container */}
-      <main className="flex-1 lg:ml-64 flex flex-col min-h-screen">
+      <main className="flex-1 lg:ml-64 flex flex-col min-h-screen min-w-0">
         {/* Header */}
         <header className="sticky top-0 z-20 h-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 px-6 sm:px-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
