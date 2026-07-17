@@ -7,7 +7,7 @@ import {StaffRecord} from "@/pages/Staff/Panel/StaffRecord.jsx";
 import {StaffProfile} from "@/pages/Staff/Panel/StaffProfile.jsx"
 import SOSPanel from "@/pages/Staff/Panel/Security.jsx"
 import {useAuth} from "@/pages/AuthContext.jsx";
-import ProfilePage from '../ProfilePage.jsx'
+import ProfilePage from '../ProfilePage.jsx';
 
 export const StaffDashboard = () => {
 const [activeTab, setActiveTab] = useState('overview');
