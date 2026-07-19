@@ -13,16 +13,34 @@ import ProfilePage from './ProfilePage.jsx'
 import api from "@/api/axios.js";
 import { usePolling } from "@/hooks/usePolling.js";
 import {
-  CheckCircle, Clock, CreditCard, Award, BookOpen, Bell, Settings, LogOut, ShieldCheck, ChevronRight, TrendingUp,
-  GraduationCap, Menu, X, IdCard, Building, BarChart3, Phone, MailIcon,} from "lucide-react";
+  CheckCircle,
+  Clock,
+  CreditCard,
+  Award,
+  BookOpen,
+  Bell,
+  Settings,
+  LogOut,
+  ShieldCheck,
+  ChevronRight,
+  TrendingUp,
+  Hash,
+  GraduationCap,
+  AlertCircle,
+  Menu,
+  X,
+  IdCard,
+  Building,
+  BarChart3,
+  Phone,
+  MailIcon,
+} from "lucide-react";
+import { BarChart } from "recharts";
 import { ProfileAvatar } from "@/components/Profile.jsx";
 import { useAuth } from "@/pages/AuthContext.jsx";
 
 
 
-/* ─────────────────────────────────────────────
-   Main Dashboard Component
-───────────────────────────────────────────── */
 const StudentDashboard = () => {
   const [notifications, setNotifications] = useState([]);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -267,7 +285,7 @@ const StudentDashboard = () => {
         </div>
       </div>
 
-      {/* Nav links */}
+
       <nav className="flex-1 px-3 mt-5 py-4 space-y-1">
         {SIDEBAR_LINKS.map(({ id, label, icon: Icon }) => {
           const active = activeTab === id;

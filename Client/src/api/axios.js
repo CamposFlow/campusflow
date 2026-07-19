@@ -3,9 +3,10 @@ import axios from "axios";
 
 
 const api = axios.create({
-    baseURL: "https://campusflowserver-uc79.vercel.app",  //https://campusflowserver-uc79.vercel.app
+    baseURL: "http://localhost:3000",  //https://campusflowserver-uc79.vercel.app
     headers: { 'Content-Type': 'application/json' }
 });
+
 
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token")|| sessionStorage.getItem("token");
