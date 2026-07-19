@@ -52,10 +52,7 @@ const tabTitle={
                         <p className="text-xs text-gray-400 hidden sm:block">Staff Portal — {new Date().toLocaleDateString('en-NG', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <button className="relative p-2.5 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors">
-                            <Bell className="w-5 h-5" />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
-                        </button>
+
                         <div
                             onClick={() => setActiveTab('profile')}
                             className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer"

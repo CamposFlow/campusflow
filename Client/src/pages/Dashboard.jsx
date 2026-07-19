@@ -10,114 +10,56 @@ import { ResultsPanel } from "@/Panels/Results.jsx";
 import { PaymentsPanel } from "@/Panels/PaymentPanel.jsx";
 import SOSPanel from "@/pages/Staff/Panel/Security.jsx"
 import ProfilePage from './ProfilePage.jsx'
+import api from "@/api/axios.js";
+import { usePolling } from "@/hooks/usePolling.js";
 import {
-  CheckCircle,
-  Clock,
-  CreditCard,
-  Award,
-  BookOpen,
-  Bell,
-  Settings,
-  LogOut,
-  ShieldCheck,
-  ChevronRight,
-  TrendingUp,
-  Hash,
-  GraduationCap,
-  AlertCircle,
-  Menu,
-  X,
-  IdCard,
-  Building,
-  BarChart3,
-  Phone,
-  MailIcon,
-} from "lucide-react";
-import { BarChart } from "recharts";
+  CheckCircle, Clock, CreditCard, Award, BookOpen, Bell, Settings, LogOut, ShieldCheck, ChevronRight, TrendingUp,
+  GraduationCap, Menu, X, IdCard, Building, BarChart3, Phone, MailIcon,} from "lucide-react";
 import { ProfileAvatar } from "@/components/Profile.jsx";
 import { useAuth } from "@/pages/AuthContext.jsx";
 
-/* ─────────────────────────────────────────────
-   Tiny inline-style helpers (no extra deps)
-───────────────────────────────────────────── */
-const style = (obj) => obj;
 
-/* ── Circular SVG progress ring ── */
-
-/* ─────── Tab content panels ─────── */
-
-const Profile = ({ student, stats, activities }) => {
-  const info = [
-    {
-      icon: <IdCard className="text-blue-600 w-5 h-5 flex-shrink-0" />,
-      text1: "Matric Number",
-      text2: "Futo/2022/12345",
-    },
-    {
-      icon: <Building className="text-blue-600 w-5 h-5 flex-shrink-0" />,
-      text1: "Department",
-      text2: "Computer Science",
-    },
-    {
-      icon: <BarChart3 className="text-blue-600 w-5 h-5 flex-shrink-0" />,
-      text1: "Level",
-      text2: "400 Level",
-    },
-    {
-      icon: <MailIcon className="text-blue-600 w-5 h-5 flex-shrink-0" />,
-      text1: "Email Address",
-      text2: "Johndoe@gmail.com",
-    },
-    {
-      icon: <Phone className="text-blue-600 w-5 h-5 flex-shrink-0" />,
-      text1: "Phone Number",
-      text2: "+234 706 963 2334",
-    },
-    {
-      icon: <Clock className="text-blue-600 w-5 h-5 flex-shrink-0" />,
-      text1: "Semester",
-      text2: "1st Semester",
-    },
-  ];
-  return (
-    <div className="bg-white rounded-xl border border-gray-200 px-6 ">
-      <div className="flex items-start gap-6">
-        <ProfileAvatar
-          name={student.name}
-          initials={student.avatar}
-          size="lg"
-        />
-        <div className="flex-1">
-          <div className="flex items-center gap-3 m-4">
-            <h2 className="text-2xl font-bold text-gray-900">{student.name}</h2>
-            <span className="flex items-center gap-1 bg-green-50 text-green-600 text-sm font-medium px-2 py-2 rounded-full">
-              <CheckCircle size={14} />
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-4 gap-x-8">
-            {info.map((infos, index) => (
-              <div key={index} className="flex items-start gap-2">
-                {infos.icon}
-                <div>
-                  <p className="text-xs text-gray-500">{infos.text1}</p>
-                  <p className="text-sm font-medium text-gray-900">
-                    {infos.text2}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 /* ─────────────────────────────────────────────
    Main Dashboard Component
 ───────────────────────────────────────────── */
 const StudentDashboard = () => {
+  const [notifications, setNotifications] = useState([]);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const unreadCount = notifications.filter(n => !n.is_read).length;
+
+  usePolling(() => {
+    api.get('/student/notifications')
+        .then(res => setNotifications(res.data.data || []))
+        .catch(err => console.error(err));
+  }, 15000);
+
+  const handleMarkRead = (id) => {
+    api.patch(`/student/notifications/${id}/read`)
+        .then(() => {
+          setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+        })
+        .catch(err => console.error(err));
+  };
+
+  const handleMarkAllRead = () => {
+    api.patch('/student/notifications/read-all')
+        .then(() => {
+          setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+        })
+        .catch(err => console.error(err));
+  };
+
+  const timeAgo = (dateString) => {
+    const diffMs = Date.now() - new Date(dateString).getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return "just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+  };
+
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(() => {
     return location.state?.activeTab || "overview";
@@ -427,10 +369,64 @@ const StudentDashboard = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="relative p-2.5 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
-            </button>
+            <div className="relative">
+              <button
+                  onClick={() => setNotifOpen(v => !v)}
+                  className="relative p-2.5 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors"
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 min-w-[16px] h-4 px-1 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[9px] font-bold text-white">
+                {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+                )}
+              </button>
+
+              {notifOpen && (
+                  <>
+                    <div className="fixed inset-0 z-30" onClick={() => setNotifOpen(false)} />
+                    <div className="absolute right-0 top-12 w-80 bg-white rounded-2xl border border-gray-100 shadow-xl z-40 overflow-hidden">
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                        <h3 className="text-sm font-bold text-gray-900">Notifications</h3>
+                        {unreadCount > 0 && (
+                            <button
+                                onClick={handleMarkAllRead}
+                                className="text-xs text-blue-600 font-medium hover:underline"
+                            >
+                              Mark all read
+                            </button>
+                        )}
+                      </div>
+                      <div className="max-h-80 overflow-y-auto">
+                        {notifications.length === 0 ? (
+                            <div className="text-center py-10 text-sm text-gray-400">
+                              No notifications yet
+                            </div>
+                        ) : (
+                            notifications.map((n) => (
+                                <div
+                                    key={n.id}
+                                    onClick={() => !n.is_read && handleMarkRead(n.id)}
+                                    className={`px-4 py-3 border-b border-gray-50 cursor-pointer transition-colors ${
+                                        n.is_read ? "hover:bg-gray-50" : "bg-blue-50/60 hover:bg-blue-50"
+                                    }`}
+                                >
+                                  <div className="flex items-start gap-2">
+                                    {!n.is_read && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />}
+                                    <div className={!n.is_read ? "" : "ml-3.5"}>
+                                      <p className="text-sm font-medium text-gray-900">{n.title}</p>
+                                      <p className="text-xs text-gray-500 mt-0.5">{n.message}</p>
+                                      <p className="text-[10px] text-gray-400 mt-1">{timeAgo(n.created_at)}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                            ))
+                        )}
+                      </div>
+                    </div>
+                  </>
+              )}
+            </div>
             <div className="cursor-pointer">
               <ProfileAvatar
                 name={student.name}
@@ -441,7 +437,7 @@ const StudentDashboard = () => {
           </div>
         </header>
 
-        {/* Page content */}
+
         <div className="flex-1 p-5 sm:p-8">{panels[activeTab]}</div>
       </main>
     </div>
