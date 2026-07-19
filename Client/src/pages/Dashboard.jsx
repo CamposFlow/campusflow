@@ -99,6 +99,7 @@ const StudentDashboard = () => {
     level: "400 Level",
     avatar: "JD",
   };
+
   const cert = [
     { label: "All clearances approved", done: false },
     { label: "Library clearance", done: true },
