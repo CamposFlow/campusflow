@@ -16,6 +16,7 @@ import InstallBanner from "@/components/InstallBanner.jsx";
 import {NotFound} from '@/components/NotFound.jsx'
 import {FloatingSOSButton} from "./components/FloatingSOSButton.jsx";
 import SuperAdmin from "./pages/SuperAdmin.jsx"
+import { InstallBannerProvider } from "@/components/InstallBannerContext";
 
 function ProtectedRoute({allowedRoles}) {
     const {token,role} = useAuth();

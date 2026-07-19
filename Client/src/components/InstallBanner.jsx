@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Download, Share } from "lucide-react";
 import { useInstallPrompt } from "@/hooks/useInstallPrompt";
+import { useInstallBannerVisible } from "@/components/InstallBannerContext";
 
 /**
  * InstallBanner
