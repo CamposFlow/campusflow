@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import {Toaster} from "sonner";
+
 import {AdminDashboard} from "@/pages/Admin/AdminDashboard.jsx";
 import {StaffDashboard} from "@/pages/Staff/StaffDashboard.jsx";
 import {GoogleSuccess} from "./components/Google";
