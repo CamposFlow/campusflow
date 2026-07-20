@@ -103,6 +103,7 @@ rounded-full shadow-sm w-[92%] justify-between md:w-auto md:justify-start`}>
               </Link>
               <div className="h-px bg-gray-200 my-2"/>
               {token ? (
+
                   <Button onClick={() => { navigate("/dashboard"); setMobileOpen(false); }} className="bg-blue-600 text-white px-4 py-3 mt-1 hover:bg-blue-700">Dashboard</Button>
               ) : (
                   <>

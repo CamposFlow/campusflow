@@ -66,6 +66,7 @@ export default function Hero() {
                         <span className="bg-gradient-to-r from-blue-500 to-blue-700
             bg-clip-text text-transparent font-orbitron">
             Powered by Blockchain.
+
         </span>
                     </motion.h1>
 

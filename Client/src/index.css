@@ -35,6 +35,7 @@
 
 @theme inline {
     --font-heading: var(--font-sans);
+
     --font-sans: 'Geist Variable', sans-serif;
     --font-orbitron: 'Orbitron', sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
