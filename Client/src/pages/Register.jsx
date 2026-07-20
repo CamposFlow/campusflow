@@ -76,12 +76,11 @@ function Register() {
             },2000)
         } catch (error) {
             if (error.response)
-                setError(error.response.data.error || "Registration failed, Try again.");
+                setError(error.response.data.message || "Registration failed, Try again.");
             else if (error.request)
                 setError("Cannot reach server, Check your Connection.");
             else
                 setError("Something went wrong, Try again.");
-
         } finally {
             setLoading(false);
         }
