@@ -154,10 +154,10 @@ const Portal = () => {
 
                                         <button
                                             onClick={()=> setVerifying(true)}
-                                            className="mt-8 flex items-center gap-2 bg-blue-600
-                hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl
-                font-semibold transition-all hover:scale-105
-                hover:shadow-lg hover:shadow-blue-200">
+                                            className="mt-8 flex items-center justify-center gap-2 bg-blue-600
+hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl
+font-semibold transition-all hover:scale-105
+hover:shadow-lg hover:shadow-blue-200 w-full sm:w-auto">
                                             Click to verify
                                         </button>
                                     </div>

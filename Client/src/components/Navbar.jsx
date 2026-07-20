@@ -4,7 +4,7 @@ import {motion, AnimatePresence} from "framer-motion";
 import {Shield, Menu,X} from 'lucide-react';
 import {useState} from "react";
 import {Button} from "@/components/ui/button.jsx";
-
+import { useAuth } from "@/pages/AuthContext.jsx";
 
 const Navbar = () =>{
     const [activeSection, setActiveSection] = useState('');
@@ -14,6 +14,7 @@ const links=[
     {to : 'works', label:'How it Works'},
     {to:'contact', label:'Contact'}
 ]
+    const { token } = useAuth();
 
     const navigate = useNavigate();
   return (
@@ -58,16 +59,20 @@ rounded-full shadow-sm w-[92%] justify-between md:w-auto md:justify-start`}>
         </div>
 
         <div className="hidden md:flex items-center gap-2 pl-2 border-l border-gray-300">
-            <button
-                onClick={() => navigate("/login")}
-                className="text-sm text-gray-600 px-3 hover:text-blue-600 transition-colors">
-                Login
-            </button>
-            <Button
-                onClick={() => navigate("/register")}
-                className="bg-blue-600 whitespace-nowrap text-white text-sm px-5 py-2.5 hover:scale-105 active:scale-95 rounded-full hover:bg-blue-700 transition-colors">
-                Get Started
-            </Button>
+            {token ? (
+                <Button onClick={() => navigate("/dashboard")} className="bg-blue-600 whitespace-nowrap text-white text-sm px-5 py-2.5 hover:scale-105 active:scale-95 rounded-full hover:bg-blue-700 transition-colors">
+                    Dashboard
+                </Button>
+            ) : (
+                <>
+                    <button onClick={() => navigate("/login")} className="text-sm text-gray-600 px-3 hover:text-blue-600 transition-colors">
+                        Login
+                    </button>
+                    <Button onClick={() => navigate("/register")} className="bg-blue-600 whitespace-nowrap text-white text-sm px-5 py-2.5 hover:scale-105 active:scale-95 rounded-full hover:bg-blue-700 transition-colors">
+                        Get Started
+                    </Button>
+                </>
+            )}
         </div>
         <button onClick={()=>setMobileOpen(!mobileOpen)}
                 className="md:hidden p-1">
@@ -97,21 +102,16 @@ rounded-full shadow-sm w-[92%] justify-between md:w-auto md:justify-start`}>
                   Verify
               </Link>
               <div className="h-px bg-gray-200 my-2"/>
-              <button
-                  onClick={()=> {
-                      navigate("/login");
-                      setMobileOpen(false);
-                  }}
-                  className="text-left text-gray-700 px-4 py-3 hover:bg-blue-50 rounded-xl">
-                  Login
-              </button>
-              <Button
-                  onClick={() => {
-                      navigate("/register");
-                      setMobileOpen(false);
-                  }}
-                  className="bg-blue-600 text-white px-4 py-3 mt-1 hover:bg-blue-700"
-              >Get Started</Button>
+              {token ? (
+                  <Button onClick={() => { navigate("/dashboard"); setMobileOpen(false); }} className="bg-blue-600 text-white px-4 py-3 mt-1 hover:bg-blue-700">Dashboard</Button>
+              ) : (
+                  <>
+                      <button onClick={()=> { navigate("/login"); setMobileOpen(false); }} className="text-left text-gray-700 px-4 py-3 hover:bg-blue-50 rounded-xl">
+                          Login
+                      </button>
+                      <Button onClick={() => { navigate("/register"); setMobileOpen(false); }} className="bg-blue-600 text-white px-4 py-3 mt-1 hover:bg-blue-700">Get Started</Button>
+                  </>
+              )}
           </motion.div>
       )}
   </AnimatePresence>
