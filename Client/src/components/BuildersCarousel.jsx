@@ -18,7 +18,7 @@ const builders = [
         profileUrl: "https",
         github: "https://github.com/Prayskey",
         twitter: "https://x.com/prayskey01",
-        photo: "/builders/2.jfif",
+        photo: "/builders/2.jpg",
     },
     {
         name: "Lucky-Daniel Dunamis",
