@@ -1,13 +1,46 @@
 import { motion } from 'framer-motion'
-import { Shield, UserPlus, LogIn, GraduationCap , CheckCircle, AlertTriangle } from 'lucide-react'
+import { Shield, UserPlus, LogIn, GraduationCap, CheckCircle, AlertTriangle } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import React from "react";
+import React, { useMemo } from "react";
+
+const iconPool = [Shield, CheckCircle, GraduationCap, AlertTriangle, UserPlus]
 
 export default function Hero() {
+    const particles = useMemo(() => Array.from({ length: 36 }, (_, i) => {
+        const isIcon = i % 3 === 0
+        return {
+            id: i,
+            left: Math.random() * 100,
+            top: Math.random() * 100,
+            size: isIcon ? Math.random() * 12 + 20 : Math.random() * 8 + 4,
+            duration: Math.random() * 10 + 10,
+            delay: Math.random() * 5,
+            driftX: Math.random() * 20 - 10,
+            isIcon,
+            Icon: isIcon ? iconPool[i % iconPool.length] : null,
+        }
+    }), [])
+
+    // Thin network lines connecting a handful of the plain dots, for a "blockchain mesh" feel
+    const dots = useMemo(() => particles.filter(p => !p.isIcon), [particles])
+    const connections = useMemo(() => {
+        const lines = []
+        for (let i = 0; i < dots.length - 1; i += 2) {
+            lines.push({ id: i, x1: dots[i].left, y1: dots[i].top, x2: dots[i + 1].left, y2: dots[i + 1].top, delay: Math.random() * 4 })
+        }
+        return lines
+    }, [dots])
+
     return (
         <section id="main" className="relative min-h-screen w-full overflow-hidden
-
             flex flex-col items-center justify-center px-6">
+
+            <div className="absolute inset-0"
+                 style={{
+                     backgroundImage: 'radial-gradient(circle, rgb(173, 216, 230) 1px, transparent 1px)',
+                     backgroundSize: '28px 28px'
+                 }}
+            />
 
             <motion.div
                 animate={{ x: [0, 40, 0], y: [0, -30, 0] }}
@@ -24,23 +57,59 @@ export default function Hero() {
                 transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute bottom-0 left-1/3 w-[300px] h-[300px] bg-blue-300/25 rounded-full blur-3xl"
             />
-            <div className="absolute inset-0"
-                 style={{
-                     backgroundImage: 'radial-gradient(circle, rgb(173, 216, 230) 1px, transparent 1px)',
-                     backgroundSize: '28px 28px'
-                 }}
-            />
 
+            {/* Network mesh lines behind the particles */}
+            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                {connections.map((c) => (
+                    <motion.line
+                        key={c.id}
+                        x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2}
+                        stroke="rgb(96, 165, 250)"
+                        strokeWidth="0.15"
+                        vectorEffect="non-scaling-stroke"
+                        animate={{ opacity: [0.05, 0.35, 0.05] }}
+                        transition={{ duration: 6, delay: c.delay, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                ))}
+            </svg>
+
+            {/* Floating particles + brand icons */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {particles.map((p) => (
+                    <motion.div
+                        key={p.id}
+                        className={p.isIcon ? "absolute text-blue-600/60" : "absolute rounded-full bg-blue-500/70"}
+                        style={{
+                            left: `${p.left}%`,
+                            top: `${p.top}%`,
+                            width: p.isIcon ? undefined : `${p.size}px`,
+                            height: p.isIcon ? undefined : `${p.size}px`,
+                        }}
+                        animate={{
+                            y: [0, -30, 0],
+                            x: [0, p.driftX, 0],
+                            opacity: p.isIcon ? [0.35, 0.65, 0.35] : [0.4, 1, 0.4],
+                            rotate: p.isIcon ? [0, 10, 0] : 0,
+                            scale: p.isIcon ? [1, 1.15, 1] : 1,
+                        }}
+                        transition={{
+                            duration: p.duration,
+                            delay: p.delay,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    >
+                        {p.isIcon && <p.Icon size={p.size} />}
+                    </motion.div>
+                ))}
+            </div>
 
             <div className="absolute top-0 left-1/2 -translate-x-1/2
                 w-[600px] h-[300px] bg-blue-100/60 rounded-full
                 blur-3xl -translate-y-1/2" />
 
-
             <div className="relative z-10 flex flex-col items-center text-center">
-
                 <div className="relative z-10 flex flex-col items-center text-center max-w-3xl pt-24">
-
 
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
@@ -52,7 +121,6 @@ export default function Hero() {
                         <Shield className="w-4 h-4" />
                         Blockchain Powered Campus System
                     </motion.div>
-
 
                     <motion.h1
                         initial={{ opacity: 0, y: 30 }}
@@ -66,11 +134,9 @@ export default function Hero() {
                         <span className="bg-gradient-to-r from-blue-500 to-blue-700
             bg-clip-text text-transparent font-orbitron">
             Powered by Blockchain.
-
         </span>
                     </motion.h1>
 
-                    {/* Subtitle */}
                     <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -81,7 +147,6 @@ export default function Hero() {
                         and keeps you safe — all in one place.
                     </motion.p>
 
-                    {/* Buttons */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -106,7 +171,6 @@ export default function Hero() {
                             </button>
                         </Link>
                     </motion.div>
-
 
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -142,7 +206,6 @@ export default function Hero() {
                 </div>
             </div>
 
-
             <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -171,7 +234,6 @@ export default function Hero() {
                 </motion.div>
             </motion.div>
 
-            {/* Top right card — Verification */}
             <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -199,7 +261,6 @@ export default function Hero() {
                 </motion.div>
             </motion.div>
 
-            {/* Bottom right card — SOS */}
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
