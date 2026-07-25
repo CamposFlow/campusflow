@@ -9,7 +9,6 @@ const IssueCertificateModal = ({ isOpen, onClose, student }) => {
     const [error, setError] = useState("")
     const [file, setFile] = useState(null)
     const [certificateType, setCertificateType] = useState("")
-    const [institution, setInstitution] = useState("")
     const fileInputRef = useRef(null)
 
     const reset = () => {
@@ -26,7 +25,7 @@ const IssueCertificateModal = ({ isOpen, onClose, student }) => {
     }
 
     const handleSubmit = async () => {
-        if (!certificateType || !institution || !file) {
+        if (!certificateType || !file) {
             setError("All fields are required.")
             return
         }
@@ -122,12 +121,9 @@ const IssueCertificateModal = ({ isOpen, onClose, student }) => {
                                         {/* Institution */}
                                         <div>
                                             <label className="text-xs font-medium text-gray-500 mb-1 block">Institution</label>
-                                            <input
-                                                value={student.university}
-                                                onChange={(e) => setInstitution(e.target.value)}
-                                                placeholder="e.g. Federal University of Technology Owerri"
-                                                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            />
+                                            <div className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-700">
+                                                {student?.university || "—"}
+                                            </div>
                                         </div>
 
                                         {/* File Upload */}
@@ -180,7 +176,7 @@ const IssueCertificateModal = ({ isOpen, onClose, student }) => {
                                         </button>
                                         <button
                                             onClick={handleSubmit}
-                                            disabled={loading || !certificateType || !institution || !file}
+                                            disabled={loading || !certificateType || !file}
                                             className="flex-1 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
                                         >
                                             {loading ? (
